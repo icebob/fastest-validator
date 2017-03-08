@@ -8,7 +8,7 @@ const v = new Validator({
 });
 
 const schema = {
-/*	id: { type: "number", min: 1, max: 100 },
+	id: { type: "number", min: 1, max: 100 },
 	name: { type: "string", optional: false, min: 3, max: 128 },
 	settings: { type: "object", props: {
 		notify: { type: "boolean" }
@@ -17,18 +17,18 @@ const schema = {
 	sex: { type: "string", enum: ["male", "female"] },
 	roles: { type: "array", items: { type: "string" }, enum: ["admin", "user"] },
 	friends: { type: "array", items: { type: "number", positive: true }},
-*/	comments: { type: "array", items: { type: "object", props: {
+	comments: { type: "array", items: { type: "object", props: {
 		user: { type: "number", positive: true, integer: true },
 		content: { type: "string" },
 		voters: { type: "array", optional: true, items: { type: "number", optional: true }}
 	} } },
-/*	email: { type: "email", optional: true },
+	email: { type: "email", optional: true },
 	homepage: { type: "url", optional: true },
 	status: "boolean",
 	age: { type: "number", min: 18, max: 100, convert: true },
 	apikey: "forbidden",
 	action: "function",
-	created: "date"*/
+	created: "date"
 };
 
 const obj = {
@@ -51,7 +51,7 @@ const obj = {
 	comments: [
 		{ user: 1, content: "Cool!" },
 		{ user: 2, content: "Very fast!" },
-		{ user: 1, content: "", voters: [1, true] }
+		{ user: 1, content: "", voters: [1] }
 	],
 	email: "john.doe@clipboard.space",
 	homepage: "http://google.com",
