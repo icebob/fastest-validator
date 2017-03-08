@@ -7,18 +7,18 @@ const Validator = require("../../index");
 const v = new Validator();
 
 const obj = {
-    name: "John Doe",
-    email: "john.doe@company.space",
-    firstName: "John",
-    phone: "123-4567",
+	name: "John Doe",
+	email: "john.doe@company.space",
+	firstName: "John",
+	phone: "123-4567",
 	age: 33
 };
 
 const wrongObj = {
-    name: "John Doe",
-    email: "john.doe@company.space",
-    firstName: "John",
-    phone: "123-4567",
+	name: "John Doe",
+	email: "john.doe@company.space",
+	firstName: "John",
+	phone: "123-4567",
 	age: 5
 };
 
