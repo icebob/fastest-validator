@@ -75,7 +75,7 @@ describe("Test add", () => {
 		v.validate({ a: 5 }, schema);
 
 		expect(validFn).toHaveBeenCalledTimes(1);
-		expect(validFn).toHaveBeenCalledWith(5, schema.a);
+		expect(validFn).toHaveBeenCalledWith(5, schema.a, "a");
 	});
 
 });
@@ -124,10 +124,10 @@ describe("Test compile", () => {
 			expect(res).toBe(true);
 
 			expect(v.rules.number).toHaveBeenCalledTimes(1);
-			expect(v.rules.number).toHaveBeenCalledWith(5, schema.id);
+			expect(v.rules.number).toHaveBeenCalledWith(5, schema.id, "id");
 
 			expect(v.rules.string).toHaveBeenCalledTimes(1);
-			expect(v.rules.string).toHaveBeenCalledWith("John", schema.name);
+			expect(v.rules.string).toHaveBeenCalledWith("John", schema.name, "name");
 		});
 		
 	});
@@ -156,10 +156,10 @@ describe("Test compile", () => {
 			expect(res).toBe(true);
 
 			expect(v.rules.number).toHaveBeenCalledTimes(1);
-			expect(v.rules.number).toHaveBeenCalledWith(5, { type: "number" });
+			expect(v.rules.number).toHaveBeenCalledWith(5, { type: "number" }, "id");
 
 			expect(v.rules.string).toHaveBeenCalledTimes(1);
-			expect(v.rules.string).toHaveBeenCalledWith("John", { type: "string" });
+			expect(v.rules.string).toHaveBeenCalledWith("John", { type: "string" }, "name");
 		});
 		
 	});	
