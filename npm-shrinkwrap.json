@@ -1,0 +1,42 @@
+{
+  "name": "fastest-validator",
+  "version": "0.1.0",
+  "dependencies": {
+    "balanced-match": {
+      "version": "0.4.2"
+    },
+    "brace-expansion": {
+      "version": "1.1.6"
+    },
+    "concat-map": {
+      "version": "0.0.1"
+    },
+    "fs.realpath": {
+      "version": "1.0.0"
+    },
+    "glob": {
+      "version": "7.1.1"
+    },
+    "inflight": {
+      "version": "1.0.6"
+    },
+    "inherits": {
+      "version": "2.0.3"
+    },
+    "lodash": {
+      "version": "4.17.4"
+    },
+    "minimatch": {
+      "version": "3.0.3"
+    },
+    "once": {
+      "version": "1.4.0"
+    },
+    "path-is-absolute": {
+      "version": "1.0.1"
+    },
+    "wrappy": {
+      "version": "1.0.2"
+    }
+  }
+}
