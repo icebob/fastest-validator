@@ -3,41 +3,32 @@
 const Validator = require("../index");
 const v = new Validator({
 	messages: {
-		stringMin: "A '{name}' mező túl rövid. Minimum: {0}, Jelenleg: {1}"
+		stringMin: "A(z) '{name}' mező túl rövid. Minimum: {0}, Jelenleg: {1}"
 	}
 });
-/*
-v.add("url", (value, schema) => {
-	const PATTERN = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
-
-	if (typeof value !== "string") {
-		return { msg: "string" };
-	}
-	
-	if (!PATTERN.test(value)) {
-		return { msg: "url" }
-	}
-
-	return true;	
-});*/
 
 const schema = {
-	id: { type: "number", min: 1, max: 100 },
+/*	id: { type: "number", min: 1, max: 100 },
 	name: { type: "string", optional: false, min: 3, max: 128 },
 	settings: { type: "object", props: {
 		notify: { type: "boolean" }
 		//notify: { type: ["boolean", "object" ] } // 2 accepted type: Boolean or Object
 	}},
 	sex: { type: "string", enum: ["male", "female"] },
-	roles: { type: "array", enum: ["admin", "user"] },
-	//comments: { type: "array", items: { type: "object" } },
-	email: { type: "email", optional: true },
+	roles: { type: "array", items: { type: "string" }, enum: ["admin", "user"] },
+	friends: { type: "array", items: { type: "number", positive: true }},
+*/	comments: { type: "array", items: { type: "object", props: {
+		user: { type: "number", positive: true, integer: true },
+		content: { type: "string" },
+		voters: { type: "array", optional: true, items: { type: "number", optional: true }}
+	} } },
+/*	email: { type: "email", optional: true },
 	homepage: { type: "url", optional: true },
 	status: "boolean",
 	age: { type: "number", min: 18, max: 100, convert: true },
 	apikey: "forbidden",
 	action: "function",
-	created: "date"
+	created: "date"*/
 };
 
 const obj = {
@@ -49,6 +40,18 @@ const obj = {
 	},
 	roles: [
 		"user"
+	],
+
+	friends: [
+		5,
+		10,
+		2
+	],
+
+	comments: [
+		{ user: 1, content: "Cool!" },
+		{ user: 2, content: "Very fast!" },
+		{ user: 1, content: "", voters: [1, true] }
 	],
 	email: "john.doe@clipboard.space",
 	homepage: "http://google.com",
