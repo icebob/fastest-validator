@@ -81,7 +81,7 @@ console.log(v.validate({ id: 5, name: "Al", status: true }, schema));
 ```
 
 ### Fast method
-In this case, first step is to compile the schema to a compiled "checker" function. If you would like to validate your object, just call this function with your object.
+In this case, the first step is to compile the schema to a compiled "checker" function. After it if you would like to validate your object, just call this "checker" function with your object.
 > This method is ~10x faster than "simple method".
 
 ```js
@@ -118,13 +118,13 @@ Every fields in the schema will be required field. If you would like to define o
 
 ```js
 let schema = {
-    name: { type: "string" } // required
+    name: { type: "string" }, // required
     age: { type: "number", optional: true }
 }
 
-v.validate({ name: "John", age: 42 }); // Valid
-v.validate({ name: "John" }); // Valid
-v.validate({ age: 42 }); // Fail
+v.validate({ name: "John", age: 42 }, schema); // Valid
+v.validate({ name: "John" }, schema); // Valid
+v.validate({ age: 42 }, schema); // Fail
 ```
 
 # Built-in validators
@@ -137,9 +137,9 @@ let schema = {
     prop: { type: "any" }
 }
 
-v.validate({ prop: true }); // Valid
-v.validate({ prop: 100 }); // Valid
-v.validate({ prop: "John" }); // Valid
+v.validate({ prop: true }, schema); // Valid
+v.validate({ prop: 100 }, schema); // Valid
+v.validate({ prop: "John" }, schema); // Valid
 ```
 
 ## `array`
@@ -151,9 +151,9 @@ let schema = {
     roles: { type: "array", items: "string" }
 }
 
-v.validate({ roles: ["user"] }); // Valid
-v.validate({ roles: [] }); // Valid
-v.validate({ roles: "user" }); // Fail
+v.validate({ roles: ["user"] }, schema); // Valid
+v.validate({ roles: [] }, schema); // Valid
+v.validate({ roles: "user" }, schema); // Fail
 ```
 
 Example with only positive number
@@ -164,10 +164,10 @@ let schema = {
     } }
 }
 
-v.validate({ list: [2, 4] }); // Valid
-v.validate({ list: [1, 5, 8] }); // Valid
-v.validate({ list: [1] }); // Fail (min 2 elements)
-v.validate({ list: [1, -7] }); // Fail (negative number)
+v.validate({ list: [2, 4] }, schema); // Valid
+v.validate({ list: [1, 5, 8] }, schema); // Valid
+v.validate({ list: [1] }, schema); // Fail (min 2 elements)
+v.validate({ list: [1, -7] }, schema); // Fail (negative number)
 ```
 
 Example with object list
@@ -188,7 +188,7 @@ v.validate({
         { id: 2, name: "Jane", status: true },
         { id: 3, name: "Bill", status: false }
     ]
-}); // Valid
+}, schema); // Valid
 ```
 
 
@@ -208,9 +208,9 @@ let schema = {
     roles: { type: "array", items: "string", enum: [ "user", "admin" ] }
 }
 
-v.validate({ roles: ["user"] }); // Valid
-v.validate({ roles: ["user", "admin"] }); // Valid
-v.validate({ roles: ["guest"] }); // Fail
+v.validate({ roles: ["user"] }, schema); // Valid
+v.validate({ roles: ["user", "admin"] }, schema); // Valid
+v.validate({ roles: ["guest"] }, schema); // Fail
 ```
 
 
@@ -222,10 +222,10 @@ let schema = {
     status: { type: "boolean" }
 }
 
-v.validate({ status: true }); // Valid
-v.validate({ status: false }); // Valid
-v.validate({ status: 1 }); // Fail
-v.validate({ status: "true" }); // Fail
+v.validate({ status: true }, schema); // Valid
+v.validate({ status: false }, schema); // Valid
+v.validate({ status: 1 }, schema); // Fail
+v.validate({ status: "true" }, schema); // Fail
 ```
 ### Properties
 Property | Default  | Description
@@ -241,9 +241,9 @@ let schema = {
     dob: { type: "date" }
 }
 
-v.validate({ dob: new Date() }); // Valid
-v.validate({ dob: new Date(1488876927958) }); // Valid
-v.validate({ dob: 1488876927958 }); // Fail
+v.validate({ dob: new Date() }, schema); // Valid
+v.validate({ dob: new Date(1488876927958) }, schema); // Valid
+v.validate({ dob: 1488876927958 }, schema); // Fail
 ```
 ### Properties
 Property | Default  | Description
@@ -258,9 +258,9 @@ let schema = {
     email: { type: "email" }
 }
 
-v.validate({ email: "john.doe@gmail.com" }); // Valid
-v.validate({ email: "james.123.45@mail.co.uk" }); // Valid
-v.validate({ email: "abc@gmail" }); // Fail
+v.validate({ email: "john.doe@gmail.com" }, schema); // Valid
+v.validate({ email: "james.123.45@mail.co.uk" }, schema); // Valid
+v.validate({ email: "abc@gmail" }, schema); // Fail
 ```
 
 ### Properties
@@ -277,8 +277,8 @@ let schema = {
     password: { type: "forbidden" }
 }
 
-v.validate({ user: "John" }); // Valid
-v.validate({ user: "John", password: "pass1234" }); // Fail
+v.validate({ user: "John" }, schema); // Valid
+v.validate({ user: "John", password: "pass1234" }, schema); // Fail
 ```
 
 ## `function`
@@ -289,9 +289,9 @@ let schema = {
     show: { type: "function" }
 }
 
-v.validate({ show: function() {} }); // Valid
-v.validate({ show: Date.now }); // Valid
-v.validate({ show: null }); // Fail
+v.validate({ show: function() {} }, schema); // Valid
+v.validate({ show: Date.now }, schema); // Valid
+v.validate({ show: null }, schema); // Fail
 ```
 
 
@@ -303,9 +303,9 @@ let schema = {
     age: { type: "number" }
 }
 
-v.validate({ age: 123 }); // Valid
-v.validate({ age: 5.65 }); // Valid
-v.validate({ age: "100" }); // Fail
+v.validate({ age: 123 }, schema); // Valid
+v.validate({ age: 5.65 }, schema); // Valid
+v.validate({ age: "100" }, schema); // Fail
 ```
 
 ### Properties
@@ -337,14 +337,14 @@ v.validate({
         city: "Rome",
         zip: 12345
     } 
-}); // Valid
+}, schema); // Valid
 
 v.validate({ 
     address: {
         country: "Italy",
         city: "Rome"
     }
-}); // Fail (missing `zip` prop)
+}, schema); // Fail ("The 'address.zip' field is required!")
 ```
 
 
@@ -356,9 +356,9 @@ let schema = {
     name: { type: "string" }
 }
 
-v.validate({ name: "John" }); // Valid
-v.validate({ name: "" }); // Valid
-v.validate({ name: 123 }); // Fail
+v.validate({ name: "John" }, schema); // Valid
+v.validate({ name: "" }, schema); // Valid
+v.validate({ name: 123 }, schema); // Fail
 ```
 
 ### Properties
@@ -381,9 +381,9 @@ let schema = {
     url: { type: "url" }
 }
 
-v.validate({ url: "http://google.com" }); // Valid
-v.validate({ url: "https://github.com/icebob" }); // Valid
-v.validate({ url: "www.facebook.com" }); // Fail
+v.validate({ url: "http://google.com" }, schema); // Valid
+v.validate({ url: "https://github.com/icebob" }, schema); // Valid
+v.validate({ url: "www.facebook.com" }, schema); // Fail
 ```
 
 # Custom error messages (l10n)
