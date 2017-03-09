@@ -1,1 +1,1 @@
-require("./" + (process.argv[2] || "simple"));
+require("./" + (process.argv[2] || "full"));
