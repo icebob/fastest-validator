@@ -3,8 +3,8 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/75256e6ec26d42f5ab1dee109ae4d3ad)](https://www.codacy.com/app/mereg-norbert/fastest-validator?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=icebob/fastest-validator&amp;utm_campaign=Badge_Grade)
 [![Known Vulnerabilities](https://snyk.io/test/github/icebob/fastest-validator/badge.svg)](https://snyk.io/test/github/icebob/fastest-validator)
 
-# fastest-validator
-:rocket: The fastest JS validator library for NodeJS.
+# fastest-validator [![NPM version](https://img.shields.io/npm/v/fastest-validator.svg)](https://www.npmjs.com/package/fastest-validator)
+:zap: The fastest JS validator library for NodeJS.
 
 ## Key features
 * fast! Really!
@@ -14,9 +14,15 @@
 * programmable error object
 
 # How fast?
-Very fast! We compared to other popular libraries:
+Very fast! 3 million validation/sec (on Intel i7-4770K, Node.JS: 6.10.0)
+```
+√ validate with pre-compiled schema x 3,052,280 ops/sec ±0.82% (93 runs sampled)
+```
 
-[![Result](https://cloud.highcharts.com/images/yqowupa/2/600.png)](https://github.com/icebob/validator-benchmark#result)
+We compared to other popular libraries:
+
+[![Result](https://cloud.highcharts.com/images/yqowupa/3/800.png)](https://github.com/icebob/validator-benchmark#result)
+> 100x faster than Joi.
 
 **Would you like to test it?**
 
