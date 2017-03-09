@@ -145,7 +145,7 @@ v.validate({ prop: "John" }, schema); // Valid
 ## `array`
 This is an `Array` validator. 
 
-Simple example with strings
+**Simple example with strings:**
 ```js
 let schema = {
     roles: { type: "array", items: "string" }
@@ -156,7 +156,7 @@ v.validate({ roles: [] }, schema); // Valid
 v.validate({ roles: "user" }, schema); // Fail
 ```
 
-Example with only positive number
+**Example with only positive number:**
 ```js
 let schema = {
     list: { type: "array", min: 2, items: {
@@ -170,7 +170,7 @@ v.validate({ list: [1] }, schema); // Fail (min 2 elements)
 v.validate({ list: [1, -7] }, schema); // Fail (negative number)
 ```
 
-Example with object list
+**Example with object list:**
 ```js
 let schema = {
     users: { type: "array", items: {
@@ -199,10 +199,10 @@ Property | Default  | Description
 `min`  	 | `null`   | Minimum count of elements.
 `max`  	 | `null`   | Maximum count of elements.
 `length` | `null`   | Fix count of elements.
-`contains` | `null` | The array must contains this element.
+`contains` | `null` | The array must contains this element too.
 `enum`	 | `null`   | Every element must be an element of the `enum` array.
 
-Example for `enum`
+**Example for `enum`:**
 ```js
 let schema = {
     roles: { type: "array", items: "string", enum: [ "user", "admin" ] }
@@ -463,6 +463,30 @@ npm run dev
 ## Test
 ```
 npm test
+```
+
+### Coverage report
+```
+---------------|----------|----------|----------|----------|----------------|
+File           |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
+---------------|----------|----------|----------|----------|----------------|
+All files      |      100 |      100 |      100 |      100 |                |
+ lib           |      100 |      100 |      100 |      100 |                |
+  messages.js  |      100 |      100 |      100 |      100 |                |
+  validator.js |      100 |      100 |      100 |      100 |                |
+ lib/rules     |      100 |      100 |      100 |      100 |                |
+  any.js       |      100 |      100 |      100 |      100 |                |
+  array.js     |      100 |      100 |      100 |      100 |                |
+  boolean.js   |      100 |      100 |      100 |      100 |                |
+  date.js      |      100 |      100 |      100 |      100 |                |
+  email.js     |      100 |      100 |      100 |      100 |                |
+  forbidden.js |      100 |      100 |      100 |      100 |                |
+  function.js  |      100 |      100 |      100 |      100 |                |
+  number.js    |      100 |      100 |      100 |      100 |                |
+  object.js    |      100 |      100 |      100 |      100 |                |
+  string.js    |      100 |      100 |      100 |      100 |                |
+  url.js       |      100 |      100 |      100 |      100 |                |
+---------------|----------|----------|----------|----------|----------------|
 ```
 
 ## Contribution
