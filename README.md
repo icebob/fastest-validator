@@ -80,6 +80,7 @@ console.log(v.validate({ id: 5, name: "Al", status: true }, schema));
     ]
 */
 ```
+[Try it on Runkit](https://runkit.com/icebob/fastest-validator-usage-simple)
 
 ### Fast method
 In this case, the first step is to compile the schema to a compiled "checker" function. After it if you would like to validate your object, just call this "checker" function with your object.
@@ -112,6 +113,7 @@ console.log(check({ id: 2, name: "Adam" }));
     ]
 */
 ```
+[Try it on Runkit](https://runkit.com/icebob/fastest-validator-usage-quick)
 
 # Optional & required fields
 Every fields in the schema will be required field. If you would like to define optional fields, set ˙optional: true`.
