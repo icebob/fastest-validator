@@ -12,6 +12,7 @@
 * nested object & array handling
 * customizable error messages
 * programmable error object
+* unit tests & 100% cover
 
 # How fast?
 Very fast! 3 million validation/sec (on Intel i7-4770K, Node.JS: 6.10.0)
@@ -26,7 +27,7 @@ We compared to other popular libraries:
 
 **Would you like to test it?**
 
-```js
+```
 $ git clone https://github.com/icebob/fastest-validator.git
 $ cd fastest-validator
 $ npm install
