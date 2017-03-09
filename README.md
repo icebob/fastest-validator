@@ -61,17 +61,17 @@ console.log(v.validate({ id: 5, name: "John", status: true }, schema));
 
 console.log(v.validate({ id: 5, name: "Al", status: true }, schema));
 /* Returns an array with errors:
-	[
-		{ 
-			type: 'stringMin',
-			args: [
-				3,
-				2
-			],
-			field: 'name',
-			message: 'The \'name\' field length must be larger than or equal to3 characters long!'
-		}
-	]
+    [
+        { 
+            type: 'stringMin',
+            args: [
+                3,
+                2
+            ],
+            field: 'name',
+            message: 'The \'name\' field length must be larger than or equal to3 characters long!'
+        }
+    ]
 */
 ```
 
@@ -97,16 +97,29 @@ console.log(check({ id: 5, name: "John", status: true }));
 
 console.log(check({ id: 2, name: "Adam" }));
 /* Returns an array with errors:
-	[
-		{ 
-			type: 'required',
-			args: [],
-			field: 'status',
-			message: 'The \'status\' field is required!'
-		}
-	]
+    [
+        { 
+            type: 'required',
+            args: [],
+            field: 'status',
+            message: 'The \'status\' field is required!'
+        }
+    ]
 */
+```
 
+# Optional & required fields
+Every fields in the schema will be required field. If you would like to define optional fields, set ˙optional: true`.
+
+```js
+let schema = {
+    name: { type: "string" } // required
+    age: { type: "number", optional: true }
+}
+
+v.validate({ name: "John", age: 42 }); // Valid
+v.validate({ name: "John" }); // Valid
+v.validate({ age: 42 }); // Fail
 ```
 
 # Built-in validators
@@ -116,7 +129,7 @@ This is not validate the type of value. Accept any types.
 
 ```js
 let schema = {
-	prop: { type: "any" }
+    prop: { type: "any" }
 }
 
 v.validate({ prop: true }); // Valid
@@ -125,14 +138,83 @@ v.validate({ prop: "John" }); // Valid
 ```
 
 ## `array`
-This is not validate the type of value. 
+This is an `Array` validator. 
+
+Simple example with strings
+```js
+let schema = {
+    roles: { type: "array", items: "string" }
+}
+
+v.validate({ roles: ["user"] }); // Valid
+v.validate({ roles: [] }); // Valid
+v.validate({ roles: "user" }); // Fail
+```
+
+Example with only positive number
+```js
+let schema = {
+    list: { type: "array", min: 2, items: {
+        type: "number", positive: true, integer: true
+    } }
+}
+
+v.validate({ list: [2, 4] }); // Valid
+v.validate({ list: [1, 5, 8] }); // Valid
+v.validate({ list: [1] }); // Fail (min 2 elements)
+v.validate({ list: [1, -7] }); // Fail (negative number)
+```
+
+Example with object list
+```js
+let schema = {
+    users: { type: "array", items: {
+        type: "object", props: {
+            id: { type: "number", positive: true },
+            name: { type: "string", empty: false },
+            status: "boolean"
+        }
+    } }
+}
+
+v.validate({ 
+    users: [
+        { id: 1, name: "John", status: true },
+        { id: 2, name: "Jane", status: true },
+        { id: 3, name: "Bill", status: false }
+    ]
+}); // Valid
+```
+
+
+### Properties
+Property | Default  | Description
+-------- | -------- | -----------
+`empty`  | `true`   | If true, the validator accepts empty array `[]`.
+`min`  	 | `null`   | Minimum count of elements.
+`max`  	 | `null`   | Maximum count of elements.
+`length` | `null`   | Fix count of elements.
+`contains` | `null` | The array must contains this element.
+`enum`	 | `null`   | Every element must be an element of the `enum` array.
+
+Example for `enum`
+```js
+let schema = {
+    roles: { type: "array", items: "string", enum: [ "user", "admin" ] }
+}
+
+v.validate({ roles: ["user"] }); // Valid
+v.validate({ roles: ["user", "admin"] }); // Valid
+v.validate({ roles: ["guest"] }); // Fail
+```
+
 
 ## `boolean`
 This is a `Boolean` validator. 
 
 ```js
 let schema = {
-	status: { type: "boolean" }
+    status: { type: "boolean" }
 }
 
 v.validate({ status: true }); // Valid
@@ -151,7 +233,7 @@ This is a `Date` validator.
 
 ```js
 let schema = {
-	dob: { type: "date" }
+    dob: { type: "date" }
 }
 
 v.validate({ dob: new Date() }); // Valid
@@ -168,7 +250,7 @@ This is an e-mail address validator.
 
 ```js
 let schema = {
-	email: { type: "email" }
+    email: { type: "email" }
 }
 
 v.validate({ email: "john.doe@gmail.com" }); // Valid
@@ -187,7 +269,7 @@ This validator gives error if the property is exists in the object.
 
 ```js
 let schema = {
-	password: { type: "forbidden" }
+    password: { type: "forbidden" }
 }
 
 v.validate({ user: "John" }); // Valid
@@ -199,7 +281,7 @@ The type of value must be `Function`.
 
 ```js
 let schema = {
-	show: { type: "function" }
+    show: { type: "function" }
 }
 
 v.validate({ show: function() {} }); // Valid
@@ -213,7 +295,7 @@ This is a number validator. The type of value must be `Number`.
 
 ```js
 let schema = {
-	age: { type: "number" }
+    age: { type: "number" }
 }
 
 v.validate({ age: 123 }); // Valid
@@ -234,14 +316,39 @@ Property | Default  | Description
 `convert`  | `false`| if `true` and the type is not `Number`, try to convert with `parseFloat`.
 
 ## `object`
-This is not validate the type of value. 
+This is a nested object validator.
+```js
+let schema = {
+    address: { type: "object", props: {
+        country: { type: "string" },
+        city: "string", // short-hand
+        zip: "number" // short-hand
+    } }
+}
+
+v.validate({ 
+    address: {
+        country: "Italy",
+        city: "Rome",
+        zip: 12345
+    } 
+}); // Valid
+
+v.validate({ 
+    address: {
+        country: "Italy",
+        city: "Rome"
+    }
+}); // Fail (missing `zip` prop)
+```
+
 
 ## `string`
 This is a `string` validator. The type of value must be `String`.
 
 ```js
 let schema = {
-	name: { type: "string" }
+    name: { type: "string" }
 }
 
 v.validate({ name: "John" }); // Valid
@@ -266,7 +373,7 @@ This is an URL validator.
 
 ```js
 let schema = {
-	url: { type: "url" }
+    url: { type: "url" }
 }
 
 v.validate({ url: "http://google.com" }); // Valid
@@ -280,11 +387,23 @@ You can set your custom messages in constructor of validator.
 ```js
 const Validator = require("fastest-validator");
 const v = new Validator({
-	messages: {
-		stringMin: "A(z) '{name}' mező túl rövid. Minimum: {0}, Jelenleg: {1}",
-		stringMax: "A(z) '{name}' mező túl hosszú. Minimum: {0}, Jelenleg: {1}"
-	}
+    messages: {
+        stringMin: "A(z) '{name}' mező túl rövid. Minimum: {0}, Jelenleg: {1}",
+        stringMax: "A(z) '{name}' mező túl hosszú. Minimum: {0}, Jelenleg: {1}"
+    }
 });
+
+v.validate({ name: "John" }, { name: { type: "string", min: 6 }});
+/* Returns:
+[ 
+    { 
+        type: 'stringMin',
+        args: [ 6, 4 ],
+        field: 'name',
+        message: 'A(z) \'name\' mező túl rövid. Minimum: 6, Jelenleg: 4' 
+    } 
+]
+*/
 ```
 
 ## Message types
