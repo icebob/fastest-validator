@@ -59,3 +59,29 @@ bench.add("validate with wrong obj", () => {
 });
 
 bench.run();
+
+
+/*
+
+===============================
+  fastest-validator benchmark
+===============================
+
+Platform info:
+==============
+   Windows_NT 6.1.7601 x64
+   Node.JS: 6.10.0
+   V8: 5.1.281.93
+   Intel(R) Core(TM) i7-4770K CPU @ 3.50GHz × 8
+
+Suite: Simple object
+√ compile & validate x 249,659 ops/sec ±0.17% (95 runs sampled)
+√ validate with pre-compiled schema x 3,111,667 ops/sec ±0.92% (90 runs sampled)
+√ validate with wrong obj x 767,201 ops/sec ±0.91% (92 runs sampled)
+
+   compile & validate                  -91.98%    (249,659 ops/sec)
+   validate with pre-compiled schema     0.00%   (3,111,667 ops/sec)
+   validate with wrong obj             -75.34%    (767,201 ops/sec)
+-----------------------------------------------------------------------
+
+*/
