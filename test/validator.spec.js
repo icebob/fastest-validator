@@ -440,3 +440,68 @@ describe("Test 3-level array", () => {
 	});
 
 });
+
+describe("Test root-level array", () => {
+	const v = new Validator();
+
+	let schema = [{ type: "array", items: { 
+		type: "object", props: {
+			id: "number",
+			name: "string"
+		}
+	}}];
+
+	let check = v.compile(schema);
+	
+	it("should give true if obj is valid", () => {
+		let obj = [	
+			{ id: 1, name: "John" },
+			{ id: 2, name: "Jane" },
+			{ id: 3, name: "James" }
+		];
+
+		let res = check(obj);
+
+		expect(res).toBe(true);
+	});
+	
+	it("should give error if an element is not object", () => {
+		let obj = [	
+			{ id: 1, name: "John" },
+			{ id: 2, name: "Jane" },
+			123
+		];
+
+		let res = check(obj);
+		
+		expect(res.length).toBe(3);
+		expect(res[0].type).toBe("object");
+		expect(res[0].field).toBe("[2]");
+
+	});
+	
+	it("should give error if an element is not object", () => {
+		let obj = [	
+			{ id: 1, name: "John" },
+			{ id: 2, _name: "Jane" }
+		];
+
+		let res = check(obj);
+		
+		expect(res.length).toBe(1);
+		expect(res[0].type).toBe("required");
+		expect(res[0].field).toBe("[1].name");
+
+	});
+
+	it("should throw error is the schema array element count is not 1", () => {
+		expect(() => {
+			v.compile([]);
+		}).toThrowError();
+
+		expect(() => {
+			v.compile([], []);
+		}).toThrowError();
+	});
+
+});

@@ -29,7 +29,7 @@ module.exports = {
             "error"
         ],
         "no-console": [
-            "off"
+            "error"
         ],
         "no-unused-vars": [
             "warn"
