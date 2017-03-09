@@ -11,6 +11,8 @@ describe("Test constructor", () => {
 		expect(v.compile).toBeInstanceOf(Function);
 		expect(v.validate).toBeInstanceOf(Function);
 		expect(v.add).toBeInstanceOf(Function);
+
+		expect(Object.keys(v.rules).length).toBe(11);
 	});
 
 	it("should create instance with custom messages", () => {
@@ -81,7 +83,6 @@ describe("Test add", () => {
 });
 
 describe("Test resolveMessage", () => {
-
 	const v = new Validator();
 
 	it("should resolve variables in message string", () => {
@@ -97,8 +98,142 @@ describe("Test resolveMessage", () => {
 
 });
 
+describe("Test compile (unit test)", () => {
 
-describe("Test compile", () => {
+	const v = new Validator();
+	v._processRule = jest.fn();
+
+	it("should call processRule", () => {
+		v.compile({
+			id: { type: "number" },
+			name: { type: "string", min: 5},
+			status: "boolean"
+		});
+
+		expect(v._processRule).toHaveBeenCalledTimes(3);
+		expect(v._processRule).toHaveBeenCalledWith({"type": "number"}, "id", false);
+		expect(v._processRule).toHaveBeenCalledWith({"type": "string", "min": 5}, "name", false);
+		expect(v._processRule).toHaveBeenCalledWith("boolean", "status", false);
+	});
+
+	it("should call processRule for root-level array", () => {
+		v._processRule.mockClear();
+
+		v.compile([{ type: "array", items: "number" }]);
+
+		expect(v._processRule).toHaveBeenCalledTimes(1);
+		expect(v._processRule).toHaveBeenCalledWith({"type": "array", items: "number"}, null, false);
+	});	
+
+	it("should throw error is the schema is null", () => {
+		expect(() => {
+			v.compile();
+		}).toThrowError("Invalid schema!");
+
+		expect(() => {
+			v.compile(null);
+		}).toThrowError("Invalid schema!");
+
+		expect(() => {
+			v.compile("Nothing");
+		}).toThrowError("Invalid schema!");
+
+		expect(() => {
+			v.compile(1);
+		}).toThrowError("Invalid schema!");
+	});
+
+	it("should throw error is the schema array element count is not 1", () => {
+		expect(() => {
+			v.compile([]);
+		}).toThrowError();
+
+		expect(() => {
+			v.compile([], []);
+		}).toThrowError();
+	});
+});
+
+describe("Test _processRule", () => {
+
+	const v = new Validator();
+	v.compile = jest.fn();
+	v._checkWrapper = jest.fn();
+
+	it("should return array of rules", () => {
+		let res = v._processRule({ type: "number", positive: true }, "id", false);
+
+		expect(res).toBeInstanceOf(Array);
+		expect(res.length).toBe(1);
+		expect(res[0].fn).toBeInstanceOf(Function);
+		expect(res[0].type).toBe("number");
+		expect(res[0].name).toBe("id");
+		expect(res[0].schema).toEqual({ type: "number", positive: true });
+		expect(res[0].iterate).toBe(false);
+	});
+
+	it("should convert shorthand definition", () => {
+		let res = v._processRule("string", "name", false);
+
+		expect(res).toBeInstanceOf(Array);
+		expect(res.length).toBe(1);
+		expect(res[0].fn).toBeInstanceOf(Function);
+		expect(res[0].type).toBe("string");
+		expect(res[0].name).toBe("name");
+		expect(res[0].schema).toEqual({ type: "string" });
+		expect(res[0].iterate).toBe(false);
+	});
+
+	it("should throw error if the type is invalid", () => {
+		expect(() => {
+			v._processRule({ type: "unknow" }, "id", false);
+		}).toThrowError("Invalid 'unknow' type in validator schema!");
+	});
+
+
+	it("should call compile if type is object", () => {
+		let res = v._processRule({ type: "object", props: {
+			id: "number"
+		} }, "item", false);
+
+		expect(res).toBeInstanceOf(Array);
+		expect(res.length).toBe(2);
+		expect(res[0].fn).toBeInstanceOf(Function);
+		expect(res[0].type).toBe("object");
+		expect(res[0].name).toBe("item");
+		expect(res[0].iterate).toBe(false);
+
+		//expect(res[1].fn).toBeInstanceOf(Function);
+		expect(res[1].type).toBe("object");
+		expect(res[1].name).toBe("item");
+		expect(res[1].iterate).toBe(false);
+
+		expect(v.compile).toHaveBeenCalledTimes(1);
+		expect(v.compile).toHaveBeenCalledWith({id: "number"});		
+	});
+
+	it("should call checkWrapper & processRule if type is Array", () => {
+		let res = v._processRule({ type: "array", items: "number" }, "list", false);
+
+		expect(res).toBeInstanceOf(Array);
+		expect(res.length).toBe(2);
+
+		expect(res[0].fn).toBeInstanceOf(Function);
+		expect(res[0].type).toBe("array");
+		expect(res[0].name).toBe("list");
+		expect(res[0].iterate).toBe(false);
+
+		//expect(res[1].fn).toBeInstanceOf(Function);
+		expect(res[1].type).toBe("array");
+		expect(res[1].name).toBe("list");
+		expect(res[1].iterate).toBe(true);
+
+		expect(v._checkWrapper).toHaveBeenCalledTimes(1);
+		expect(v._checkWrapper).toHaveBeenCalledWith([{"fn": expect.any(Function), "iterate": false, "name": null, "schema": {"type": "number"}, "type": "number"}]);		
+	});
+});
+
+describe("Test compile (integration test)", () => {
 
 	describe("Test check generator with good obj", () => {
 
@@ -132,7 +267,7 @@ describe("Test compile", () => {
 		
 	});
 
-	describe("Test check generator with simple def schema", () => {
+	describe("Test check generator with shorthand schema", () => {
 
 		const v = new Validator();
 
@@ -198,21 +333,6 @@ describe("Test compile", () => {
 			expect(res[1].type).toBe("forbidden");
 		});
 		
-	});	
-
-	describe("Test exception for unknow types", () => {
-
-		const v = new Validator();
-
-		const schema = {
-			name: { type: "unknow" }
-		};
-
-		it("should throw exception", () => {
-			expect(() => {
-				v.compile(schema);
-			}).toThrowError("Invalid 'unknow' type in validator schema!");
-		});
 	});	
 
 });
@@ -492,16 +612,6 @@ describe("Test root-level array", () => {
 		expect(res[0].type).toBe("required");
 		expect(res[0].field).toBe("[1].name");
 
-	});
-
-	it("should throw error is the schema array element count is not 1", () => {
-		expect(() => {
-			v.compile([]);
-		}).toThrowError();
-
-		expect(() => {
-			v.compile([], []);
-		}).toThrowError();
 	});
 
 });
