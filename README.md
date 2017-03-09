@@ -75,7 +75,7 @@ console.log(v.validate({ id: 5, name: "Al", status: true }, schema));
                 2
             ],
             field: 'name',
-            message: 'The \'name\' field length must be larger than or equal to3 characters long!'
+            message: 'The \'name\' field length must be larger than or equal to 3 characters long!'
         }
     ]
 */
@@ -106,7 +106,6 @@ console.log(check({ id: 2, name: "Adam" }));
     [
         { 
             type: 'required',
-            args: [],
             field: 'status',
             message: 'The \'status\' field is required!'
         }
@@ -394,8 +393,8 @@ You can set your custom messages in constructor of validator.
 const Validator = require("fastest-validator");
 const v = new Validator({
     messages: {
-        stringMin: "A(z) '{name}' mező túl rövid. Minimum: {0}, Jelenleg: {1}",
-        stringMax: "A(z) '{name}' mező túl hosszú. Minimum: {0}, Jelenleg: {1}"
+        stringMin: "A(z) '{field}' mező túl rövid. Minimum: {expected}, Jelenleg: {actual}",
+        stringMax: "A(z) '{field}' mező túl hosszú. Minimum: {expected}, Jelenleg: {actual}"
     }
 });
 
@@ -404,7 +403,8 @@ v.validate({ name: "John" }, { name: { type: "string", min: 6 }});
 [ 
     { 
         type: 'stringMin',
-        args: [ 6, 4 ],
+        expected: 6,
+		actual: 4,
         field: 'name',
         message: 'A(z) \'name\' mező túl rövid. Minimum: 6, Jelenleg: 4' 
     } 
@@ -415,37 +415,45 @@ v.validate({ name: "John" }, { name: { type: "string", min: 6 }});
 ## Message types
 Name | Default text
 ---- | -------------
-`required` | The '{name}' field is required!
-`string` | The '{name}' field must be a string!
-`stringEmpty` | The '{name}' field must not be empty!
-`stringMin`: | The '{name}' field length must be larger than or equal to {0} characters long!
-`stringMax`: | The '{name}' field length must be less than or equal to {0} characters long!
-`stringLength` | The '{name}' field length must be {0} characters long!
-`stringPattern` | The '{name}' field fails to match the required pattern!
-`stringContains` | The '{name}' field must contain the '{0}' text!
-`stringEnum` | The '{name}' field does not match any of the allowed values!
-`number` | The '{name}' field must be a number!
-`numberMin` | The '{name}' field must be larger than or equal to {0}!
-`numberMax` | The '{name}' field must be less than or equal to {0}!
-`numberEqual` | The '{name}' field must be equal with {0}!
-`numberNotEqual` | The '{name}' field can't be equal with {0}!
-`numberInteger` | The '{name}' field must be an integer!
-`numberPositive` | The '{name}' field must be a positive number!
-`numberNegative` | The '{name}' field must be a negative number!
-`array` | The '{name}' field must be an array!
-`arrayEmpty` | The '{name}' field must not be an empty array!
-`arrayMin` | The '{name}' field must contain at least {0} items!
-`arrayMax` | The '{name}' field must contain less than or equal to {0} items!
-`arrayLength` | The '{name}' field must contain {0} items!
-`arrayContains` | The '{name}' field must contain the '{0}' item!
-`arrayEnum`: | The '{name} field value '{0}' does not match any of the allowed values!
-`boolean` | The '{name}' field must be a boolean!
-`function` | The '{name}' field must be a function!
-`date` | The '{name}' field must be a Date!
-`dateMin` | The '{name}' field must be larger than or equal to {0}!
-`dateMax` | The '{name}' field must be less than or equal to {0}!
-`forbidden` | The '{name}' field is forbidden!
-`email` | The '{name}' field must be a valid e-mail!
+`required` | The '{field}' field is required!
+`string` | The '{field}' field must be a string!
+`stringEmpty` | The '{field}' field must not be empty!
+`stringMin`: | The '{field}' field length must be larger than or equal to {expected} characters long!
+`stringMax`: | The '{field}' field length must be less than or equal to {expected} characters long!
+`stringLength` | The '{field}' field length must be {expected} characters long!
+`stringPattern` | The '{field}' field fails to match the required pattern!
+`stringContains` | The '{field}' field must contain the '{expected}' text!
+`stringEnum` | The '{field}' field does not match any of the allowed values!
+`number` | The '{field}' field must be a number!
+`numberMin` | The '{field}' field must be larger than or equal to {expected}!
+`numberMax` | The '{field}' field must be less than or equal to {expected}!
+`numberEqual` | The '{field}' field must be equal with {expected}!
+`numberNotEqual` | The '{field}' field can't be equal with {expected}!
+`numberInteger` | The '{field}' field must be an integer!
+`numberPositive` | The '{field}' field must be a positive number!
+`numberNegative` | The '{field}' field must be a negative number!
+`array` | The '{field}' field must be an array!
+`arrayEmpty` | The '{field}' field must not be an empty array!
+`arrayMin` | The '{field}' field must contain at least {expected} items!
+`arrayMax` | The '{field}' field must contain less than or equal to {expected} items!
+`arrayLength` | The '{field}' field must contain {expected} items!
+`arrayContains` | The '{field}' field must contain the '{expected}' item!
+`arrayEnum`: | The '{field} field value '{expected}' does not match any of the allowed values!
+`boolean` | The '{field}' field must be a boolean!
+`function` | The '{field}' field must be a function!
+`date` | The '{field}' field must be a Date!
+`dateMin` | The '{field}' field must be larger than or equal to {expected}!
+`dateMax` | The '{field}' field must be less than or equal to {expected}!
+`forbidden` | The '{field}' field is forbidden!
+`email` | The '{field}' field must be a valid e-mail!
+
+## Message fields
+Name | Description
+---- | -------------
+`field` | Name of field
+`expected` | The expected value of field
+`actual` | The actual value of field
+`type` | Type of field
 
 ## Development
 ```

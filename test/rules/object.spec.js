@@ -10,7 +10,7 @@ describe("Test checkObject", () => {
 
 	it("should check values", () => {
 		const s = { type: "object" };
-		const err = { type: "object", args: [] };
+		const err = { type: "object" };
 		
 		expect(check(null, s)).toEqual(err);
 		expect(check(undefined, s)).toEqual(err);

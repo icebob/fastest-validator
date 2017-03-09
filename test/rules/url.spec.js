@@ -10,8 +10,8 @@ describe("Test checkUrl", () => {
 
 	it("should check values", () => {
 		const s = { type: "url" };
-		const err = { type: "url", args: [] };
-		const errString = { type: "string", args: [] };
+		const err = { type: "url" };
+		const errString = { type: "string" };
 		
 		expect(check(null, s)).toEqual(errString);
 		expect(check(undefined, s)).toEqual(errString);

@@ -5,7 +5,7 @@ const msg = require("../lib/messages");
 describe("Test Messages", () => {
 
 	it("check default messages", () => {
-		expect(msg.required).toBe("The '{name}' field is required!");
+		expect(msg.required).toBe("The '{field}' field is required!");
 
 		expect(msg.required).toBeDefined();
 		expect(msg.string).toBeDefined();

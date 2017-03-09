@@ -10,7 +10,7 @@ describe("Test checkBoolean", () => {
 
 	it("should check values", () => {
 		const s = { type: "boolean" };
-		const err = { type: "boolean", args: [] };
+		const err = { type: "boolean" };
 
 		expect(check(null, s)).toEqual(err);
 		expect(check(undefined, s)).toEqual(err);
@@ -28,7 +28,7 @@ describe("Test checkBoolean", () => {
 
 	it("should convert & check values", () => {
 		const s = { type: "boolean", convert: true };
-		const err = { type: "boolean", args: [] };
+		const err = { type: "boolean" };
 		
 		expect(check(null, s)).toEqual(err);
 		expect(check(undefined, s)).toEqual(err);

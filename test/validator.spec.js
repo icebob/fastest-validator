@@ -24,7 +24,7 @@ describe("Test constructor", () => {
 		expect(v).toBeDefined();
 		expect(v.messages).toBeDefined();
 		expect(v.messages.numberMin).toBe("Custom validation error message");
-		expect(v.messages.numberMax).toBe("The '{name}' field must be less than or equal to {0}!");
+		expect(v.messages.numberMax).toBe("The '{field}' field must be less than or equal to {expected}!");
 	});
 
 });
@@ -86,14 +86,14 @@ describe("Test resolveMessage", () => {
 	const v = new Validator();
 
 	it("should resolve variables in message string", () => {
-		let res = v.resolveMessage("stringLength", "age", [3, 6]);
+		let res = v.resolveMessage({ type: "stringLength", field: "age", expected: 3, actual: 6 });
 		expect(res).toBe("The 'age' field length must be 3 characters long!");
 	});
 
 	it("should resolve more variables in message string", () => {
-		v.messages.custom = "Field {name} and again {name}. Args {0}, {2}, {1}.";
-		let res = v.resolveMessage("custom", "country", ["London", true, 350]);
-		expect(res).toBe("Field country and again country. Args London, 350, true.");
+		v.messages.custom = "Field {field} and again {field}. Expected: {expected}, actual: {actual}.";
+		let res = v.resolveMessage({ type: "custom", field: "country", expected: "London", actual: 350 });
+		expect(res).toBe("Field country and again country. Expected: London, actual: 350.");
 	});
 
 });
@@ -317,10 +317,11 @@ describe("Test compile (integration test)", () => {
 
 			expect(res.length).toBe(1);
 			expect(res[0]).toEqual({
-				"type": "stringMin",
-				"field": "name", 
-				"message": "The 'name' field length must be larger than or equal to 5 characters long!", 
-				"args": [5, 4]
+				type: "stringMin",
+				field: "name", 
+				message: "The 'name' field length must be larger than or equal to 5 characters long!", 
+				expected: 5,
+				actual: 4
 			});
 		});
 

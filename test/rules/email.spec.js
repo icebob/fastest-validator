@@ -10,8 +10,8 @@ describe("Test checkEmail", () => {
 
 	it("should check values", () => {
 		const s = { type: "email" };
-		const err = { type: "email", args: [] };
-		const errString = { type: "string", args: [] };
+		const err = { type: "email" };
+		const errString = { type: "string" };
 		
 		expect(check(null, s)).toEqual(errString);
 		expect(check(undefined, s)).toEqual(errString);
@@ -27,7 +27,7 @@ describe("Test checkEmail", () => {
 
 	it("should check values with quick pattern", () => {
 		const s = { type: "email" };
-		const err = { type: "email", args: [] };
+		const err = { type: "email" };
 
 		expect(check("abcdefg", s)).toEqual(err);
 		expect(check("1234", s)).toEqual(err);
@@ -44,7 +44,7 @@ describe("Test checkEmail", () => {
 
 	it("should check values", () => {
 		const s = { type: "email", mode: "precise" };
-		const err = { type: "email", args: [] };
+		const err = { type: "email" };
 
 		expect(check("abcdefg", s)).toEqual(err);
 		expect(check("1234", s)).toEqual(err);

@@ -10,7 +10,7 @@ describe("Test checkForbidden", () => {
 
 	it("should check values", () => {
 		const s = { type: "forbidden" };
-		const err = { type: "forbidden", args: [] };
+		const err = { type: "forbidden" };
 		
 		expect(check(null, s)).toEqual(true);
 		expect(check(undefined, s)).toEqual(true);

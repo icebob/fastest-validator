@@ -10,7 +10,7 @@ describe("Test checkDate", () => {
 
 	it("should check values", () => {
 		const s = { type: "date" };
-		const err = { type: "date", args: [] };
+		const err = { type: "date" };
 
 		expect(check(null, s)).toEqual(err);
 		expect(check(undefined, s)).toEqual(err);
@@ -30,7 +30,7 @@ describe("Test checkDate", () => {
 	
 	it("should convert & check values", () => {
 		const s = { type: "date", convert: true };
-		const err = { type: "date", args: [] };
+		const err = { type: "date" };
 		
 		expect(check(null, s)).toEqual(true);
 		expect(check(Date.now(), s)).toEqual(true);
