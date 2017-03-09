@@ -20,7 +20,7 @@ Very fast! 3 million validation/sec (on Intel i7-4770K, Node.JS: 6.10.0)
 √ validate with pre-compiled schema x 3,052,280 ops/sec ±0.82% (93 runs sampled)
 ```
 
-We compared to other popular libraries:
+Compared to other popular libraries:
 
 [![Result](https://cloud.highcharts.com/images/yqowupa/4/800.png)](https://github.com/icebob/validator-benchmark#result)
 > 100x faster than Joi.
