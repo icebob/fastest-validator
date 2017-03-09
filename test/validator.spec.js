@@ -315,3 +315,128 @@ describe("Test 3 level nested schema", () => {
 	});
 
 });
+
+describe("Test nested array", () => {
+	const v = new Validator();
+
+	let schema = {
+		arr1: { type: "array", items: {
+			type: "array", empty: false, items: {
+				type: "number"
+			}
+		}}
+	};
+	let check = v.compile(schema);
+	
+	it("should give true if obj is valid", () => {
+		let obj = {
+			arr1: [	
+				[
+					5,
+					10
+				],			
+				[
+					1,
+					2
+				]			
+			]
+		};
+
+		let res = check(obj);
+
+		expect(res).toBe(true);
+	});
+	
+	it("should give error 'not a number'", () => {
+		let obj = {
+			arr1: [	
+				[
+					5,
+					10
+				],			
+				[
+					"1",
+					2
+				]			
+			]
+		};
+
+		let res = check(obj);
+		
+		expect(res.length).toBe(1);
+		expect(res[0].type).toBe("number");
+		expect(res[0].field).toBe("arr1[1][0]");
+	});
+
+	it("should give error 'empty array'", () => {
+		let obj = {
+			arr1: [	
+				[
+				],			
+				[
+					1,
+					2
+				]			
+			]
+		};
+
+		let res = check(obj);
+		
+		expect(res.length).toBe(1);
+		expect(res[0].type).toBe("arrayEmpty");
+		expect(res[0].field).toBe("arr1[0]");
+	});
+
+});
+
+describe("Test 3-level array", () => {
+	const v = new Validator();
+
+	let schema = {
+		arr1: { type: "array", items: {
+			type: "array", items: {
+				type: "array", items: "string"
+			}
+		}}
+	};
+	let check = v.compile(schema);
+	
+	it("should give true if obj is valid", () => {
+		let obj = {
+			arr1: [	
+				[
+					[ "apple", "peach" ],
+					[ "pineapple", "plum" ]
+				],			
+				[
+					[ "orange", "lemon", "lime"]
+				]			
+			]
+		};
+
+		let res = check(obj);
+
+		expect(res).toBe(true);
+	});
+	
+	it("should give error 'not a string'", () => {
+		let obj = {
+			arr1: [	
+				[
+					[ "apple", "peach" ],
+					[ "pineapple", "plum" ]
+				],			
+				[
+					[ "orange", {}, "lime"]
+				]			
+			]
+		};
+
+		let res = check(obj);
+		
+		expect(res.length).toBe(1);
+		expect(res[0].type).toBe("string");
+		expect(res[0].field).toBe("arr1[1][0][1]");
+	});
+
+});

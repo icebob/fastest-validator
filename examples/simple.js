@@ -8,7 +8,7 @@ const v = new Validator({
 });
 
 const schema = {
-/*	id: { type: "number", min: 1, max: 100 },
+	id: { type: "number", min: 1, max: 100 },
 	name: { type: "string", optional: false, min: 3, max: 128 },
 	settings: { type: "object", props: {
 		notify: { type: "boolean" }
@@ -22,18 +22,18 @@ const schema = {
 		content: { type: "string" },
 		voters: { type: "array", optional: true, items: { type: "number", optional: true }}
 	} } },
-*/	multiarray: { type: "array", empty: false, items: {
-		type: "array", empty: false, items: {
-			type: "string"
+	multiarray: { type: "array", empty: false, items: {
+		type: "array", empty: true, items: {
+			type: "number"
 		}
 	}},
-/*	email: { type: "email", optional: true },
+	email: { type: "email", optional: true },
 	homepage: { type: "url", optional: true },
 	status: "boolean",
 	age: { type: "number", min: 18, max: 100, convert: true },
 	apikey: "forbidden",
 	action: "function",
-	created: "date"*/
+	created: "date"
 };
 
 const obj = {
@@ -61,6 +61,10 @@ const obj = {
 
 	multiarray: [
 		[
+		],
+		[
+			5,
+			10,
 			"a"
 		]
 	],
