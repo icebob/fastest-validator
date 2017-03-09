@@ -31,12 +31,11 @@ $ npm run bench
 ### NPM
 You can install it via [NPM](http://npmjs.org/).
 ```
-$ npm install fastest-validator
+$ npm install fastest-validator --save
 ```
-### Manual
-Download zip package and unpack and add the `fastest-validator.css` and `fastest-validator.js` file to your project from dist folder.
+or 
 ```
-https://github.com/icebob/fastest-validator/archive/master.zip
+$ yarn add fastest-validator
 ```
 
 ## Usage
