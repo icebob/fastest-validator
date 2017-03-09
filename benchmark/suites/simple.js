@@ -37,7 +37,7 @@ const schema = {
 	}
 };
 
-bench.skip("compile & validate", () => {
+bench.add("compile & validate", () => {
 	let res = v.validate(obj, schema);		
 	if (res !== true)
 		throw new Error("Validation error!", res);
