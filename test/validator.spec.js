@@ -90,6 +90,11 @@ describe("Test resolveMessage", () => {
 		expect(res).toBe("The 'age' field length must be 3 characters long!");
 	});
 
+	it("should resolve 0 value in message string", () => {
+		let res = v.resolveMessage({ type: "numberNotEqual", field: "b", expected: 0, actual: 0 });
+		expect(res).toBe("The 'b' field can't be equal with 0!");
+	});
+
 	it("should resolve more variables in message string", () => {
 		v.messages.custom = "Field {field} and again {field}. Expected: {expected}, actual: {actual}.";
 		let res = v.resolveMessage({ type: "custom", field: "country", expected: "London", actual: 350 });
