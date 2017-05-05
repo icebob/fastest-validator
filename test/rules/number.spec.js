@@ -35,13 +35,15 @@ describe("Test checkNumber", () => {
 		const s = { type: "number", convert: true };
 		const err = { type: "number" };
 		
-		expect(check(null, s)).toEqual(err);
 		expect(check(undefined, s)).toEqual(err);
-		expect(check("", s)).toEqual(err);
-		expect(check([], s)).toEqual(err);
 		expect(check({}, s)).toEqual(err);
-		expect(check(false, s)).toEqual(err);
-		expect(check(true, s)).toEqual(err);
+		expect(check("25abc", s)).toEqual(err);
+
+		expect(check(null, s)).toEqual(true);
+		expect(check("", s)).toEqual(true);
+		expect(check([], s)).toEqual(true);
+		expect(check(false, s)).toEqual(true);
+		expect(check(true, s)).toEqual(true);
 
 		expect(check("100", s)).toEqual(true);
 		expect(check("34.76", s)).toEqual(true);
