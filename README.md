@@ -114,7 +114,7 @@ console.log(check({ id: 2, name: "Adam" }));
 [Try it on Runkit](https://runkit.com/icebob/fastest-validator-usage-quick)
 
 # Optional & required fields
-Every fields in the schema will be required field. If you would like to define optional fields, set ˙optional: true`.
+Every fields in the schema will be required field. If you would like to define optional fields, set `optional: true`.
 
 ```js
 let schema = {
