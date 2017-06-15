@@ -23,8 +23,15 @@
     "inherits": {
       "version": "2.0.3"
     },
-    "lodash": {
-      "version": "4.17.4"
+    "lodash.defaultsdeep": {
+      "version": "4.6.0",
+      "from": "lodash.defaultsDeep@latest",
+      "resolved": "https://registry.npmjs.org/lodash.defaultsdeep/-/lodash.defaultsdeep-4.6.0.tgz"
+    },
+    "lodash.flatten": {
+      "version": "4.4.0",
+      "from": "lodash.flatten@latest",
+      "resolved": "https://registry.npmjs.org/lodash.flatten/-/lodash.flatten-4.4.0.tgz"
     },
     "minimatch": {
       "version": "3.0.3"
