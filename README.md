@@ -442,6 +442,43 @@ console.log(v.validate({ name: "John", age: 19 }, schema));
 */
 ```
 
+Or you can use the `custom` type with inline checker function:
+```js
+let v = new Validator({
+	messages: {
+		// Register our new error message text
+		weightMin: "The weight must be larger than {expected}! Actual: {actual}"
+	}
+});
+
+const schema = {
+	name: { type: "string", min: 3, max: 255 },
+	weight: { 
+		type: "custom", 
+		minWeight: 10, 
+		check(value, schema) {
+			return (value < schema.minWeight)
+				? this.makeError("weightMin", schema.minWeight, value)
+				: true;
+		}
+	}
+};
+
+console.log(v.validate({ name: "John", weight: 50 }, schema));
+// Returns: true
+
+console.log(v.validate({ name: "John", weight: 8 }, schema));
+/* Returns an array with errors:
+	[{ 
+		type: 'weightMin',                                       
+		expected: 10,                                            
+		actual: 8,                                               
+		field: 'weight',                                         
+		message: 'The weight must be larger than 10! Actual: 8' 
+	}]
+*/
+```
+
 # Custom error messages (l10n)
 You can set your custom messages in constructor of validator.
 
