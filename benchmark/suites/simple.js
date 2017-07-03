@@ -1,7 +1,9 @@
 "use strict";
 
 const Benchmarkify = require("benchmarkify");
-const bench = new Benchmarkify({ async: false, name: "Simple object"});
+const benchmark = new Benchmarkify("Fastest validator benchmark").printHeader();
+
+let bench = benchmark.createSuite("Simple object");
 
 const Validator = require("../../index");
 const v = new Validator();
@@ -37,7 +39,7 @@ const schema = {
 	}
 };
 
-bench.add("compile & validate", () => {
+bench.ref("compile & validate", () => {
 	let res = v.validate(obj, schema);		
 	if (res !== true)
 		throw new Error("Validation error!", res);

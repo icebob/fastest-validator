@@ -1,7 +1,9 @@
 "use strict";
 
 const Benchmarkify = require("benchmarkify");
-const bench = new Benchmarkify({ async: false, name: "Email validating methods"});
+const benchmark = new Benchmarkify("Fastest validator benchmark").printHeader();
+
+let bench = benchmark.createSuite("Email validating methods");
 
 const Validator = require("../../index");
 const v = new Validator();
