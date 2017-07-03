@@ -10,6 +10,7 @@
 * fast! Really!
 * 9 built-in validator
 * nested object & array handling
+* multiple validators for fields
 * customizable error messages
 * programmable error object
 * unit tests & 100% cover
@@ -71,7 +72,7 @@ console.log(v.validate({ id: 5, name: "Al", status: true }, schema));
         { 
             type: 'stringMin',
             expected: 3,
-			actual: 2,
+            actual: 2,
             field: 'name',
             message: 'The \'name\' field length must be larger than or equal to 3 characters long!'
         }
@@ -125,6 +126,22 @@ let schema = {
 v.validate({ name: "John", age: 42 }, schema); // Valid
 v.validate({ name: "John" }, schema); // Valid
 v.validate({ age: 42 }, schema); // Fail
+```
+
+# Multiple validators
+There is possible to define more validators for a field. In this case if one of all validators is success, the field will be valid.
+
+```js
+let schema = {
+    cache: [
+        { type: "string" },
+        { type: "boolean" }
+    ]
+}
+
+v.validate({ cache: true }, schema); // Valid
+v.validate({ cache: "redis://" }, schema); // Valid
+v.validate({ cache: 150 }, schema); // Fail
 ```
 
 # Built-in validators
@@ -386,6 +403,45 @@ v.validate({ url: "https://github.com/icebob" }, schema); // Valid
 v.validate({ url: "www.facebook.com" }, schema); // Fail
 ```
 
+# Custom validator
+You can also create your custom validator.
+
+```js
+let v = new Validator({
+    messages: {
+        // Register our new error message text
+        evenNumber: "The '{field}' field must be an even number! Actual: {actual}"
+    }
+});
+
+// Register a custom 'even' validator
+v.add("even", value => {
+    if (value % 2 != 0)
+        return v.makeError("evenNumber", null, value);
+
+    return true;
+});
+
+const schema = {
+    name: { type: "string", min: 3, max: 255 },
+    age: { type: "even" }
+};
+
+console.log(v.validate({ name: "John", age: 20 }, schema));
+// Returns: true
+
+console.log(v.validate({ name: "John", age: 19 }, schema));
+/* Returns an array with errors:
+    [{
+        type: 'evenNumber',
+        expected: null,
+        actual: 19,
+        field: 'age',
+        message: 'The \'age\' field must be an even number! Actual: 19'
+    }]
+*/
+```
+
 # Custom error messages (l10n)
 You can set your custom messages in constructor of validator.
 
@@ -404,7 +460,7 @@ v.validate({ name: "John" }, { name: { type: "string", min: 6 }});
     { 
         type: 'stringMin',
         expected: 6,
-		actual: 4,
+        actual: 4,
         field: 'name',
         message: 'A(z) \'name\' mező túl rövid. Minimum: 6, Jelenleg: 4' 
     } 

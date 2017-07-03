@@ -13,8 +13,10 @@ const schema = {
 	id: { type: "number", min: 1, max: 100 },
 	name: { type: "string", optional: false, min: 3, max: 128 },
 	settings: { type: "object", props: {
-		notify: { type: "boolean" }
-		//notify: { type: ["boolean", "object" ] } // 2 accepted type: Boolean or Object
+		notify: [
+			{ type: "boolean" },
+			{ type: "object" }
+		]
 	}},
 	sex: { type: "string", enum: ["male", "female"] },
 	roles: { type: "array", items: { type: "string" }, enum: ["admin", "user"] },
@@ -43,7 +45,10 @@ const obj = {
 	name: "John",
 	sex: "male",
 	settings: {
-		notify: true
+		//notify: true,
+		notify: {
+			corner: "top"
+		}
 	},
 	roles: [
 		"user"

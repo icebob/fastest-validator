@@ -5,9 +5,9 @@ let Validator = require("../index");
 let v = new Validator();
 
 const schema = {
-    id: { type: "number", positive: true, integer: true },
-    name: { type: "string", min: 3, max: 255 },
-    status: "boolean" // short-hand def
+	id: { type: "number", positive: true, integer: true },
+	name: { type: "string", min: 3, max: 255 },
+	status: "boolean" // short-hand def
 };
 
 console.log(v.validate({ id: 5, name: "John", status: true }, schema));
