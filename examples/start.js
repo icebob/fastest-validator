@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 let Validator = require("../index");
 
 let v = new Validator();
@@ -21,7 +23,7 @@ console.log(v.validate({ id: 5, name: "Al", status: true }, schema));
 				2
 			],
 			field: 'name',
-			message: 'The \'name\' field length must be larger than or equal to3 characters long!'
+			message: 'The \'name\' field length must be larger than or equal to 3 characters long!'
 		}
 	]
 */

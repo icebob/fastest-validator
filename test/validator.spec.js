@@ -124,10 +124,14 @@ describe("Test compile (unit test)", () => {
 	it("should call processRule for root-level array", () => {
 		v._processRule.mockClear();
 
-		v.compile([{ type: "array", items: "number" }]);
+		v.compile([
+			{ type: "array", items: "number" },
+			{ type: "string", min: 2 }
+		]);
 
-		expect(v._processRule).toHaveBeenCalledTimes(1);
+		expect(v._processRule).toHaveBeenCalledTimes(2);
 		expect(v._processRule).toHaveBeenCalledWith({"type": "array", items: "number"}, null, false);
+		expect(v._processRule).toHaveBeenCalledWith({"type": "string", min: 2 }, null, false);
 	});	
 
 	it("should throw error is the schema is null", () => {
@@ -567,56 +571,59 @@ describe("Test 3-level array", () => {
 
 });
 
-describe("Test root-level array", () => {
+describe("Test multiple rules", () => {
 	const v = new Validator();
 
-	let schema = [{ type: "array", items: { 
-		type: "object", props: {
-			id: "number",
-			name: "string"
-		}
-	}}];
+	let schema = {
+		value: [
+			{ type: "string", min: 3, max: 255 },
+			{ type: "boolean" }
+		]
+	};
 
 	let check = v.compile(schema);
 	
-	it("should give true if obj is valid", () => {
-		let obj = [	
-			{ id: 1, name: "John" },
-			{ id: 2, name: "Jane" },
-			{ id: 3, name: "James" }
-		];
+	it("should give true if value is string", () => {
+		let obj = { value: "John" };
 
 		let res = check(obj);
 
 		expect(res).toBe(true);
 	});
-	
-	it("should give error if an element is not object", () => {
-		let obj = [	
-			{ id: 1, name: "John" },
-			{ id: 2, name: "Jane" },
-			123
-		];
 
+	it("should give true if value is boolean", () => {
+		let obj = { value: true };
 		let res = check(obj);
-		
-		expect(res.length).toBe(3);
-		expect(res[0].type).toBe("object");
-		expect(res[0].field).toBe("[2]");
+		expect(res).toBe(true);
 
+		obj = { value: false };
+		res = check(obj);
+		expect(res).toBe(true);
 	});
 	
-	it("should give error if an element is not object", () => {
-		let obj = [	
-			{ id: 1, name: "John" },
-			{ id: 2, _name: "Jane" }
-		];
+	it("should give error if the value is not string and not boolean", () => {
+		let obj = { value: 100 };
 
 		let res = check(obj);
 		
-		expect(res.length).toBe(1);
-		expect(res[0].type).toBe("required");
-		expect(res[0].field).toBe("[1].name");
+		expect(res.length).toBe(2);
+		expect(res[0].type).toBe("string");
+		expect(res[0].field).toBe("value");
+
+		expect(res[1].type).toBe("boolean");
+		expect(res[1].field).toBe("value");
+	});
+	
+	it("should give error if the value is a too short string", () => {
+		let obj = { value: "Al" };
+		let res = check(obj);
+		
+		expect(res.length).toBe(2);
+		expect(res[0].type).toBe("stringMin");
+		expect(res[0].field).toBe("value");
+
+		expect(res[1].type).toBe("boolean");
+		expect(res[1].field).toBe("value");
 
 	});
 
