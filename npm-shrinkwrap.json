@@ -1,6 +1,6 @@
 {
   "name": "fastest-validator",
-  "version": "0.4.3",
+  "version": "0.5.0",
   "dependencies": {
     "concat-map": {
       "version": "0.0.1"
