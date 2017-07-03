@@ -2,20 +2,35 @@
   "name": "fastest-validator",
   "version": "0.4.3",
   "dependencies": {
-    "balanced-match": {
-      "version": "0.4.2"
-    },
-    "brace-expansion": {
-      "version": "1.1.6"
-    },
     "concat-map": {
       "version": "0.0.1"
     },
     "fs.realpath": {
-      "version": "1.0.0"
+      "version": "1.0.0",
+      "from": "fs.realpath@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
     },
     "glob": {
-      "version": "7.1.1"
+      "version": "7.1.2",
+      "from": "glob@7.1.2",
+      "resolved": "https://registry.npmjs.org/glob/-/glob-7.1.2.tgz",
+      "dependencies": {
+        "balanced-match": {
+          "version": "1.0.0",
+          "from": "balanced-match@>=1.0.0 <2.0.0",
+          "resolved": "https://registry.npmjs.org/balanced-match/-/balanced-match-1.0.0.tgz"
+        },
+        "brace-expansion": {
+          "version": "1.1.8",
+          "from": "brace-expansion@>=1.1.7 <2.0.0",
+          "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-1.1.8.tgz"
+        },
+        "minimatch": {
+          "version": "3.0.4",
+          "from": "minimatch@>=3.0.4 <4.0.0",
+          "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-3.0.4.tgz"
+        }
+      }
     },
     "inflight": {
       "version": "1.0.6"
@@ -32,9 +47,6 @@
       "version": "4.4.0",
       "from": "lodash.flatten@latest",
       "resolved": "https://registry.npmjs.org/lodash.flatten/-/lodash.flatten-4.4.0.tgz"
-    },
-    "minimatch": {
-      "version": "3.0.3"
     },
     "once": {
       "version": "1.4.0"

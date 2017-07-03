@@ -9,6 +9,7 @@
     "ci": "jest --watch",
     "test": "jest --coverage",
     "lint": "eslint --ext=.js src test",
+    "deps": "npm-check -u",
     "coverall": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "repository": {
@@ -28,13 +29,15 @@
   },
   "homepage": "https://github.com/icebob/fastest-validator#readme",
   "devDependencies": {
-    "benchmarkify": "^1.0.0",
+    "benchmarkify": "2.1.0",
     "coveralls": "^2.12.0",
-    "eslint": "^3.17.0",
-    "jest": "^19.0.2"
+    "eslint": "4.1.1",
+    "jest": "20.0.4",
+    "jest-cli": "20.0.4",
+    "npm-check": "5.4.4"
   },
   "dependencies": {
-    "glob": "^7.1.1",
+    "glob": "7.1.2",
     "lodash.defaultsdeep": "4.6.0",
     "lodash.flatten": "4.4.0"
   },
