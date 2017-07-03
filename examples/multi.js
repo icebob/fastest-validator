@@ -5,7 +5,7 @@ let Validator = require("../index");
 let v = new Validator();
 
 const schema = {
-    multi: [
+	multi: [
 		{ type: "string", min: 3, max: 255 },
 		{ type: "boolean" }
 	]
