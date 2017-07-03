@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "bench": "node benchmark/index.js",
-    "example": "nodemon examples/index.js",
+    "dev": "nodemon examples/index.js",
     "ci": "jest --watch",
     "test": "jest --coverage",
     "lint": "eslint --ext=.js src test",
