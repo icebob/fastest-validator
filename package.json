@@ -25,6 +25,12 @@
     "validate",
     "schema"
   ],
+  "files": [
+    "dist/browser/index.js",
+    "examples",
+    "lib",
+    "index.js"
+  ],
   "author": "Icebob",
   "license": "MIT",
   "bugs": {
