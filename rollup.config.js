@@ -16,7 +16,7 @@ const bundles = [
 
 			// transpile ES2015+ to ES5
 			buble({
-				exclude: ["node_modules/**"]
+				exclude: ["node_modules/**", "examples/**", "dist/**", "test/**", "benchmark/**"]
 			})
 		]
 	}
