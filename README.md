@@ -92,13 +92,13 @@ let Validator = require("fastest-validator");
 
 let v = new Validator();
 
-const schema = {
+var schema = {
     id: { type: "number", positive: true, integer: true },
     name: { type: "string", min: 3, max: 255 },
     status: "boolean" // short-hand def
 };
 
-const check = v.compile(schema);
+var check = v.compile(schema);
 
 console.log(check({ id: 5, name: "John", status: true }));
 // Returns: true
