@@ -9,19 +9,15 @@ const bundles = [
 		output: {
 			file: pkg.browser,
 			format: "umd",
-			name: "fastestvalidator"
+			name: "fastestValidator"
 		},
 		plugins: [
 			commonjs(),
 
 			// transpile ES2015+ to ES5
 			buble({
-				exclude: ["node_modules/**"]
+				exclude: ["node_modules/**", "examples/**", "dist/**", "test/**", "benchmark/**"]
 			})
-		],
-		external: [
-			"lodash.defaultsdeep",
-			"lodash.flatten"
 		]
 	}
 ];
