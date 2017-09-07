@@ -9,7 +9,7 @@ const bundles = [
 		output: {
 			file: pkg.browser,
 			format: "umd",
-			name: "fastestvalidator"
+			name: "fastestValidator"
 		},
 		plugins: [
 			commonjs(),
