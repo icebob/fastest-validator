@@ -50,11 +50,6 @@
     "rollup-plugin-minify": "^1.0.3",
     "rollup-plugin-node-resolve": "^3.0.0"
   },
-  "dependencies": {
-    "glob": "7.1.2",
-    "lodash.defaultsdeep": "4.6.0",
-    "lodash.flatten": "4.4.0"
-  },
   "jest": {
     "testEnvironment": "node",
     "rootDir": "./lib",
