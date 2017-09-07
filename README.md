@@ -8,11 +8,13 @@
 
 ## Key features
 * fast! Really!
-* 9 built-in validator
+* 9 built-in validators
+* custom validators
 * nested object & array handling
-* multiple validators for fields
+* multiple validators
 * customizable error messages
 * programmable error object
+* no dependencies
 * unit tests & 100% cover
 
 # How fast?
