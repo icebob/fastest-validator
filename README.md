@@ -116,6 +116,26 @@ console.log(check({ id: 2, name: "Adam" }));
 ```
 [Try it on Runkit](https://runkit.com/icebob/fastest-validator-usage-quick)
 
+### Browser usage
+```html
+<script src="https://unpkg.com/fastest-validator"></script>
+```
+
+```js
+var v = new FastestValidator();
+
+const schema = {
+    id: { type: "number", positive: true, integer: true },
+    name: { type: "string", min: 3, max: 255 },
+    status: "boolean" // short-hand def
+};
+
+const check = v.compile(schema);
+
+console.log(check({ id: 5, name: "John", status: true }));
+// Returns: true
+```
+
 # Optional & required fields
 Every fields in the schema will be required field. If you would like to define optional fields, set `optional: true`.
 
