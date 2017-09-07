@@ -1,13 +1,11 @@
-/* eslint-disable no-console */
-
 let Validator = require("../index");
 
 let v = new Validator();
 
 const schema = {
-    id: { type: "number", positive: true, integer: true },
-    name: { type: "string", min: 3, max: 255 },
-    status: "boolean" // short-hand def
+	id: { type: "number", positive: true, integer: true },
+	name: { type: "string", min: 3, max: 255 },
+	status: "boolean" // short-hand def
 };
 
 const check = v.compile(schema);

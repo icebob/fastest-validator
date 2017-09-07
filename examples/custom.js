@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 let Validator = require("../index");
 
 let v = new Validator({
