@@ -464,11 +464,11 @@ describe("Test nested array", () => {
 				[
 					5,
 					10
-				],			
+				],
 				[
 					1,
 					2
-				]			
+				]
 			]
 		};
 
@@ -479,20 +479,20 @@ describe("Test nested array", () => {
 	
 	it("should give error 'not a number'", () => {
 		let obj = {
-			arr1: [	
+			arr1: [
 				[
 					5,
 					10
-				],			
+				],
 				[
 					"1",
 					2
-				]			
+				]
 			]
 		};
 
 		let res = check(obj);
-		
+
 		expect(res.length).toBe(1);
 		expect(res[0].type).toBe("number");
 		expect(res[0].field).toBe("arr1[1][0]");
@@ -500,13 +500,13 @@ describe("Test nested array", () => {
 
 	it("should give error 'empty array'", () => {
 		let obj = {
-			arr1: [	
+			arr1: [
 				[
-				],			
+				],
 				[
 					1,
 					2
-				]			
+				]
 			]
 		};
 
