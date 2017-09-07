@@ -1,4 +1,3 @@
-import resolve from 'rollup-plugin-node-resolve';
 import commonjs from "rollup-plugin-commonjs";
 import buble from "rollup-plugin-buble";
 import pkg from "./package.json";
@@ -13,11 +12,6 @@ const bundles = [
 			name: "fastestvalidator"
 		},
 		plugins: [
-			resolve({
-				browser: true,
-				extensions: [ '.js', '.json' ]
-			}),
-
 			commonjs(),
 
 			// transpile ES2015+ to ES5
