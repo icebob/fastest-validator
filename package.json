@@ -6,7 +6,7 @@
   "browser": "dist/browser/index.js",
   "scripts": {
     "bench": "node benchmark/index.js",
-    "build": "rm -fr dist && rollup -c",
+    "build": "rollup -c",
     "prepublish": "npm run build",
     "dev": "nodemon examples/index.js",
     "ci": "jest --watch",
