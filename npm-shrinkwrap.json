@@ -1,6 +1,6 @@
 {
   "name": "fastest-validator",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "dependencies": {
     "abab": {
       "version": "1.0.3",
