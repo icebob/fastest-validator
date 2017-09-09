@@ -4,7 +4,7 @@ import Validator from "fastest-validator";
 class Index extends React.Component {
 	render() {
 
-		let v = new Validator();
+		const v = new Validator();
 
 		const schema = {
 			multi: [
