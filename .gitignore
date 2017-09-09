@@ -39,3 +39,5 @@ jspm_packages
 dist/*
 *.map
 examples/**/bundle.js
+
+.next
