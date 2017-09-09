@@ -1,9 +1,10 @@
 {
   "name": "fastest-validator",
   "version": "0.6.4",
+  "version": "0.6.5",
   "description": "The fastest JS validator library for NodeJS",
-  "main": "index.js",
-  "browser": "dist/browser/index.min.js",
+  "main": "dist/index.js",
+  "browser": "dist/index.min.js",
   "scripts": {
     "bench": "node benchmark/index.js",
     "build": "rollup -c",
@@ -26,7 +27,7 @@
     "schema"
   ],
   "files": [
-    "dist/browser/index.js",
+    "dist",
     "examples",
     "lib",
     "index.js"

@@ -12,24 +12,23 @@ const bublePlugin = buble({
 });
 
 const bundles = [
-	// browser-friendly UMD build, suitable for dev
+	// UMD Dev
 	{
 		input: "index.js",
 		output: {
-			file: "dist/browser/index.js",
+			file: "dist/index.js",
 			format: "umd",
-			name: BUNDLE_NAME
+			name: BUNDLE_NAME,
+			sourcemap: true
 		},
 		plugins: [
 			commonjs(),
 
 			bublePlugin
-		],
-
-		sourceMap: true
+		]
 	},
 
-	// Browser Minification version, suitable for production
+	// UMD Prod
 	{
 		input: "index.js",
 		output: {

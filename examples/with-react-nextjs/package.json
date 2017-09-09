@@ -1,0 +1,16 @@
+{
+  "name": "fastest-validator-with-nextjs",
+  "version": "0.0.1",
+  "description": "Fastest Validator Next.JS",
+  "main": "index.js",
+  "scripts": {
+    "start": "next",
+    "build": "next build"
+  },
+  "dependencies": {
+    "fastest-validator": "^0.6.5",
+    "next": "latest",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1"
+  }
+}
