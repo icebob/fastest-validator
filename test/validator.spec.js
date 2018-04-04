@@ -201,7 +201,6 @@ describe("Test _processRule", () => {
 		}).toThrowError("Invalid 'unknow' type in validator schema!");
 	});
 
-
 	it("should call compile if type is object", () => {
 		let res = v._processRule({ type: "object", props: {
 			id: "number"
@@ -221,6 +220,26 @@ describe("Test _processRule", () => {
 
 		expect(v.compile).toHaveBeenCalledTimes(1);
 		expect(v.compile).toHaveBeenCalledWith({id: "number"});
+	});
+
+	it("should call checkWrapper & processRule if type is Array", () => {
+		let res = v._processRule({ type: "array", items: "number" }, "list", false);
+
+		expect(res).toBeInstanceOf(Array);
+		expect(res.length).toBe(2);
+
+		expect(res[0].fn).toBeInstanceOf(Function);
+		expect(res[0].type).toBe("array");
+		expect(res[0].name).toBe("list");
+		expect(res[0].iterate).toBe(false);
+
+		//expect(res[1].fn).toBeInstanceOf(Function);
+		expect(res[1].type).toBe("array");
+		expect(res[1].name).toBe("list");
+		expect(res[1].iterate).toBe(true);
+
+		expect(v._checkWrapper).toHaveBeenCalledTimes(1);
+		expect(v._checkWrapper).toHaveBeenCalledWith([{"fn": expect.any(Function), "iterate": false, "name": null, "schema": {"type": "number"}, "type": "number"}]);
 	});
 });
 
