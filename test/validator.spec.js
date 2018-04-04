@@ -74,10 +74,12 @@ describe("Test add", () => {
 			a: { type: "myValidator" }
 		};
 
-		v.validate({ a: 5 }, schema);
+		const obj = { a: 5 };
+
+		v.validate(obj, schema);
 
 		expect(validFn).toHaveBeenCalledTimes(1);
-		expect(validFn).toHaveBeenCalledWith(5, schema.a, "a");
+		expect(validFn).toHaveBeenCalledWith(5, schema.a, "a", obj);
 	});
 
 });
@@ -132,7 +134,7 @@ describe("Test compile (unit test)", () => {
 		expect(v._processRule).toHaveBeenCalledTimes(2);
 		expect(v._processRule).toHaveBeenCalledWith({"type": "array", items: "number"}, null, false);
 		expect(v._processRule).toHaveBeenCalledWith({"type": "string", min: 2 }, null, false);
-	});	
+	});
 
 	it("should throw error is the schema is null", () => {
 		expect(() => {
@@ -218,27 +220,7 @@ describe("Test _processRule", () => {
 		expect(res[1].iterate).toBe(false);
 
 		expect(v.compile).toHaveBeenCalledTimes(1);
-		expect(v.compile).toHaveBeenCalledWith({id: "number"});		
-	});
-
-	it("should call checkWrapper & processRule if type is Array", () => {
-		let res = v._processRule({ type: "array", items: "number" }, "list", false);
-
-		expect(res).toBeInstanceOf(Array);
-		expect(res.length).toBe(2);
-
-		expect(res[0].fn).toBeInstanceOf(Function);
-		expect(res[0].type).toBe("array");
-		expect(res[0].name).toBe("list");
-		expect(res[0].iterate).toBe(false);
-
-		//expect(res[1].fn).toBeInstanceOf(Function);
-		expect(res[1].type).toBe("array");
-		expect(res[1].name).toBe("list");
-		expect(res[1].iterate).toBe(true);
-
-		expect(v._checkWrapper).toHaveBeenCalledTimes(1);
-		expect(v._checkWrapper).toHaveBeenCalledWith([{"fn": expect.any(Function), "iterate": false, "name": null, "schema": {"type": "number"}, "type": "number"}]);		
+		expect(v.compile).toHaveBeenCalledWith({id: "number"});
 	});
 });
 
@@ -264,16 +246,17 @@ describe("Test compile (integration test)", () => {
 		});
 
 		it("should call rules validators", () => {
-			let res = check({id: 5, name: "John" });
+			const obj = { id: 5, name: "John" };
+			const res = check(obj);
 			expect(res).toBe(true);
 
 			expect(v.rules.number).toHaveBeenCalledTimes(1);
-			expect(v.rules.number).toHaveBeenCalledWith(5, schema.id, "id");
+			expect(v.rules.number).toHaveBeenCalledWith(5, schema.id, "id", obj);
 
 			expect(v.rules.string).toHaveBeenCalledTimes(1);
-			expect(v.rules.string).toHaveBeenCalledWith("John", schema.name, "name");
+			expect(v.rules.string).toHaveBeenCalledWith("John", schema.name, "name", obj);
 		});
-		
+
 	});
 
 	describe("Test check generator with shorthand schema", () => {
@@ -296,17 +279,18 @@ describe("Test compile (integration test)", () => {
 		});
 
 		it("should call rules validators", () => {
-			let res = check({id: 5, name: "John" });
+			const obj = { id: 5, name: "John" };
+			let res = check(obj);
 			expect(res).toBe(true);
 
 			expect(v.rules.number).toHaveBeenCalledTimes(1);
-			expect(v.rules.number).toHaveBeenCalledWith(5, { type: "number" }, "id");
+			expect(v.rules.number).toHaveBeenCalledWith(5, { type: "number" }, "id", obj);
 
 			expect(v.rules.string).toHaveBeenCalledTimes(1);
-			expect(v.rules.string).toHaveBeenCalledWith("John", { type: "string" }, "name");
+			expect(v.rules.string).toHaveBeenCalledWith("John", { type: "string" }, "name", obj);
 		});
-		
-	});	
+
+	});
 
 	describe("Test check generator with wrong obj", () => {
 
@@ -327,8 +311,8 @@ describe("Test compile (integration test)", () => {
 			expect(res.length).toBe(1);
 			expect(res[0]).toEqual({
 				type: "stringMin",
-				field: "name", 
-				message: "The 'name' field length must be larger than or equal to 5 characters long!", 
+				field: "name",
+				message: "The 'name' field length must be larger than or equal to 5 characters long!",
 				expected: 5,
 				actual: 4
 			});
@@ -342,8 +326,8 @@ describe("Test compile (integration test)", () => {
 			expect(res[0].type).toBe("required");
 			expect(res[1].type).toBe("forbidden");
 		});
-		
-	});	
+
+	});
 
 });
 
@@ -360,7 +344,7 @@ describe("Test nested schema", () => {
 		}}
 	};
 	let check = v.compile(schema);
-	
+
 	it("should give true if obj is valid", () => {
 		let obj = {
 			id: 3,
@@ -376,7 +360,7 @@ describe("Test nested schema", () => {
 
 		expect(res).toBe(true);
 	});
-	
+
 	it("should give errors (flatten)", () => {
 		let obj = {
 			id: 0,
@@ -388,7 +372,7 @@ describe("Test nested schema", () => {
 		};
 
 		let res = check(obj);
-		
+
 		expect(res.length).toBe(3);
 		expect(res[0].type).toBe("numberPositive");
 		expect(res[0].field).toBe("id");
@@ -408,12 +392,12 @@ describe("Test 3 level nested schema", () => {
 	let schema = {
 		a: { type: "object", props: {
 			b: { type: "object", props: {
-				c: { type: "string", min: 5}	
-			}}			
+				c: { type: "string", min: 5}
+			}}
 		}}
 	};
 	let check = v.compile(schema);
-	
+
 	it("should give true if obj is valid", () => {
 		let obj = {
 			a: {
@@ -426,7 +410,7 @@ describe("Test 3 level nested schema", () => {
 		let res = check(obj);
 		expect(res).toBe(true);
 	});
-	
+
 	it("should give errors (flatten)", () => {
 		let obj = {
 			a: {
@@ -437,7 +421,7 @@ describe("Test 3 level nested schema", () => {
 		};
 
 		let res = check(obj);
-		
+
 		expect(res.length).toBe(1);
 		expect(res[0].type).toBe("stringMin");
 		expect(res[0].field).toBe("a.b.c");
@@ -457,10 +441,10 @@ describe("Test nested array", () => {
 		}}
 	};
 	let check = v.compile(schema);
-	
+
 	it("should give true if obj is valid", () => {
 		let obj = {
-			arr1: [	
+			arr1: [
 				[
 					5,
 					10
@@ -476,7 +460,7 @@ describe("Test nested array", () => {
 
 		expect(res).toBe(true);
 	});
-	
+
 	it("should give error 'not a number'", () => {
 		let obj = {
 			arr1: [
@@ -511,7 +495,7 @@ describe("Test nested array", () => {
 		};
 
 		let res = check(obj);
-		
+
 		expect(res.length).toBe(1);
 		expect(res[0].type).toBe("arrayEmpty");
 		expect(res[0].field).toBe("arr1[0]");
@@ -530,17 +514,17 @@ describe("Test 3-level array", () => {
 		}}
 	};
 	let check = v.compile(schema);
-	
+
 	it("should give true if obj is valid", () => {
 		let obj = {
-			arr1: [	
+			arr1: [
 				[
 					[ "apple", "peach" ],
 					[ "pineapple", "plum" ]
-				],			
+				],
 				[
 					[ "orange", "lemon", "lime"]
-				]			
+				]
 			]
 		};
 
@@ -548,22 +532,22 @@ describe("Test 3-level array", () => {
 
 		expect(res).toBe(true);
 	});
-	
+
 	it("should give error 'not a string'", () => {
 		let obj = {
-			arr1: [	
+			arr1: [
 				[
 					[ "apple", "peach" ],
 					[ "pineapple", "plum" ]
-				],			
+				],
 				[
 					[ "orange", {}, "lime"]
-				]			
+				]
 			]
 		};
 
 		let res = check(obj);
-		
+
 		expect(res.length).toBe(1);
 		expect(res[0].type).toBe("string");
 		expect(res[0].field).toBe("arr1[1][0][1]");
@@ -582,7 +566,7 @@ describe("Test multiple rules", () => {
 	};
 
 	let check = v.compile(schema);
-	
+
 	it("should give true if value is string", () => {
 		let obj = { value: "John" };
 
@@ -600,12 +584,12 @@ describe("Test multiple rules", () => {
 		res = check(obj);
 		expect(res).toBe(true);
 	});
-	
+
 	it("should give error if the value is not string and not boolean", () => {
 		let obj = { value: 100 };
 
 		let res = check(obj);
-		
+
 		expect(res.length).toBe(2);
 		expect(res[0].type).toBe("string");
 		expect(res[0].field).toBe("value");
@@ -613,11 +597,11 @@ describe("Test multiple rules", () => {
 		expect(res[1].type).toBe("boolean");
 		expect(res[1].field).toBe("value");
 	});
-	
+
 	it("should give error if the value is a too short string", () => {
 		let obj = { value: "Al" };
 		let res = check(obj);
-		
+
 		expect(res.length).toBe(2);
 		expect(res[0].type).toBe("stringMin");
 		expect(res[0].field).toBe("value");
