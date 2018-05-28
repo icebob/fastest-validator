@@ -631,3 +631,266 @@ describe("Test multiple rules", () => {
 	});
 
 });
+
+describe("Test multiple rules with objects", () => {
+	const v = new Validator();
+
+	let schema = {
+		list: [
+			{ 
+				type: "object",
+				props: {
+					name: {type: "string"},
+					age: {type: "number"},
+				} 
+			},
+			{ 
+				type: "object",
+				props: {
+					country: {type: "string"},
+					code: {type: "string"},
+				} 
+			}
+		]
+	};
+
+	let check = v.compile(schema);
+
+	it("should give true if first object is given", () => {
+		let obj = { list: {
+			name: "Joe",
+			age: 34
+		} };
+
+		let res = check(obj);
+
+		expect(res).toBe(true);
+	});
+
+	it("should give true if second object is given", () => {
+		let obj = { list: {
+			country: "germany",
+			code: "de"
+		}};
+
+		let res = check(obj);
+
+		expect(res).toBe(true);
+	});
+
+	it("should give error if the object is broken", () => {
+		let obj = { list: {
+			name: "Average",
+			age: "Joe"
+		} };
+
+		let res = check(obj);
+
+		expect(res).toBeInstanceOf(Array);
+		expect(res.length).toBe(3);
+		expect(res[0].type).toBe("number");
+		expect(res[0].field).toBe("list.age");
+
+		expect(res[1].type).toBe("required");
+		expect(res[1].field).toBe("list.country");
+	});
+
+	it("should give error if the object is only partly given", () => {
+		let obj = { list: {} };
+		let res = check(obj);
+
+		expect(res).toBeInstanceOf(Array);
+		expect(res.length).toBe(4);
+		expect(res[0].type).toBe("required");
+		expect(res[0].field).toBe("list.name");
+
+		expect(res[1].type).toBe("required");
+		expect(res[1].field).toBe("list.age");
+
+	});
+
+});
+
+describe("Test multiple rules with objects within array", () => {
+	const v = new Validator();
+
+	let schema = {
+		list: {
+			type: "array",
+			items: [
+				{ 
+					type: "object",
+					props: {
+						name: {type: "string"},
+						age: {type: "number"},
+					} 
+				},
+				{ 
+					type: "object",
+					props: {
+						country: {type: "string"},
+						code: {type: "string"},
+					} 
+				}
+			]
+		}
+	};
+
+	let check = v.compile(schema);
+
+	it("should give true if one valid object is given", () => {
+		let obj = { list: [
+			{
+				name: "Joe",
+				age: 34
+			}
+		]};
+		let res = check(obj);
+		expect(res).toBe(true);
+
+		let obj2 = { list: [
+			{
+				country: "germany",
+				code: "de"
+			}
+		]};
+		let res2 = check(obj2);
+		expect(res2).toBe(true);
+	});
+
+	it("should give true if three valid objects given", () => {
+		let obj = { list: [
+			{
+				name: "Joe",
+				age: 34
+			},
+			{
+				country: "germany",
+				code: "de"
+			},
+			{
+				country: "hungary",
+				code: "hu"
+			}
+		]};
+		let res = check(obj);
+		expect(res).toBe(true);
+	});
+
+	it("should give error if one object is broken", () => {
+		let obj = { list: [
+			{
+				name: "Joe",
+				age: 34
+			},
+			{
+				country: "germany",
+			},
+			{
+				country: "hungary",
+				code: "hu"
+			}
+		]};
+
+		let res = check(obj);
+
+		expect(res).toBeInstanceOf(Array);
+		expect(res.length).toBe(3);
+		expect(res[0].type).toBe("required");
+		expect(res[0].field).toBe("list[1].name");
+
+		expect(res[1].type).toBe("required");
+		expect(res[1].field).toBe("list[1].age");
+	});
+
+	it("should give error if one object is empty", () => {
+		let obj = { list: [
+			{
+				name: "Joe",
+				age: 34
+			},
+			{
+				country: "hungary",
+				code: "hu"
+			},
+			{
+			}
+		]};
+
+		let res = check(obj);
+
+		expect(res).toBeInstanceOf(Array);
+		expect(res.length).toBe(4);
+		expect(res[0].type).toBe("required");
+		expect(res[0].field).toBe("list[2].name");
+
+		expect(res[1].type).toBe("required");
+		expect(res[1].field).toBe("list[2].age");
+
+	});
+
+});
+
+describe("Test multiple rules with arrays", () => {
+	const v = new Validator();
+
+	let schema = {
+		list: [
+			{ 
+				type: "array",
+				items: "string" 
+			},
+			{ 
+				type: "array",
+				items: "number" 
+			}
+		]
+	};
+
+	let check = v.compile(schema);
+
+	it("should give true if first array is given", () => {
+		let obj = { list: ["hello", "there", "this", "is", "a", "test"] };
+
+		let res = check(obj);
+
+		expect(res).toBe(true);
+	});
+
+	it("should give true if second array is given", () => {
+		let obj = { list: [1, 3, 3, 7] };
+
+		let res = check(obj);
+
+		expect(res).toBe(true);
+	});
+
+	it("should give error if the array is broken", () => {
+		let obj = { list: ["hello", 3] };
+
+		let res = check(obj);
+
+		expect(res).toBeInstanceOf(Array);
+		expect(res.length).toBe(2);
+		expect(res[0].type).toBe("string");
+		expect(res[0].field).toBe("list[1]");
+
+		expect(res[1].type).toBe("number");
+		expect(res[1].field).toBe("list[0]");
+	});
+
+	it("should give error if the array is broken", () => {
+		let obj = { list: [true, false] };
+		let res = check(obj);
+
+		expect(res).toBeInstanceOf(Array);
+		expect(res.length).toBe(4);
+		expect(res[0].type).toBe("string");
+		expect(res[0].field).toBe("list[0]");
+
+		expect(res[1].type).toBe("string");
+		expect(res[1].field).toBe("list[1]");
+
+	});
+
+});
