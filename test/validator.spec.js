@@ -586,6 +586,15 @@ describe("Test multiple rules", () => {
 
 	let check = v.compile(schema);
 
+	let schemaOptional = {
+		a: [
+			{ type: 'number', optional: true },
+			{ type: 'string', optional: true },
+		]
+	};
+
+	let checkOptional = v.compile(schema);
+
 	it("should give true if value is string", () => {
 		let obj = { value: "John" };
 
@@ -627,6 +636,14 @@ describe("Test multiple rules", () => {
 
 		expect(res[1].type).toBe("boolean");
 		expect(res[1].field).toBe("value");
+
+	});
+
+	it("should work with optional", () => {
+		let obj = {};
+		let res = checkOptional(obj);
+
+		expect(res).toBe(true);
 
 	});
 
