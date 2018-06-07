@@ -309,6 +309,24 @@ Property | Default  | Description
 -------- | -------- | -----------
 `mode`   | `quick`  | Checker method. Can be `quick` or `precise`.
 
+## `enum`
+This is an enum validator. 
+
+```js
+let schema = {
+    sex: { type: "enum", values: ["male", "female"] }
+}
+
+v.validate({ sex: "male" }, schema); // Valid
+v.validate({ sex: "female" }, schema); // Valid
+v.validate({ sex: "other" }, schema); // Fail
+```
+
+### Properties
+Property | Default  | Description
+-------- | -------- | -----------
+`values` | `null`   | The valid values.
+
 
 ## `forbidden`
 This validator gives error if the property is exists in the object. 

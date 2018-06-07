@@ -17,6 +17,7 @@ const schema = {
 		]
 	}},
 	sex: { type: "string", enum: ["male", "female"] },
+	sex2: { type: "enum", values: ["male", "female"] },
 	roles: { type: "array", items: { type: "string" }, enum: ["admin", "user"] },
 	friends: { type: "array", items: { type: "number", positive: true }},
 	comments: { type: "array", items: { type: "object", props: {
@@ -42,6 +43,7 @@ const obj = {
 	id: 5,
 	name: "John",
 	sex: "male",
+	sex2: "female",
 	settings: {
 		//notify: true,
 		notify: {
