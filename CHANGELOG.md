@@ -1,4 +1,15 @@
 --------------------------------------------------
+<a name="0.6.8"></a>
+# 0.6.8 (2018-06-07)
+
+## Changes
+- fix [#25](https://github.com/icebob/fastest-validator/issues/25) - multiple optional validators
+- Add new `enum` rule
+    ```js
+        { type: "enum", values: ["male", "female"] }
+    ```
+
+--------------------------------------------------
 <a name="0.6.7"></a>
 # 0.6.7 (2018-05-29)
 
