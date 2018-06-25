@@ -586,15 +586,6 @@ describe("Test multiple rules", () => {
 
 	let check = v.compile(schema);
 
-	let schemaOptional = {
-		a: [
-			{ type: "number", optional: true },
-			{ type: "string", optional: true },
-		]
-	};
-
-	let checkOptional = v.compile(schema);
-
 	it("should give true if value is string", () => {
 		let obj = { value: "John" };
 
@@ -640,11 +631,21 @@ describe("Test multiple rules", () => {
 	});
 
 	it("should work with optional", () => {
+
+		let schemaOptional = {
+			a: [
+				{ type: "number", optional: true },
+				{ type: "string", optional: true },
+			]
+		};
+
+		let checkOptional = v.compile(schemaOptional);
+
+
 		let obj = {};
 		let res = checkOptional(obj);
 
 		expect(res).toBe(true);
-
 	});
 
 });
@@ -880,13 +881,14 @@ describe("Test multiple rules with mixed types", () => {
 	});
 
 	it("should give error if 'undefined'", () => {
+		debugger; // eslint-disable-line
 		const res = check({ value: undefined });
 
 		expect(res).toBeInstanceOf(Array);
 		expect(res.length).toBe(2);
-		expect(res[0].type).toBe("string");
+		expect(res[0].type).toBe("required");
 		expect(res[0].field).toBe("value");		
-		expect(res[1].type).toBe("boolean");
+		expect(res[1].type).toBe("required");
 		expect(res[1].field).toBe("value");		
 	});
 
