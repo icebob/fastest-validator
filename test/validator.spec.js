@@ -588,8 +588,8 @@ describe("Test multiple rules", () => {
 
 	let schemaOptional = {
 		a: [
-			{ type: 'number', optional: true },
-			{ type: 'string', optional: true },
+			{ type: "number", optional: true },
+			{ type: "string", optional: true },
 		]
 	};
 
@@ -844,6 +844,50 @@ describe("Test multiple rules with objects within array", () => {
 		expect(res[1].type).toBe("required");
 		expect(res[1].field).toBe("list[2].age");
 
+	});
+
+});
+
+describe("Test multiple rules with mixed types", () => {
+	const v = new Validator();
+
+	let schema = {
+		value: [
+			{ type: "string", min: 3, max: 255 },
+			{ type: "boolean" }
+		]
+	};
+
+	let check = v.compile(schema);
+
+	it("should give true if string", () => {
+		expect(check({ value: "John" })).toBe(true);
+	});
+
+	it("should give true if boolean", () => {
+		expect(check({ value: false })).toBe(true);
+	});
+
+	it("should give error if number", () => {
+		const res = check({ value: 100 });
+
+		expect(res).toBeInstanceOf(Array);
+		expect(res.length).toBe(2);
+		expect(res[0].type).toBe("string");
+		expect(res[0].field).toBe("value");		
+		expect(res[1].type).toBe("boolean");
+		expect(res[1].field).toBe("value");		
+	});
+
+	it("should give error if 'undefined'", () => {
+		const res = check({ value: undefined });
+
+		expect(res).toBeInstanceOf(Array);
+		expect(res.length).toBe(2);
+		expect(res[0].type).toBe("string");
+		expect(res[0].field).toBe("value");		
+		expect(res[1].type).toBe("boolean");
+		expect(res[1].field).toBe("value");		
 	});
 
 });
