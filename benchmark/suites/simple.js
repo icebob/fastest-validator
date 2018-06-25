@@ -66,24 +66,24 @@ bench.run();
 /*
 
 ===============================
-  fastest-validator benchmark
+  Fastest validator benchmark
 ===============================
 
 Platform info:
 ==============
    Windows_NT 6.1.7601 x64
-   Node.JS: 6.10.0
-   V8: 5.1.281.93
+   Node.JS: 8.11.0
+   V8: 6.2.414.50
    Intel(R) Core(TM) i7-4770K CPU @ 3.50GHz × 8
 
 Suite: Simple object
-√ compile & validate x 249,659 ops/sec ±0.17% (95 runs sampled)
-√ validate with pre-compiled schema x 3,111,667 ops/sec ±0.92% (90 runs sampled)
-√ validate with wrong obj x 767,201 ops/sec ±0.91% (92 runs sampled)
+√ compile & validate                        1,115,239 rps
+√ validate with pre-compiled schema         3,986,017 rps
+√ validate with wrong obj                     704,992 rps
 
-   compile & validate                  -91.98%    (249,659 ops/sec)
-   validate with pre-compiled schema     0.00%   (3,111,667 ops/sec)
-   validate with wrong obj             -75.34%    (767,201 ops/sec)
+   compile & validate (#)                       0%      (1,115,239 rps)   (avg: 896ns)
+   validate with pre-compiled schema      +257.41%      (3,986,017 rps)   (avg: 250ns)
+   validate with wrong obj                 -36.79%        (704,992 rps)   (avg: 1μs)
 -----------------------------------------------------------------------
 
 */
