@@ -1,6 +1,6 @@
 {
   "name": "fastest-validator",
-  "version": "0.6.9",
+  "version": "0.6.10",
   "description": "The fastest JS validator library for NodeJS",
   "main": "dist/index.js",
   "browser": "dist/index.min.js",
