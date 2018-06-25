@@ -1,4 +1,11 @@
 --------------------------------------------------
+<a name="0.6.10"></a>
+# 0.6.10 (2018-06-25)
+
+## Changes
+- fix [#27](https://github.com/icebob/fastest-validator/issues/27) - multiple optional validators
+
+--------------------------------------------------
 <a name="0.6.9"></a>
 # 0.6.9 (2018-06-07)
 
