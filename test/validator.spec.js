@@ -112,33 +112,33 @@ describe("Test resolveMessage", () => {
 describe("Test compile (unit test)", () => {
 
 	const v = new Validator();
-	v._processRule = jest.fn(v._processRule.bind(v));
+	v.compileSchemaRule = jest.fn(v.compileSchemaRule.bind(v));
 
-	it("should call processRule", () => {
+	it("should call compileSchemaRule", () => {
 		v.compile({
 			id: { type: "number" },
 			name: { type: "string", min: 5},
 			status: "boolean"
 		});
 
-		expect(v._processRule).toHaveBeenCalledTimes(3);
-		expect(v._processRule).toHaveBeenCalledWith({"type": "number"}, "id", false);
-		expect(v._processRule).toHaveBeenCalledWith({"type": "string", "min": 5}, "name", false);
-		expect(v._processRule).toHaveBeenCalledWith("boolean", "status", false);
+		expect(v.compileSchemaRule).toHaveBeenCalledTimes(3);
+		expect(v.compileSchemaRule).toHaveBeenCalledWith({"type": "number"});
+		expect(v.compileSchemaRule).toHaveBeenCalledWith({"type": "string", "min": 5});
+		expect(v.compileSchemaRule).toHaveBeenCalledWith("boolean");
 	});
 
-	it("should call processRule for root-level array", () => {
-		v._processRule.mockClear();
+	it("should call compileSchemaRule for root-level array", () => {
+		v.compileSchemaRule.mockClear();
 
 		v.compile([
 			{ type: "array", items: "number" },
 			{ type: "string", min: 2 }
 		]);
 
-		expect(v._processRule).toHaveBeenCalledTimes(3);
-		expect(v._processRule).toHaveBeenCalledWith({"type": "array", items: "number"}, null, false);
-		expect(v._processRule).toHaveBeenCalledWith("number", null, false);
-		expect(v._processRule).toHaveBeenCalledWith({"type": "string", min: 2 }, null, false);
+		expect(v.compileSchemaRule).toHaveBeenCalledTimes(3);
+		expect(v.compileSchemaRule).toHaveBeenCalledWith({"type": "array", items: "number"});
+		expect(v.compileSchemaRule).toHaveBeenCalledWith("number");
+		expect(v.compileSchemaRule).toHaveBeenCalledWith({"type": "string", min: 2 });
 	});
 
 	it("should throw error is the schema is null", () => {
@@ -175,8 +175,7 @@ describe("Test compile (unit test)", () => {
 		}).toThrowError("Invalid 'unknow' type in validator schema!");
 	});
 
-	it.skip("should throw error if object has array props", () => {
-		// TODO: This schema compiles, but never matches anything
+	it("should throw error if object has array props", () => {
 		const schema = {
 			invalid: { type: "object", props: [ { type: "string" }, { type: "number" } ] }
 		};
@@ -197,7 +196,8 @@ describe("Test compile (unit test)", () => {
 	});
 });
 
-describe("Test _processRule", () => {
+// Skip tests for earlier compiler internals
+describe.skip("Test _processRule", () => {
 
 	const v = new Validator();
 	v.compile = jest.fn();
