@@ -14,7 +14,7 @@ describe("Test checkCustom", () => {
 
 		expect(check(10, s)).toEqual(true);
 		expect(checker).toHaveBeenCalledTimes(1);
-		expect(checker).toHaveBeenCalledWith(10, s);
+		expect(checker).toHaveBeenCalledWith(10, s, undefined);
 	});
 
 	it("should handle returned errors", () => {
@@ -29,7 +29,7 @@ describe("Test checkCustom", () => {
 			expected: 3, 
 		});
 		expect(checker).toHaveBeenCalledTimes(1);
-		expect(checker).toHaveBeenCalledWith(10, s);
+		expect(checker).toHaveBeenCalledWith(10, s, undefined);
 	});
 
 });

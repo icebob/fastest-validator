@@ -101,7 +101,7 @@ describe("Test add", () => {
 		v.validate(obj, schema);
 
 		expect(validFn).toHaveBeenCalledTimes(1);
-		expect(validFn).toHaveBeenCalledWith(5, schema.a, "a", obj);
+		expect(validFn).toHaveBeenCalledWith(5, schema.a, "a", obj, undefined);
 	});
 
 });
@@ -245,10 +245,10 @@ describe("Test compile (integration test)", () => {
 			expect(res).toBe(true);
 
 			expect(v.rules.number).toHaveBeenCalledTimes(1);
-			expect(v.rules.number).toHaveBeenCalledWith(5, schema.id, "id", obj);
+			expect(v.rules.number).toHaveBeenCalledWith(5, schema.id, "id", obj, undefined);
 
 			expect(v.rules.string).toHaveBeenCalledTimes(1);
-			expect(v.rules.string).toHaveBeenCalledWith("John", schema.name, "name", obj);
+			expect(v.rules.string).toHaveBeenCalledWith("John", schema.name, "name", obj, undefined);
 		});
 
 	});
@@ -278,10 +278,10 @@ describe("Test compile (integration test)", () => {
 			expect(res).toBe(true);
 
 			expect(v.rules.number).toHaveBeenCalledTimes(1);
-			expect(v.rules.number).toHaveBeenCalledWith(5, { type: "number" }, "id", obj);
+			expect(v.rules.number).toHaveBeenCalledWith(5, { type: "number" }, "id", obj, undefined);
 
 			expect(v.rules.string).toHaveBeenCalledTimes(1);
-			expect(v.rules.string).toHaveBeenCalledWith("John", { type: "string" }, "name", obj);
+			expect(v.rules.string).toHaveBeenCalledWith("John", { type: "string" }, "name", obj, undefined);
 		});
 
 	});
@@ -1264,5 +1264,111 @@ describe("Test $$strict schema restriction on sub-level", () => {
 		expect(res.length).toBe(1);
 		expect(res[0].field).toBe("address");
 		expect(res[0].type).toBe("objectStrict");
+	});
+});
+
+describe("Test sanitizer", () => {
+	const v = new Validator();
+
+	it("should sanitize number", () => {
+		const check = v.compile([{type: "number", convert: true}]);
+		const converted = {};
+		check("1", null, null, converted);
+		expect(converted.value).toEqual(1);
+	});
+
+	it("should sanitize array of boolean", () => {
+		const check = v.compile([{type: "array", items: { type: "boolean", convert: true} }]);
+		const converted = {};
+		check([ "on", "1", "true", "off", "0", "false" ], null, null, converted);
+		expect(converted.value).toEqual([ true, true, true, false, false, false]);
+	});
+
+	it("should sanitize date", () => {
+		const check = v.compile([{type: "date", convert: true}]);
+		const converted = {};
+		check("2018-01-30T22:00Z", null, null, converted);
+		expect(converted.value).toEqual(new Date("2018-01-30T22:00Z"));
+	});
+
+	it("should sanitize optional and non-existent properties", () => {
+		const check = v.compile({ id: { type: "number", optional: true }, name: { type: "string", optional: true } });
+		const converted = {};
+		check({id: undefined, name: null, removeme: "test" }, null, null, converted);
+		expect(converted.value).toEqual({});
+	});
+
+	it("should sanitize complex object", () => {
+		const schema = {};
+		Object.assign(schema, {
+			age: { type: "number", convert: true },
+			date: { type: "date", convert: true },
+			enabled: { type: "boolean", convert: true },
+			node: { type: "array", optional: true, items: { type: "object", props: schema } }
+		});
+
+		const check = v.compile(schema);
+
+		const date1Value = "2018-01-30T22:00Z";
+		const date2Value = "2018-01-30Z";
+		const date3Value = 10000000;
+		const date4Value = "December 17, 1995 03:24:00";
+		
+		const date1 = new Date(date1Value);
+		const date2 = new Date(date2Value);
+		const date3 = new Date(date3Value);
+		const date4 = new Date(date4Value);
+
+		const result = {};
+		const res = check({
+			age: "14",
+			date: date1Value,
+			enabled: "true",
+			node: [
+				{
+					age: "28",
+					date: date2Value,
+					enabled: "off",
+					node: [
+						{
+							age: "42",
+							date: date3Value,
+							enabled: "1",
+						},
+						{
+							age: "43",
+							date: date4Value,
+							enabled: "on",
+						}
+					]
+				}
+			]
+		}, null, null, result);
+
+		expect(res).toBe(true);
+		expect(result.value).not.toBeNull();
+		expect(result.value).toEqual({
+			age: 14, 
+			date: date1,
+			enabled: true,
+			node: [
+				{
+					age: 28,
+					date: date2,
+					enabled: false,
+					node: [
+						{
+							age: 42,
+							date: date3,
+							enabled: true,
+						},
+						{
+							age: 43,
+							date: date4,
+							enabled: true,
+						}
+					]
+				}
+			]});
 	});
 });
