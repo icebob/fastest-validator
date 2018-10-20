@@ -103,37 +103,42 @@ describe("Test resolveMessage", () => {
 		expect(res).toBe("Field country and again country. Expected: London, actual: 350.");
 	});
 
+	it("should not resolve unknown errors", () => {
+		let res = v.resolveMessage({ type: "XXX"});
+		expect(res).toBeUndefined();
+	});
 });
 
 describe("Test compile (unit test)", () => {
 
 	const v = new Validator();
-	v._processRule = jest.fn();
+	v.compileSchemaRule = jest.fn(v.compileSchemaRule.bind(v));
 
-	it("should call processRule", () => {
+	it("should call compileSchemaRule", () => {
 		v.compile({
 			id: { type: "number" },
 			name: { type: "string", min: 5},
 			status: "boolean"
 		});
 
-		expect(v._processRule).toHaveBeenCalledTimes(3);
-		expect(v._processRule).toHaveBeenCalledWith({"type": "number"}, "id", false);
-		expect(v._processRule).toHaveBeenCalledWith({"type": "string", "min": 5}, "name", false);
-		expect(v._processRule).toHaveBeenCalledWith("boolean", "status", false);
+		expect(v.compileSchemaRule).toHaveBeenCalledTimes(3);
+		expect(v.compileSchemaRule).toHaveBeenCalledWith({"type": "number"});
+		expect(v.compileSchemaRule).toHaveBeenCalledWith({"type": "string", "min": 5});
+		expect(v.compileSchemaRule).toHaveBeenCalledWith("boolean");
 	});
 
-	it("should call processRule for root-level array", () => {
-		v._processRule.mockClear();
+	it("should call compileSchemaRule for root-level array", () => {
+		v.compileSchemaRule.mockClear();
 
 		v.compile([
 			{ type: "array", items: "number" },
 			{ type: "string", min: 2 }
 		]);
 
-		expect(v._processRule).toHaveBeenCalledTimes(2);
-		expect(v._processRule).toHaveBeenCalledWith({"type": "array", items: "number"}, null, false);
-		expect(v._processRule).toHaveBeenCalledWith({"type": "string", min: 2 }, null, false);
+		expect(v.compileSchemaRule).toHaveBeenCalledTimes(3);
+		expect(v.compileSchemaRule).toHaveBeenCalledWith({"type": "array", items: "number"});
+		expect(v.compileSchemaRule).toHaveBeenCalledWith("number");
+		expect(v.compileSchemaRule).toHaveBeenCalledWith({"type": "string", min: 2 });
 	});
 
 	it("should throw error is the schema is null", () => {
@@ -163,9 +168,36 @@ describe("Test compile (unit test)", () => {
 			v.compile([], []);
 		}).toThrowError();
 	});
+
+	it("should throw error if the type is invalid", () => {
+		expect(() => {
+			v.compile({ id: { type: "unknow" } });
+		}).toThrowError("Invalid 'unknow' type in validator schema!");
+	});
+
+	it("should throw error if object has array props", () => {
+		const schema = {
+			invalid: { type: "object", props: [ { type: "string" }, { type: "number" } ] }
+		};
+
+		expect(() => {
+			v.compile(schema);
+		}).toThrowError();
+	});
+
+	it("should throw error if object has string props", () => {
+		const schema = {
+			invalid: { type: "object", props: "string" }
+		};
+
+		expect(() => {
+			v.compile(schema);
+		}).toThrowError();
+	});
 });
 
-describe("Test _processRule", () => {
+// Skip tests for earlier compiler internals
+describe.skip("Test _processRule", () => {
 
 	const v = new Validator();
 	v.compile = jest.fn();
@@ -193,12 +225,6 @@ describe("Test _processRule", () => {
 		expect(res[0].name).toBe("name");
 		expect(res[0].schema).toEqual({ type: "string" });
 		expect(res[0].iterate).toBe(false);
-	});
-
-	it("should throw error if the type is invalid", () => {
-		expect(() => {
-			v._processRule({ type: "unknow" }, "id", false);
-		}).toThrowError("Invalid 'unknow' type in validator schema!");
 	});
 
 	it("should call compile if type is object", () => {
@@ -956,4 +982,98 @@ describe("Test multiple rules with arrays", () => {
 
 	});
 
+});
+
+describe("Test multiple array in root", () => {
+	const v = new Validator();
+
+	let schema = [
+		{ 
+			type: "array",
+			items: "string" 
+		},
+		{ 
+			type: "array",
+			items: "number" 
+		}
+	];
+
+	let check = v.compile(schema);
+
+	it("should give true if first array is given", () => {
+		let obj = ["hello", "there", "this", "is", "a", "test"];
+
+		let res = check(obj);
+
+		expect(res).toBe(true);
+	});
+
+	it("should give true if second array is given", () => {
+		let obj = [1, 3, 3, 7];
+
+		let res = check(obj);
+
+		expect(res).toBe(true);
+	});
+
+	it("should give error if the array is broken", () => {
+		let obj = ["hello", 3];
+
+		let res = check(obj);
+
+		expect(res).toBeInstanceOf(Array);
+		expect(res.length).toBe(2);
+		expect(res[0].type).toBe("string");
+		expect(res[0].field).toBe("[1]");
+
+		expect(res[1].type).toBe("number");
+		expect(res[1].field).toBe("[0]");
+	});
+
+	it("should give error if the array is broken", () => {
+		let obj = [true, false];
+		let res = check(obj);
+
+		expect(res).toBeInstanceOf(Array);
+		expect(res.length).toBe(4);
+		expect(res[0].type).toBe("string");
+		expect(res[0].field).toBe("[0]");
+
+		expect(res[1].type).toBe("string");
+		expect(res[1].field).toBe("[1]");
+
+	});
+
+});
+
+describe("Test object without props", () => {
+	const v = new Validator();
+
+	it("should compile and validate", () => {
+		const schema = {
+			valid: { type: "object" }
+		};
+
+		const check = v.compile(schema);
+		expect(check).toBeInstanceOf(Function);
+
+		const res = check({ valid: { a: "b" } });
+		expect(res).toBe(true);
+	});
+});
+
+describe("Test array without items", () => {
+	const v = new Validator();
+
+	it("should compile and validate", () => {
+		const schema = {
+			valid: { type: "array" }
+		};
+
+		const check = v.compile(schema);
+		expect(check).toBeInstanceOf(Function);
+
+		const res = check({ valid: [1, 2, 3] });
+		expect(res).toBe(true);
+	});
 });
