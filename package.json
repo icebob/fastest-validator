@@ -1,6 +1,6 @@
 {
   "name": "fastest-validator",
-  "version": "0.6.10",
+  "version": "0.6.11",
   "description": "The fastest JS validator library for NodeJS",
   "main": "dist/index.js",
   "browser": "dist/index.min.js",
@@ -51,7 +51,7 @@
     "rollup-plugin-uglify-es": "0.0.1"
   },
   "jest": {
-    "coverageDirectory": "../coverage",    
+    "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "rootDir": "./lib",
     "roots": [
