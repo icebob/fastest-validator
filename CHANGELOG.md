@@ -1,4 +1,12 @@
 --------------------------------------------------
+<a name="0.6.11"></a>
+# 0.6.11 (2018-10-25)
+
+## Changes
+- performance improvements by [@andersnm](https://github.com/andersnm)
+- rewritten schema compiling by [@andersnm](https://github.com/andersnm)
+
+--------------------------------------------------
 <a name="0.6.10"></a>
 # 0.6.10 (2018-06-25)
 

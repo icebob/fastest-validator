@@ -12,7 +12,7 @@
 
 ## Key features
 * fast! Really!
-* 9 built-in validators
+* 13 built-in validators
 * custom validators
 * nested object & array handling
 * multiple validators
@@ -22,9 +22,9 @@
 * unit tests & 100% cover
 
 # How fast?
-Very fast! ~4 million validation/sec (on Intel i7-4770K, Node.JS: 6.10.0)
+Very fast! ~5 million validation/sec (on Intel i7-4770K, Node.JS: 8.11.0)
 ```
-√ validate with pre-compiled schema         3,986,017 rps
+√ validate with pre-compiled schema         5,460,129 rps
 ```
 
 Compared to other popular libraries:
