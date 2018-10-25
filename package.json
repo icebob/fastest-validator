@@ -51,6 +51,7 @@
     "rollup-plugin-uglify-es": "0.0.1"
   },
   "jest": {
+    "coverageDirectory": "../coverage",    
     "testEnvironment": "node",
     "rootDir": "./lib",
     "roots": [

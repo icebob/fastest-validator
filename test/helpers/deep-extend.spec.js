@@ -8,7 +8,9 @@ describe("deepExtend", () => {
 				b: 5,
 				c: 6
 			},
-			d: true
+			d: true,
+			j: [],
+			k: [1,2]
 		}, {
 			a: {
 				b: 10,
@@ -17,7 +19,9 @@ describe("deepExtend", () => {
 			f: "F",
 			g: {
 				h: "H"
-			}
+			},
+			j: "some",
+			k: [5,6]
 		});
 		expect(result).toEqual({
 			a: {
@@ -29,7 +33,9 @@ describe("deepExtend", () => {
 			f: "F",
 			g: {
 				h: "H"
-			}
+			},
+			j: "some",
+			k: [5,6]
 		});
 	});
 });
