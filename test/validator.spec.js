@@ -1004,3 +1004,35 @@ describe("Test array without items", () => {
 		expect(res).toBe(true);
 	});
 });
+
+describe("Test recursive schema", () => {
+	const v = new Validator();
+
+	let schema = {};
+	Object.assign(schema, {
+		name: { type: "string" },
+		subcategories: {
+			type: "array",
+			optional: true,
+			items: { type: "object", props: schema}
+		}
+	});
+
+	it("should compile and validate", () => {
+		let category = {
+			name: "top",
+			subcategories: [
+				{
+					name: "sub1"
+				},
+				{
+					name: "sub2"
+				}
+			]
+		};
+
+		let res = v.validate(category, schema);
+
+		expect(res).toBe(true);
+	});
+});
