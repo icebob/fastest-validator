@@ -1004,3 +1004,61 @@ describe("Test array without items", () => {
 		expect(res).toBe(true);
 	});
 });
+
+describe("Test recursive/cyclic schema", () => {
+	const v = new Validator();
+
+	let schema = {};
+	Object.assign(schema, {
+		name: { type: "string" },
+		parent: { type: "object", props: schema, optional: true },
+		subcategories: {
+			type: "array",
+			optional: true,
+			items: { type: "object", props: schema}
+		}
+	});
+
+	it("should compile and validate", () => {
+		let category = {};
+		Object.assign(category, {
+			name: "top",
+			subcategories: [
+				{
+					name: "sub1",
+					parent: category
+				},
+				{
+					name: "sub2",
+					parent: category
+				}
+			]
+		});
+
+		const res = v.validate(category, schema);
+
+		expect(res).toBe(true);
+	});
+
+	it("should give error if nested object is broken", () => {
+		const category = {
+			name: "top",
+			subcategories: [
+				{
+					name: "sub1"
+				},
+				{
+					name: "sub2",
+					subcategories: [ {} ]
+				}
+			]
+		};
+
+		const res = v.validate(category, schema);
+
+		expect(res).toBeInstanceOf(Array);
+		expect(res.length).toBe(1);
+		expect(res[0].type).toBe("required");
+		expect(res[0].field).toBe("subcategories[1].subcategories[0].name");
+	});
+});
