@@ -14,15 +14,15 @@
 * fast! Really!
 * 13 built-in validators
 * custom validators
-* nested object & array handling
+* nested objects & array handling
 * multiple validators
 * customizable error messages
 * programmable error object
 * no dependencies
-* unit tests & 100% cover
+* unit tests & 100% coverage
 
 # How fast?
-Very fast! ~5 million validation/sec (on Intel i7-4770K, Node.JS: 8.11.0)
+Very fast! ~5 million validations/sec (on Intel i7-4770K, Node.JS: 8.11.0)
 ```
 √ validate with pre-compiled schema         5,460,129 rps
 ```
@@ -56,7 +56,7 @@ $ yarn add fastest-validator
 
 ### Simple method
 Call the `validate` method with the `object` and the `schema`. 
-> If the performance is important, you won't use this method.
+> If performance is important, you won't use this method.
 
 ```js
 let Validator = require("fastest-validator");
@@ -80,7 +80,7 @@ console.log(v.validate({ id: 5, name: "Al", status: true }, schema));
             expected: 3,
             actual: 2,
             field: 'name',
-            message: 'The \'name\' field length must be larger than or equal to 3 characters long!'
+            message: 'The \'name\' field length must be greater than or equal to 3 characters long!'
         }
     ]
 */
@@ -88,8 +88,8 @@ console.log(v.validate({ id: 5, name: "Al", status: true }, schema));
 [Try it on Runkit](https://runkit.com/icebob/fastest-validator-usage-simple)
 
 ### Fast method
-In this case, the first step is to compile the schema to a compiled "checker" function. After it if you would like to validate your object, just call this "checker" function with your object.
-> This method is ~10x faster than "simple method".
+In this case, the first step is to compile the schema to a compiled "checker" function. After that, to validate your object, just call this "checker" function.
+> This method is ~10x faster than the "simple method".
 
 ```js
 let Validator = require("fastest-validator");
@@ -141,7 +141,7 @@ console.log(check({ id: 5, name: "John", status: true }));
 ```
 
 # Optional & required fields
-Every fields in the schema will be required field. If you would like to define optional fields, set `optional: true`.
+Every field in the schema will be required by default. If you'd like to define optional fields, set `optional: true`.
 
 ```js
 let schema = {
@@ -155,7 +155,7 @@ v.validate({ age: 42 }, schema); // Fail
 ```
 
 # Multiple validators
-There is possible to define more validators for a field. In this case if one of all validators is success, the field will be valid.
+It is possible to define more validators for a field. In this case, only one validator needs to succeed for the field to be valid.
 
 ```js
 let schema = {
@@ -173,7 +173,7 @@ v.validate({ cache: 150 }, schema); // Fail
 # Built-in validators
 
 ## `any`
-This is not validate the type of value. Accept any types.
+This does not do type validation. Accepts any types.
 
 ```js
 let schema = {
@@ -199,7 +199,7 @@ v.validate({ roles: [] }, schema); // Valid
 v.validate({ roles: "user" }, schema); // Fail
 ```
 
-**Example with only positive number:**
+**Example with only positive numbers:**
 ```js
 let schema = {
     list: { type: "array", min: 2, items: {
@@ -213,7 +213,7 @@ v.validate({ list: [1] }, schema); // Fail (min 2 elements)
 v.validate({ list: [1, -7] }, schema); // Fail (negative number)
 ```
 
-**Example with object list:**
+**Example with an object list:**
 ```js
 let schema = {
     users: { type: "array", items: {
@@ -238,11 +238,11 @@ v.validate({
 ### Properties
 Property | Default  | Description
 -------- | -------- | -----------
-`empty`  | `true`   | If true, the validator accepts empty array `[]`.
+`empty`  | `true`   | If true, the validator accepts an empty array `[]`.
 `min`  	 | `null`   | Minimum count of elements.
 `max`  	 | `null`   | Maximum count of elements.
 `length` | `null`   | Fix count of elements.
-`contains` | `null` | The array must contains this element too.
+`contains` | `null` | The array must contain this element too.
 `enum`	 | `null`   | Every element must be an element of the `enum` array.
 
 **Example for `enum`:**
@@ -331,7 +331,7 @@ Property | Default  | Description
 
 
 ## `forbidden`
-This validator gives error if the property is exists in the object. 
+This validator returns an error if the property exists in the object. 
 
 ```js
 let schema = {
@@ -343,7 +343,7 @@ v.validate({ user: "John", password: "pass1234" }, schema); // Fail
 ```
 
 ## `function`
-The type of value must be `Function`.
+This a `Function`validator.
 
 ```js
 let schema = {
@@ -357,7 +357,7 @@ v.validate({ show: null }, schema); // Fail
 
 
 ## `number`
-This is a number validator. The type of value must be `Number`.
+This is a `Number` validator.
 
 ```js
 let schema = {
@@ -374,12 +374,12 @@ Property | Default  | Description
 -------- | -------- | -----------
 `min`  	 | `null`   | Minimum value.
 `max`  	 | `null`   | Maximum value.
-`equal`  | `null`   | Fix value.
-`notEqual` | `null` | Can't be equal with this value.
+`equal`  | `null`   | Fixed value.
+`notEqual` | `null` | Can't be equal to this value.
 `integer` | `false` | The value must be a non-decimal value.
-`positive` | `false`| The value must be larger than zero.
+`positive` | `false`| The value must be greater than zero.
 `negative` | `false`| The value must be less than zero.
-`convert`  | `false`| if `true` and the type is not `Number`, try to convert with `parseFloat`.
+`convert`  | `false`| if `true` and the type is not `Number`, tries to convert with `parseFloat`.
 
 ## `object`
 This is a nested object validator.
@@ -410,7 +410,7 @@ v.validate({
 
 
 ## `string`
-This is a `string` validator. The type of value must be `String`.
+This is a `String`.
 
 ```js
 let schema = {
@@ -425,12 +425,12 @@ v.validate({ name: 123 }, schema); // Fail
 ### Properties
 Property | Default  | Description
 -------- | -------- | -----------
-`empty`  | `true`   | If true, the validator accepts empty string `""`.
-`min`  	 | `null`   | Minimum length of value.
-`max`  	 | `null`   | Maximum length of value.
-`length` | `null`   | Fix length of value.
+`empty`  | `true`   | If true, the validator accepts an empty string `""`.
+`min`  	 | `null`   | Minimum value length.
+`max`  	 | `null`   | Maximum value length.
+`length` | `null`   | Fixed value length.
 `pattern` | `null`   | Regex pattern.
-`contains` | `null`   | The value must contains this text.
+`contains` | `null`   | The value must contain this text.
 `enum`	 | `null`   | The value must be an element of the `enum` array.
 
 
@@ -486,12 +486,12 @@ console.log(v.validate({ name: "John", age: 19 }, schema));
 */
 ```
 
-Or you can use the `custom` type with inline checker function:
+Or you can use the `custom` type with an inline checker function:
 ```js
 let v = new Validator({
 	messages: {
 		// Register our new error message text
-		weightMin: "The weight must be larger than {expected}! Actual: {actual}"
+		weightMin: "The weight must be greater than {expected}! Actual: {actual}"
 	}
 });
 
@@ -518,13 +518,13 @@ console.log(v.validate({ name: "John", weight: 8 }, schema));
 		expected: 10,                                            
 		actual: 8,                                               
 		field: 'weight',                                         
-		message: 'The weight must be larger than 10! Actual: 8' 
+		message: 'The weight must be greater than 10! Actual: 8' 
 	}]
 */
 ```
 
 # Custom error messages (l10n)
-You can set your custom messages in constructor of validator.
+You can set your custom messages in the validator constructor.
 
 ```js
 const Validator = require("fastest-validator");
@@ -555,14 +555,14 @@ Name                | Default text
 `required`          | The '{field}' field is required!
 `string`            | The '{field}' field must be a string!
 `stringEmpty`       | The '{field}' field must not be empty!
-`stringMin`         | The '{field}' field length must be larger than or equal to {expected} characters long!
+`stringMin`         | The '{field}' field length must be greater than or equal to {expected} characters long!
 `stringMax`         | The '{field}' field length must be less than or equal to {expected} characters long!
 `stringLength`      | The '{field}' field length must be {expected} characters long!
 `stringPattern`     | The '{field}' field fails to match the required pattern!
 `stringContains`    | The '{field}' field must contain the '{expected}' text!
 `stringEnum`        | The '{field}' field does not match any of the allowed values!
 `number`            | The '{field}' field must be a number!
-`numberMin`         | The '{field}' field must be larger than or equal to {expected}!
+`numberMin`         | The '{field}' field must be greater than or equal to {expected}!
 `numberMax`         | The '{field}' field must be less than or equal to {expected}!
 `numberEqual`       | The '{field}' field must be equal with {expected}!
 `numberNotEqual`    | The '{field}' field can't be equal with {expected}!
@@ -579,7 +579,7 @@ Name                | Default text
 `boolean`           | The '{field}' field must be a boolean!
 `function`          | The '{field}' field must be a function!
 `date`              | The '{field}' field must be a Date!
-`dateMin`           | The '{field}' field must be larger than or equal to {expected}!
+`dateMin`           | The '{field}' field must be greater than or equal to {expected}!
 `dateMax`           | The '{field}' field must be less than or equal to {expected}!
 `forbidden`         | The '{field}' field is forbidden!
 `email`             | The '{field}' field must be a valid e-mail!
@@ -587,10 +587,10 @@ Name                | Default text
 ## Message fields
 Name        | Description
 ----------- | -------------
-`field`     | Name of field
-`expected`  | The expected value of field
-`actual`    | The actual value of field
-`type`      | Type of field
+`field`     | The field name
+`expected`  | The expected value
+`actual`    | The actual value
+`type`      | The field type
 
 ## Development
 ```
@@ -627,7 +627,7 @@ All files      |      100 |      100 |      100 |      100 |                |
 ```
 
 ## Contribution
-Please send pull requests improving the usage and fixing bugs, improving documentation and providing better examples, or providing some testing, because these things are important.
+Please send pull requests improving the usage and fixing bugs, improving documentation and providing better examples, or providing some tests, because these things are important.
 
 ## License
 fastest-validator is available under the [MIT license](https://tldrlegal.com/license/mit-license).

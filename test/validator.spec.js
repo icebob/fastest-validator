@@ -284,7 +284,7 @@ describe("Test compile (integration test)", () => {
 			expect(res[0]).toEqual({
 				type: "stringMin",
 				field: "name",
-				message: "The 'name' field length must be larger than or equal to 5 characters long!",
+				message: "The 'name' field length must be greater than or equal to 5 characters long!",
 				expected: 5,
 				actual: 4
 			});
@@ -397,7 +397,7 @@ describe("Test 3 level nested schema", () => {
 		expect(res.length).toBe(1);
 		expect(res[0].type).toBe("stringMin");
 		expect(res[0].field).toBe("a.b.c");
-		expect(res[0].message).toBe("The 'a.b.c' field length must be larger than or equal to 5 characters long!");
+		expect(res[0].message).toBe("The 'a.b.c' field length must be greater than or equal to 5 characters long!");
 	});
 
 });
