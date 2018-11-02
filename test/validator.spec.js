@@ -1114,12 +1114,11 @@ describe("Test irregular object property names", () => {
 
 	it("should compile schema with reserved keyword", () => {
 		// Reserved keywords are permitted as unquoted property names in ES5+. There is no special support for these
-		const o = {};
 		const schema = {
-			'for': { type: "string" },
-			'goto': { type: "string" },
-			'var': { type: "string" },
-			'try': { type: "string" },
+			for: { type: "string" },
+			goto: { type: "string" },
+			var: { type: "string" },
+			try: { type: "string" },
 		};
 
 		const res = v.validate({
