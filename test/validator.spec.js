@@ -1062,3 +1062,71 @@ describe("Test recursive/cyclic schema", () => {
 		expect(res[0].field).toBe("subcategories[1].subcategories[0].name");
 	});
 });
+
+describe("Test irregular object property names", () => {
+	const v = new Validator();
+	it("should compile schema with dash", () => {
+		const schema = {
+			"1-1": { type: "string" },
+		};
+
+		const res = v.validate({
+			"1-1": "test",
+		}, schema);
+		expect(res).toBe(true);
+	});
+
+	it("should compile schema with quotes", () => {
+		const schema = {
+			"a'bc": { type: "string" },
+			"a\"bc": { type: "string" },
+		};
+
+		const res = v.validate({ "a'bc": "test", "a\"bc": "test" }, schema);
+		expect(res).toBe(true);
+	});
+
+	it("should compile schema with linebreak", () => {
+		const schema = {
+			"a\nbc\ndef": { type: "string" },
+			"a\rbc": { type: "string" },
+			"a\u2028bc": { type: "string" },
+			"a\u2029bc": { type: "string" },
+		};
+
+		const res = v.validate({
+			"a\nbc\ndef": "test",
+			"a\rbc": "test",
+			"a\u2028bc": "test",
+			"a\u2029bc": "test",
+		}, schema);
+		expect(res).toBe(true);
+	});
+
+	it("should compile schema with escape characters", () => {
+		const schema = {
+			"\\o/": { type: "string" },
+		};
+
+		const res = v.validate({ "\\o/": "test" }, schema);
+		expect(res).toBe(true);
+	});
+
+	it("should compile schema with reserved keyword", () => {
+		// Reserved keywords are permitted as unquoted property names in ES5+. There is no special support for these
+		const schema = {
+			for: { type: "string" },
+			goto: { type: "string" },
+			var: { type: "string" },
+			try: { type: "string" },
+		};
+
+		const res = v.validate({
+			for: "hello",
+			goto: "hello",
+			var: "test",
+			try: "test",
+		}, schema);
+		expect(res).toBe(true);
+	});
+});
