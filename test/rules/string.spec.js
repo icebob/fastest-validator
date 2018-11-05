@@ -60,6 +60,13 @@ describe("Test checkString", () => {
 		expect(check("JOHN", s)).toEqual(true);
 	});
 
+	it("check pattern with string", () => {
+		const s = { type: "string", pattern: "^[A-Z]+$", patternFlags: "g" };
+		
+		expect(check("John", s)).toEqual({ type: "stringPattern", expected: /^[A-Z]+$/g });
+		expect(check("JOHN", s)).toEqual(true);
+	});
+
 	it("check contains", () => {
 		const s = { type: "string", contains: "bob" };
 		
