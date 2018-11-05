@@ -1,4 +1,12 @@
 --------------------------------------------------
+<a name="0.6.12"></a>
+# 0.6.12 (2018-12-04)
+
+## Changes
+- support recursive schemas by [@andersnm](https://github.com/andersnm)
+- fix irregular object property names
+
+--------------------------------------------------
 <a name="0.6.11"></a>
 # 0.6.11 (2018-10-25)
 
