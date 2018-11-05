@@ -3,7 +3,7 @@
 const Validator = require("../index");
 const v = new Validator({
 	messages: {
-		stringMin: "A(z) '{name}' mező túl rövid. Minimum: {0}, Jelenleg: {1}"
+		stringMin: "A(z) '{field}' mező túl rövid. Minimum: {expected}, Jelenleg: {actual}"
 	}
 });
 
