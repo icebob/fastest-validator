@@ -76,4 +76,18 @@ describe("Test checkString", () => {
 		expect(check("female", s)).toEqual(true);
 	});
 
+	it("check numeric string", () => {
+		const s = {type: "string", numeric: true};
+
+		expect(check("123.1s0", s)).toEqual({type: "stringNumeric", expected: "A numeric string", actual: "123.1s0"});
+		expect(check("x", s)).toEqual({type: "stringNumeric", expected: "A numeric string", actual: "x"});
+		expect(check("", s)).toEqual({type: "stringNumeric", expected: "A numeric string", actual: ""});
+		expect(check(" ", s)).toEqual({type: "stringNumeric", expected: "A numeric string", actual: " "});
+
+		expect(check("123", s)).toEqual(true);
+		expect(check("-123", s)).toEqual(true);
+		expect(check("123.10", s)).toEqual(true);
+		expect(check("-123.10", s)).toEqual(true);
+	});
+
 });
