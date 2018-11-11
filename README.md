@@ -433,6 +433,10 @@ Property | Default  | Description
 `pattern` | `null`   | Regex pattern.
 `contains` | `null`   | The value must contain this text.
 `enum`	 | `null`   | The value must be an element of the `enum` array.
+`alpha`   | `null`   | The value must be an alphabetic string.
+`numeric`   | `null`   | The value must be a numeric string.
+`alphanum`   | `null`   | The value must be an alphanumeric string.
+`alphadash`   | `null`   | The value must be an alphabetic string that contains dashes.
 
 
 ## `url`
