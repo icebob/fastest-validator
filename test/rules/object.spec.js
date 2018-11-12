@@ -11,7 +11,9 @@ describe("Test checkObject", () => {
 	it("should check values", () => {
 		const s = { type: "object" };
 		const err = { type: "object" };
-		
+		const strict = { type: "object", strict: true, props: { a: "string" } };
+		const strictErr = {type: "objectStrict" };
+
 		expect(check(null, s)).toEqual(err);
 		expect(check(undefined, s)).toEqual(err);
 		expect(check(0, s)).toEqual(err);
@@ -21,5 +23,7 @@ describe("Test checkObject", () => {
 		expect(check(true, s)).toEqual(err);
 		expect(check([], s)).toEqual(err);
 		expect(check({}, s)).toEqual(true);
+		expect(check({a: "string"}, strict)).toEqual(true);
+		expect(check({a: "string", b: "string"}, strict)).toMatchObject(strictErr);
 	});
 });
