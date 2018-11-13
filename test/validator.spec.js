@@ -1284,6 +1284,26 @@ describe("Test sanitizer", () => {
 		expect(converted.value).toEqual([ true, true, true, false, false, false]);
 	});
 
+	it("should sanitize array without conversion", () => {
+		const check = v.compile([{type: "array", items: { type: "string" } }]);
+		const converted = {};
+		check([ "string1", "string2" ], null, null, converted);
+		expect(converted.value).toEqual([ "string1", "string2" ]);
+	});
+
+	it("should not sanitize array with error", () => {
+		const check = v.compile([{type: "array", items: { type: "boolean", convert: true} }]);
+		const converted = {};
+		const res = check(["false", 123], null, null, converted);
+
+		expect(res).toBeInstanceOf(Array);
+		expect(res.length).toBe(1);
+		expect(res[0].type).toBe("boolean");
+		expect(res[0].field).toBe("[1]");
+
+		expect(converted.value).not.toBeDefined();
+	});
+
 	it("should sanitize date", () => {
 		const check = v.compile([{type: "date", convert: true}]);
 		const converted = {};
