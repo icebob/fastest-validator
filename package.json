@@ -4,6 +4,7 @@
   "description": "The fastest JS validator library for NodeJS",
   "main": "dist/index.js",
   "browser": "dist/index.min.js",
+  "unpkg": "dist/index.min.js",
   "scripts": {
     "bench": "node benchmark/index.js",
     "build": "rollup -c",
