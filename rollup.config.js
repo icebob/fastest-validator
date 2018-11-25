@@ -1,5 +1,4 @@
 import buble from "rollup-plugin-buble";
-import commonjs from "rollup-plugin-commonjs";
 import closure from "@ampproject/rollup-plugin-closure-compiler";
 import { terser } from "rollup-plugin-terser";
 import pkg from "./package.json";
@@ -12,43 +11,37 @@ const bublePlugin = buble({
 const bundles = [
 	// CommonJS (main)
 	{
-		input: "index.js",
+		input: "lib/validator.js",
 		output: {
 			file: pkg.main,
 			format: "cjs"
 		},
 		plugins: [
-			commonjs(),
-
 			bublePlugin
 		]
 	},
 
 	// ESM (module)
 	{
-		input: "index.js",
+		input: "lib/validator.js",
 		output: {
 			file: pkg.module,
 			format: "es"
 		},
 		plugins: [
-			commonjs(),
-
 			bublePlugin
 		]
 	},
 
 	// UMD (browser)
 	{
-		input: "index.js",
+		input: "lib/validator.js",
 		output: {
 			file: pkg.browser,
 			name: "FastestValidator",
 			format: "umd"
 		},
 		plugins: [
-			commonjs(),
-
 			closure({
 				compilationLevel: "SIMPLE",
 				languageIn: "ECMASCRIPT6_STRICT",
