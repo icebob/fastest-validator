@@ -52,7 +52,7 @@ const bundles = [
 			closure({
 				compilationLevel: "SIMPLE",
 				languageIn: "ECMASCRIPT6_STRICT",
-				languageOut: "ECMASCRIPT5_STRICT",
+				languageOut: "ECMASCRIPT5",
 				env: "BROWSER",
 				warningLevel: "QUIET",
 				assumeFunctionWrapper: true,
