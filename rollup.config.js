@@ -4,22 +4,18 @@ import closure from "@ampproject/rollup-plugin-closure-compiler";
 import { terser } from "rollup-plugin-terser";
 import pkg from "./package.json";
 
-const BUNDLE_NAME = "FastestValidator";
-
 // transpile ES2015+ to ES5
 const bublePlugin = buble({
 	exclude: ["node_modules/**", "examples/**", "dist/**", "test/**", "benchmark/**"]
 });
 
 const bundles = [
-	// UMD Dev
+	// CommonJS (main)
 	{
 		input: "index.js",
 		output: {
-			file: "dist/index.js",
-			format: "umd",
-			name: BUNDLE_NAME,
-			sourcemap: true
+			file: pkg.main,
+			format: "cjs"
 		},
 		plugins: [
 			commonjs(),
@@ -28,13 +24,27 @@ const bundles = [
 		]
 	},
 
-	// UMD Prod
+	// ESM (module)
+	{
+		input: "index.js",
+		output: {
+			file: pkg.module,
+			format: "es"
+		},
+		plugins: [
+			commonjs(),
+
+			bublePlugin
+		]
+	},
+
+	// UMD (browser)
 	{
 		input: "index.js",
 		output: {
 			file: pkg.browser,
-			format: "umd",
-			name: BUNDLE_NAME
+			name: "FastestValidator",
+			format: "umd"
 		},
 		plugins: [
 			commonjs(),
