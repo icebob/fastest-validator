@@ -1,7 +1,7 @@
 import buble from "rollup-plugin-buble";
 import commonjs from "rollup-plugin-commonjs";
 import closure from "@ampproject/rollup-plugin-closure-compiler";
-import uglify from "rollup-plugin-uglify-es";
+import { terser } from "rollup-plugin-terser";
 import pkg from "./package.json";
 
 const BUNDLE_NAME = "FastestValidator";
@@ -53,7 +53,9 @@ const bundles = [
 
 			bublePlugin,
 
-			uglify()
+			terser({
+				toplevel: true
+			})
 		]
 	}
 ];
