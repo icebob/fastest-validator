@@ -14,6 +14,7 @@ const bundles = [
 		input: "lib/validator.js",
 		output: {
 			file: pkg.main,
+			freeze: false,
 			format: "cjs"
 		},
 		plugins: [
@@ -26,6 +27,7 @@ const bundles = [
 		input: "lib/validator.js",
 		output: {
 			file: pkg.module,
+			freeze: false,
 			format: "es"
 		},
 		plugins: [
@@ -39,6 +41,7 @@ const bundles = [
 		output: {
 			file: pkg.browser,
 			name: "FastestValidator",
+			freeze: false,
 			format: "umd"
 		},
 		plugins: [
