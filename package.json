@@ -29,9 +29,7 @@
   ],
   "files": [
     "dist",
-    "examples",
-    "lib",
-    "index.js"
+    "examples"
   ],
   "author": "Icebob",
   "license": "MIT",
