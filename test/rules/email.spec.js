@@ -1,7 +1,7 @@
 "use strict";
 
-const Validator = require("../../lib/validator");
-const fn = require("../../lib/rules/email");
+import Validator from "../../lib/validator";
+import fn from "../../lib/rules/email";
 
 const v = new Validator();
 const check = fn.bind(v);
@@ -12,7 +12,7 @@ describe("Test checkEmail", () => {
 		const s = { type: "email" };
 		const err = { type: "email" };
 		const errString = { type: "string" };
-		
+
 		expect(check(null, s)).toEqual(errString);
 		expect(check(undefined, s)).toEqual(errString);
 		expect(check(0, s)).toEqual(errString);
@@ -33,7 +33,7 @@ describe("Test checkEmail", () => {
 		expect(check("1234", s)).toEqual(err);
 		expect(check("abc@gmail", s)).toEqual(err);
 		expect(check("@gmail.com", s)).toEqual(err);
-		
+
 		// Invalid but we are in quick mode
 		expect(check("https://john@company.net", s)).toEqual(true);
 

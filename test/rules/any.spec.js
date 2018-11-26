@@ -1,7 +1,7 @@
 "use strict";
 
-const Validator = require("../../lib/validator");
-const fn = require("../../lib/rules/any");
+import Validator from "../../lib/validator";
+import fn from "../../lib/rules/any";
 
 const v = new Validator();
 const check = fn.bind(v);

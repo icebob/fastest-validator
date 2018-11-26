@@ -1,7 +1,7 @@
 "use strict";
 
-const Validator = require("../../lib/validator");
-const fn = require("../../lib/rules/url");
+import Validator from "../../lib/validator";
+import fn from "../../lib/rules/url";
 
 const v = new Validator();
 const check = fn.bind(v);
@@ -12,7 +12,7 @@ describe("Test checkUrl", () => {
 		const s = { type: "url" };
 		const err = { type: "url" };
 		const errString = { type: "string" };
-		
+
 		expect(check(null, s)).toEqual(errString);
 		expect(check(undefined, s)).toEqual(errString);
 		expect(check(0, s)).toEqual(errString);
@@ -38,7 +38,7 @@ describe("Test checkUrl", () => {
 		expect(check("http://clipboard.space", s)).toEqual(true);
 		expect(check("https://localhost:3000/?id=5&name=Test#result", s)).toEqual(true);
 
-		
+
 
 	});
 });

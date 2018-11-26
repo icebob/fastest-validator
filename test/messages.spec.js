@@ -1,6 +1,6 @@
 "use strict";
 
-const msg = require("../lib/messages");
+import msg from "../lib/messages";
 
 describe("Test Messages", () => {
 

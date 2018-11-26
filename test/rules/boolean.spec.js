@@ -1,7 +1,7 @@
 "use strict";
 
-const Validator = require("../../lib/validator");
-const fn = require("../../lib/rules/boolean");
+import Validator from "../../lib/validator";
+import fn from "../../lib/rules/boolean";
 
 const v = new Validator();
 const check = fn.bind(v);
@@ -29,7 +29,7 @@ describe("Test checkBoolean", () => {
 	it("should convert & check values", () => {
 		const s = { type: "boolean", convert: true };
 		const err = { type: "boolean" };
-		
+
 		expect(check(null, s)).toEqual(err);
 		expect(check(undefined, s)).toEqual(err);
 		expect(check(0, s)).toEqual(true);

@@ -1,7 +1,7 @@
 "use strict";
 
-const Validator = require("../../lib/validator");
-const fn = require("../../lib/rules/enum");
+import Validator from "../../lib/validator";
+import fn from "../../lib/rules/enum";
 
 const v = new Validator();
 const check = fn.bind(v);
@@ -10,7 +10,7 @@ describe("Test checkEnum", () => {
 
 	it("check enum", () => {
 		const e1 = { type: "enum", values: ["male", "female"] };
-		
+
 		expect(check("", e1)).toEqual({ type: "enumValue", expected: ["male", "female"], actual: "" });
 		expect(check("human", e1)).toEqual({ type: "enumValue", expected: ["male", "female"], actual: "human" });
 		expect(check("male", e1)).toEqual(true);

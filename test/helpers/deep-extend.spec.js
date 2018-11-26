@@ -1,5 +1,4 @@
-
-const deepExtend = require("../../lib/helpers/deep-extend");
+import deepExtend from "../../lib/helpers/deep-extend";
 
 describe("deepExtend", () => {
 	it("should return a merged object", () => {

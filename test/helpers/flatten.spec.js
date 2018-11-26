@@ -1,5 +1,4 @@
-
-const flatten = require("../../lib/helpers/flatten");
+import flatten from "../../lib/helpers/flatten";
 
 describe("flatten", () => {
 	it("should return a flat array", () => {
