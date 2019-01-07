@@ -27,6 +27,28 @@ describe("Test constructor", () => {
 		expect(v.messages.numberMax).toBe("The '{field}' field must be less than or equal to {expected}!");
 	});
 
+	it("should create multi instance with custom messages", () => {
+		let v1 = new Validator({
+			messages: {
+				numberMin: "Custom validation error message"
+			}
+		});
+		let v2 = new Validator({
+			messages: {
+				numberMin: "Egyedi hibaüzenet"
+			}
+		});
+		expect(v1).toBeDefined();
+		expect(v1.messages).toBeDefined();
+		expect(v1.messages.numberMin).toBe("Custom validation error message");
+		expect(v1.messages.numberMax).toBe("The '{field}' field must be less than or equal to {expected}!");
+
+		expect(v2).toBeDefined();
+		expect(v2.messages).toBeDefined();
+		expect(v2.messages.numberMin).toBe("Egyedi hibaüzenet");
+		expect(v2.messages.numberMax).toBe("The '{field}' field must be less than or equal to {expected}!");
+	});
+
 });
 
 describe("Test validate", () => {
