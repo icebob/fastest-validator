@@ -332,7 +332,7 @@ describe("Test compile (integration test)", () => {
 
 		it("when schema is defined as an object, and custom path is specified, it should be forwarded to validators", () => {
 			// Note: as the item we validate always must be an object, there is no use
-			// of specifying a custom parent, like for the schema-as-array above. 
+			// of specifying a custom parent, like for the schema-as-array above.
 			// The parent is currently used in the validator code (only forwarded to the generated
 			// function that validates all properties) and there is no way to test it.
 			const v = new Validator();
@@ -665,19 +665,19 @@ describe("Test multiple rules with objects", () => {
 
 	let schema = {
 		list: [
-			{ 
+			{
 				type: "object",
 				props: {
 					name: {type: "string"},
 					age: {type: "number"},
-				} 
+				}
 			},
-			{ 
+			{
 				type: "object",
 				props: {
 					country: {type: "string"},
 					code: {type: "string"},
-				} 
+				}
 			}
 		]
 	};
@@ -746,19 +746,19 @@ describe("Test multiple rules with objects within array", () => {
 		list: {
 			type: "array",
 			items: [
-				{ 
+				{
 					type: "object",
 					props: {
 						name: {type: "string"},
 						age: {type: "number"},
-					} 
+					}
 				},
-				{ 
+				{
 					type: "object",
 					props: {
 						country: {type: "string"},
 						code: {type: "string"},
-					} 
+					}
 				}
 			]
 		}
@@ -885,9 +885,9 @@ describe("Test multiple rules with mixed types", () => {
 		expect(res).toBeInstanceOf(Array);
 		expect(res.length).toBe(2);
 		expect(res[0].type).toBe("string");
-		expect(res[0].field).toBe("value");		
+		expect(res[0].field).toBe("value");
 		expect(res[1].type).toBe("boolean");
-		expect(res[1].field).toBe("value");		
+		expect(res[1].field).toBe("value");
 	});
 
 	it("should give error if 'undefined'", () => {
@@ -897,9 +897,9 @@ describe("Test multiple rules with mixed types", () => {
 		expect(res).toBeInstanceOf(Array);
 		expect(res.length).toBe(2);
 		expect(res[0].type).toBe("required");
-		expect(res[0].field).toBe("value");		
+		expect(res[0].field).toBe("value");
 		expect(res[1].type).toBe("required");
-		expect(res[1].field).toBe("value");		
+		expect(res[1].field).toBe("value");
 	});
 
 });
@@ -909,13 +909,13 @@ describe("Test multiple rules with arrays", () => {
 
 	let schema = {
 		list: [
-			{ 
+			{
 				type: "array",
-				items: "string" 
+				items: "string"
 			},
-			{ 
+			{
 				type: "array",
-				items: "number" 
+				items: "number"
 			}
 		]
 	};
@@ -972,13 +972,13 @@ describe("Test multiple array in root", () => {
 	const v = new Validator();
 
 	let schema = [
-		{ 
+		{
 			type: "array",
-			items: "string" 
+			items: "string"
 		},
-		{ 
+		{
 			type: "array",
-			items: "number" 
+			items: "number"
 		}
 	];
 
@@ -1185,5 +1185,62 @@ describe("Test irregular object property names", () => {
 			try: "test",
 		}, schema);
 		expect(res).toBe(true);
+	});
+});
+
+describe("Test $$strict schema restriction on root-level", () => {
+	const v = new Validator();
+
+	let schema = {
+		name: "string",
+		$$strict: true
+	};
+
+	let check = v.compile(schema);
+
+	it("should give error if the object contains additional properties on the root-level", () => {
+		let obj = {
+			name: "test",
+			additionalProperty: "additional"
+		};
+
+		let res = check(obj);
+
+		expect(res).toBeInstanceOf(Array);
+		expect(res.length).toBe(1);
+		expect(res[0].field).toBe("rootObject");
+		expect(res[0].type).toBe("objectStrict");
+	});
+});
+
+describe("Test $$strict schema restriction on sub-level", () => {
+	const v = new Validator();
+
+	let schema = {
+		address: {
+			type: "object",
+			props: {
+				street: "string",
+				$$strict: true
+			}
+		}
+	};
+
+	let check = v.compile(schema);
+
+	it("should give error if the object contains additional properties on the sub-level", () => {
+		let obj = {
+			address: {
+				street: "test",
+				additionalProperty: "additional"
+			}
+		};
+
+		let res = check(obj);
+
+		expect(res).toBeInstanceOf(Array);
+		expect(res.length).toBe(1);
+		expect(res[0].field).toBe("address");
+		expect(res[0].type).toBe("objectStrict");
 	});
 });
