@@ -3,7 +3,7 @@
 const Validator = require("../index");
 const v = new Validator({
 	messages: {
-		stringMin: "A(z) '{name}' mező túl rövid. Minimum: {0}, Jelenleg: {1}"
+		stringMin: "A(z) '{field}' mező túl rövid. Minimum: {expected}, Jelenleg: {actual}"
 	}
 });
 
@@ -35,6 +35,8 @@ const schema = {
 	status: "boolean",
 	age: { type: "number", min: 18, max: 100, convert: true },
 	apikey: "forbidden",
+	uuidv4: { type: "uuid", version: 4 },
+	uuid: "uuid",
 	action: "function",
 	created: "date"
 };
@@ -81,6 +83,8 @@ const obj = {
 	status: true,
 	age: "28",
 	apikey: null,
+	uuidv4: "10ba038e-48da-487b-96e8-8d3b99b6d18a",
+	uuid: "10ba038e-48da-487b-96e8-8d3b99b6d18a",
 	action: () => {},
 	created: new Date()
 };

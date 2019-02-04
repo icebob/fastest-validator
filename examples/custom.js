@@ -4,7 +4,7 @@ let v = new Validator({
 	messages: {
 		// Register our new error message text
 		evenNumber: "The '{field}' field must be an even number! Actual: {actual}",
-		weightMin: "The weight must be larger than {expected}! Actual: {actual}"
+		weightMin: "The weight must be greater than {expected}! Actual: {actual}"
 	}
 });
 
@@ -54,6 +54,6 @@ console.log(v.validate({ name: "John", age: 20, weight: 8 }, schema));
 		expected: 10,                                            
 		actual: 8,                                               
 		field: 'weight',                                         
-		message: 'The weight must be larger than 10! Actual: 8' 
+		message: 'The weight must be greater than 10! Actual: 8' 
 	}]
 */

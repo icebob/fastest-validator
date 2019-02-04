@@ -1,4 +1,31 @@
 --------------------------------------------------
+<a name="0.6.13"></a>
+# 0.6.13 (2019-01-22)
+
+## Changes
+- add error message for `url` rule.
+- add `numeric` attribute to `string` rule.
+- add `alpha`, `alphanum` & `alphadash` attributes to `string` rule.
+- add `index.d.ts` file.
+- fix multiple validator with different messages issue.
+
+--------------------------------------------------
+<a name="0.6.12"></a>
+# 0.6.12 (2018-12-04)
+
+## Changes
+- support recursive schemas by [@andersnm](https://github.com/andersnm)
+- fix irregular object property names
+
+--------------------------------------------------
+<a name="0.6.11"></a>
+# 0.6.11 (2018-10-25)
+
+## Changes
+- performance improvements by [@andersnm](https://github.com/andersnm)
+- rewritten schema compiling by [@andersnm](https://github.com/andersnm)
+
+--------------------------------------------------
 <a name="0.6.10"></a>
 # 0.6.10 (2018-06-25)
 

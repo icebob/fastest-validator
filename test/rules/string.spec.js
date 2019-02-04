@@ -60,6 +60,13 @@ describe("Test checkString", () => {
 		expect(check("JOHN", s)).toEqual(true);
 	});
 
+	it("check pattern with string", () => {
+		const s = { type: "string", pattern: "^[A-Z]+$", patternFlags: "g" };
+		
+		expect(check("John", s)).toEqual({ type: "stringPattern", expected: /^[A-Z]+$/g });
+		expect(check("JOHN", s)).toEqual(true);
+	});
+
 	it("check contains", () => {
 		const s = { type: "string", contains: "bob" };
 		
@@ -75,5 +82,57 @@ describe("Test checkString", () => {
 		expect(check("male", s)).toEqual(true);
 		expect(check("female", s)).toEqual(true);
 	});
+
+	it("check numeric string", () => {
+		const s = {type: "string", numeric: true};
+
+		expect(check("123.1s0", s)).toEqual({type: "stringNumeric", expected: "A numeric string", actual: "123.1s0"});
+		expect(check("x", s)).toEqual({type: "stringNumeric", expected: "A numeric string", actual: "x"});
+		expect(check("", s)).toEqual({type: "stringNumeric", expected: "A numeric string", actual: ""});
+		expect(check(" ", s)).toEqual({type: "stringNumeric", expected: "A numeric string", actual: " "});
+
+		expect(check("123", s)).toEqual(true);
+		expect(check("-123", s)).toEqual(true);
+		expect(check("123.10", s)).toEqual(true);
+		expect(check("-123.10", s)).toEqual(true);
+	});
+
+	it("check alphabetic string", () => {
+		const s = {type: "string", alpha: true};
+
+		expect(check("3312", s)).toEqual({type: "stringAlpha", expected: "An alphabetic string", actual: "3312"});
+		expect(check("h3ll0", s)).toEqual({type: "stringAlpha", expected: "An alphabetic string", actual: "h3ll0"});
+		expect(check("us3rnam3", s)).toEqual({type: "stringAlpha", expected: "An alphabetic string", actual: "us3rnam3"});
+
+		expect(check("username", s)).toEqual(true);
+		expect(check("hello", s)).toEqual(true);
+		expect(check("elliot", s)).toEqual(true);
+
+	});
+
+	it("check alphanumeric string", () => {
+		const s = {type: "string", alphanum: true};
+
+		expect(check("hello_world", s)).toEqual({type: "stringAlphanum", expected: "An alphanumeric string", actual: "hello_world"});
+		expect(check("print()", s)).toEqual({type: "stringAlphanum", expected: "An alphanumeric string", actual: "print()"});
+		expect(check("user.name", s)).toEqual({type: "stringAlphanum", expected: "An alphanumeric string", actual: "user.name"});
+
+		expect(check("p4ssword", s)).toEqual(true);
+		expect(check("anarchy77", s)).toEqual(true);
+	});
+
+	it("check alphadash string", () => {
+		const s = {type: "string", alphadash: true};
+
+		expect(check("hello world", s)).toEqual({type: "stringAlphadash", expected: "An alphadash string", actual: "hello world"});
+		expect(check("hello.world", s)).toEqual({type: "stringAlphadash", expected: "An alphadash string", actual: "hello.world"});
+		expect(check("spaced string", s)).toEqual({type: "stringAlphadash", expected: "An alphadash string", actual: "spaced string"});
+
+
+		expect(check("hello_world", s)).toEqual(true);
+		expect(check("dashed_string", s)).toEqual(true);
+
+	});
+
 
 });

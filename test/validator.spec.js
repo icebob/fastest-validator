@@ -27,6 +27,28 @@ describe("Test constructor", () => {
 		expect(v.messages.numberMax).toBe("The '{field}' field must be less than or equal to {expected}!");
 	});
 
+	it("should create multi instance with custom messages", () => {
+		let v1 = new Validator({
+			messages: {
+				numberMin: "Custom validation error message"
+			}
+		});
+		let v2 = new Validator({
+			messages: {
+				numberMin: "Egyedi hibaüzenet"
+			}
+		});
+		expect(v1).toBeDefined();
+		expect(v1.messages).toBeDefined();
+		expect(v1.messages.numberMin).toBe("Custom validation error message");
+		expect(v1.messages.numberMax).toBe("The '{field}' field must be less than or equal to {expected}!");
+
+		expect(v2).toBeDefined();
+		expect(v2.messages).toBeDefined();
+		expect(v2.messages.numberMin).toBe("Egyedi hibaüzenet");
+		expect(v2.messages.numberMax).toBe("The '{field}' field must be less than or equal to {expected}!");
+	});
+
 });
 
 describe("Test validate", () => {
@@ -103,37 +125,42 @@ describe("Test resolveMessage", () => {
 		expect(res).toBe("Field country and again country. Expected: London, actual: 350.");
 	});
 
+	it("should not resolve unknown errors", () => {
+		let res = v.resolveMessage({ type: "XXX"});
+		expect(res).toBeUndefined();
+	});
 });
 
 describe("Test compile (unit test)", () => {
 
 	const v = new Validator();
-	v._processRule = jest.fn();
+	v.compileSchemaRule = jest.fn(v.compileSchemaRule.bind(v));
 
-	it("should call processRule", () => {
+	it("should call compileSchemaRule", () => {
 		v.compile({
 			id: { type: "number" },
 			name: { type: "string", min: 5},
 			status: "boolean"
 		});
 
-		expect(v._processRule).toHaveBeenCalledTimes(3);
-		expect(v._processRule).toHaveBeenCalledWith({"type": "number"}, "id", false);
-		expect(v._processRule).toHaveBeenCalledWith({"type": "string", "min": 5}, "name", false);
-		expect(v._processRule).toHaveBeenCalledWith("boolean", "status", false);
+		expect(v.compileSchemaRule).toHaveBeenCalledTimes(3);
+		expect(v.compileSchemaRule).toHaveBeenCalledWith({"type": "number"});
+		expect(v.compileSchemaRule).toHaveBeenCalledWith({"type": "string", "min": 5});
+		expect(v.compileSchemaRule).toHaveBeenCalledWith("boolean");
 	});
 
-	it("should call processRule for root-level array", () => {
-		v._processRule.mockClear();
+	it("should call compileSchemaRule for root-level array", () => {
+		v.compileSchemaRule.mockClear();
 
 		v.compile([
 			{ type: "array", items: "number" },
 			{ type: "string", min: 2 }
 		]);
 
-		expect(v._processRule).toHaveBeenCalledTimes(2);
-		expect(v._processRule).toHaveBeenCalledWith({"type": "array", items: "number"}, null, false);
-		expect(v._processRule).toHaveBeenCalledWith({"type": "string", min: 2 }, null, false);
+		expect(v.compileSchemaRule).toHaveBeenCalledTimes(3);
+		expect(v.compileSchemaRule).toHaveBeenCalledWith({"type": "array", items: "number"});
+		expect(v.compileSchemaRule).toHaveBeenCalledWith("number");
+		expect(v.compileSchemaRule).toHaveBeenCalledWith({"type": "string", min: 2 });
 	});
 
 	it("should throw error is the schema is null", () => {
@@ -163,83 +190,31 @@ describe("Test compile (unit test)", () => {
 			v.compile([], []);
 		}).toThrowError();
 	});
-});
-
-describe("Test _processRule", () => {
-
-	const v = new Validator();
-	v.compile = jest.fn();
-	v._checkWrapper = jest.fn();
-
-	it("should return array of rules", () => {
-		let res = v._processRule({ type: "number", positive: true }, "id", false);
-
-		expect(res).toBeInstanceOf(Array);
-		expect(res.length).toBe(1);
-		expect(res[0].fn).toBeInstanceOf(Function);
-		expect(res[0].type).toBe("number");
-		expect(res[0].name).toBe("id");
-		expect(res[0].schema).toEqual({ type: "number", positive: true });
-		expect(res[0].iterate).toBe(false);
-	});
-
-	it("should convert shorthand definition", () => {
-		let res = v._processRule("string", "name", false);
-
-		expect(res).toBeInstanceOf(Array);
-		expect(res.length).toBe(1);
-		expect(res[0].fn).toBeInstanceOf(Function);
-		expect(res[0].type).toBe("string");
-		expect(res[0].name).toBe("name");
-		expect(res[0].schema).toEqual({ type: "string" });
-		expect(res[0].iterate).toBe(false);
-	});
 
 	it("should throw error if the type is invalid", () => {
 		expect(() => {
-			v._processRule({ type: "unknow" }, "id", false);
+			v.compile({ id: { type: "unknow" } });
 		}).toThrowError("Invalid 'unknow' type in validator schema!");
 	});
 
-	it("should call compile if type is object", () => {
-		let res = v._processRule({ type: "object", props: {
-			id: "number"
-		} }, "item", false);
+	it("should throw error if object has array props", () => {
+		const schema = {
+			invalid: { type: "object", props: [ { type: "string" }, { type: "number" } ] }
+		};
 
-		expect(res).toBeInstanceOf(Array);
-		expect(res.length).toBe(2);
-		expect(res[0].fn).toBeInstanceOf(Function);
-		expect(res[0].type).toBe("object");
-		expect(res[0].name).toBe("item");
-		expect(res[0].iterate).toBe(false);
-
-		//expect(res[1].fn).toBeInstanceOf(Function);
-		expect(res[1].type).toBe("object");
-		expect(res[1].name).toBe("item");
-		expect(res[1].iterate).toBe(false);
-
-		expect(v.compile).toHaveBeenCalledTimes(1);
-		expect(v.compile).toHaveBeenCalledWith({id: "number"});
+		expect(() => {
+			v.compile(schema);
+		}).toThrowError();
 	});
 
-	it("should call checkWrapper & processRule if type is Array", () => {
-		let res = v._processRule({ type: "array", items: "number" }, "list", false);
+	it("should throw error if object has string props", () => {
+		const schema = {
+			invalid: { type: "object", props: "string" }
+		};
 
-		expect(res).toBeInstanceOf(Array);
-		expect(res.length).toBe(2);
-
-		expect(res[0].fn).toBeInstanceOf(Function);
-		expect(res[0].type).toBe("array");
-		expect(res[0].name).toBe("list");
-		expect(res[0].iterate).toBe(false);
-
-		//expect(res[1].fn).toBeInstanceOf(Function);
-		expect(res[1].type).toBe("array");
-		expect(res[1].name).toBe("list");
-		expect(res[1].iterate).toBe(true);
-
-		expect(v._checkWrapper).toHaveBeenCalledTimes(1);
-		expect(v._checkWrapper).toHaveBeenCalledWith([{"fn": expect.any(Function), "iterate": false, "name": null, "schema": {"type": "number"}, "type": "number"}]);
+		expect(() => {
+			v.compile(schema);
+		}).toThrowError();
 	});
 });
 
@@ -331,7 +306,7 @@ describe("Test compile (integration test)", () => {
 			expect(res[0]).toEqual({
 				type: "stringMin",
 				field: "name",
-				message: "The 'name' field length must be larger than or equal to 5 characters long!",
+				message: "The 'name' field length must be greater than or equal to 5 characters long!",
 				expected: 5,
 				actual: 4
 			});
@@ -348,6 +323,63 @@ describe("Test compile (integration test)", () => {
 
 	});
 
+	describe("Test check generator with custom path & parent", () => {
+
+		it("when schema is defined as an array, and custom path & parent are specified, they should be forwarded to validators", () => {
+			const v = new Validator();
+			const customValidator = jest.fn().mockReturnValue(true);	// Will be called with (value, schema, path, parent)
+			v.add("customValidator", customValidator);
+
+			const validate = v.compile([{ type: "customValidator" }]);
+			const parent = {};
+			const res = validate({ customValue: 4711 }, "customPath", parent);
+
+			expect(res).toBe(true);
+			expect(customValidator.mock.calls[0][2]).toBe("customPath");
+			expect(customValidator.mock.calls[0][3]).toBe(parent);
+		});
+
+		it("when schema is defined as an array, path & parent should be set to default values in validators", () => {
+			const v = new Validator();
+			const customValidator = jest.fn().mockReturnValue(true);	// Will be called with (value, schema, path, parent)
+			v.add("customValidator", customValidator);
+
+			const validate = v.compile([{ type: "customValidator" }]);
+			const res = validate({ customValue: 4711 });
+
+			expect(res).toBe(true);
+			expect(customValidator.mock.calls[0][2]).toBeUndefined();
+			expect(customValidator.mock.calls[0][3]).toBeNull();
+		});
+
+		it("when schema is defined as an object, and custom path is specified, it should be forwarded to validators", () => {
+			// Note: as the item we validate always must be an object, there is no use
+			// of specifying a custom parent, like for the schema-as-array above. 
+			// The parent is currently used in the validator code (only forwarded to the generated
+			// function that validates all properties) and there is no way to test it.
+			const v = new Validator();
+			const customValidator = jest.fn().mockReturnValue(true);	// Will be called with (value, schema, path, parent)
+			v.add("customValidator", customValidator);
+
+			const validate = v.compile({ customValue: { type: "customValidator" } });
+			const res = validate({ customValue: 4711 }, "customPath");
+
+			expect(res).toBe(true);
+			expect(customValidator.mock.calls[0][2]).toBe("customPath.customValue");
+		});
+
+		it("when schema is defined as an object, path should be set to default value in validators", () => {
+			const v = new Validator();
+			const customValidator = jest.fn().mockReturnValue(true);	// Will be called with (value, schema, path, parent)
+			v.add("customValidator", customValidator);
+
+			const validate = v.compile({ customValue: { type: "customValidator" } });
+			const res = validate({ customValue: 4711 });
+
+			expect(res).toBe(true);
+			expect(customValidator.mock.calls[0][2]).toBe("customValue");
+		});
+	});
 });
 
 describe("Test nested schema", () => {
@@ -444,7 +476,7 @@ describe("Test 3 level nested schema", () => {
 		expect(res.length).toBe(1);
 		expect(res[0].type).toBe("stringMin");
 		expect(res[0].field).toBe("a.b.c");
-		expect(res[0].message).toBe("The 'a.b.c' field length must be larger than or equal to 5 characters long!");
+		expect(res[0].message).toBe("The 'a.b.c' field length must be greater than or equal to 5 characters long!");
 	});
 
 });
@@ -956,4 +988,224 @@ describe("Test multiple rules with arrays", () => {
 
 	});
 
+});
+
+describe("Test multiple array in root", () => {
+	const v = new Validator();
+
+	let schema = [
+		{ 
+			type: "array",
+			items: "string" 
+		},
+		{ 
+			type: "array",
+			items: "number" 
+		}
+	];
+
+	let check = v.compile(schema);
+
+	it("should give true if first array is given", () => {
+		let obj = ["hello", "there", "this", "is", "a", "test"];
+
+		let res = check(obj);
+
+		expect(res).toBe(true);
+	});
+
+	it("should give true if second array is given", () => {
+		let obj = [1, 3, 3, 7];
+
+		let res = check(obj);
+
+		expect(res).toBe(true);
+	});
+
+	it("should give error if the array is broken", () => {
+		let obj = ["hello", 3];
+
+		let res = check(obj);
+
+		expect(res).toBeInstanceOf(Array);
+		expect(res.length).toBe(2);
+		expect(res[0].type).toBe("string");
+		expect(res[0].field).toBe("[1]");
+
+		expect(res[1].type).toBe("number");
+		expect(res[1].field).toBe("[0]");
+	});
+
+	it("should give error if the array is broken", () => {
+		let obj = [true, false];
+		let res = check(obj);
+
+		expect(res).toBeInstanceOf(Array);
+		expect(res.length).toBe(4);
+		expect(res[0].type).toBe("string");
+		expect(res[0].field).toBe("[0]");
+
+		expect(res[1].type).toBe("string");
+		expect(res[1].field).toBe("[1]");
+
+	});
+
+});
+
+describe("Test object without props", () => {
+	const v = new Validator();
+
+	it("should compile and validate", () => {
+		const schema = {
+			valid: { type: "object" }
+		};
+
+		const check = v.compile(schema);
+		expect(check).toBeInstanceOf(Function);
+
+		const res = check({ valid: { a: "b" } });
+		expect(res).toBe(true);
+	});
+});
+
+describe("Test array without items", () => {
+	const v = new Validator();
+
+	it("should compile and validate", () => {
+		const schema = {
+			valid: { type: "array" }
+		};
+
+		const check = v.compile(schema);
+		expect(check).toBeInstanceOf(Function);
+
+		const res = check({ valid: [1, 2, 3] });
+		expect(res).toBe(true);
+	});
+});
+
+describe("Test recursive/cyclic schema", () => {
+	const v = new Validator();
+
+	let schema = {};
+	Object.assign(schema, {
+		name: { type: "string" },
+		parent: { type: "object", props: schema, optional: true },
+		subcategories: {
+			type: "array",
+			optional: true,
+			items: { type: "object", props: schema}
+		}
+	});
+
+	it("should compile and validate", () => {
+		let category = {};
+		Object.assign(category, {
+			name: "top",
+			subcategories: [
+				{
+					name: "sub1",
+					parent: category
+				},
+				{
+					name: "sub2",
+					parent: category
+				}
+			]
+		});
+
+		const res = v.validate(category, schema);
+
+		expect(res).toBe(true);
+	});
+
+	it("should give error if nested object is broken", () => {
+		const category = {
+			name: "top",
+			subcategories: [
+				{
+					name: "sub1"
+				},
+				{
+					name: "sub2",
+					subcategories: [ {} ]
+				}
+			]
+		};
+
+		const res = v.validate(category, schema);
+
+		expect(res).toBeInstanceOf(Array);
+		expect(res.length).toBe(1);
+		expect(res[0].type).toBe("required");
+		expect(res[0].field).toBe("subcategories[1].subcategories[0].name");
+	});
+});
+
+describe("Test irregular object property names", () => {
+	const v = new Validator();
+	it("should compile schema with dash", () => {
+		const schema = {
+			"1-1": { type: "string" },
+		};
+
+		const res = v.validate({
+			"1-1": "test",
+		}, schema);
+		expect(res).toBe(true);
+	});
+
+	it("should compile schema with quotes", () => {
+		const schema = {
+			"a'bc": { type: "string" },
+			"a\"bc": { type: "string" },
+		};
+
+		const res = v.validate({ "a'bc": "test", "a\"bc": "test" }, schema);
+		expect(res).toBe(true);
+	});
+
+	it("should compile schema with linebreak", () => {
+		const schema = {
+			"a\nbc\ndef": { type: "string" },
+			"a\rbc": { type: "string" },
+			"a\u2028bc": { type: "string" },
+			"a\u2029bc": { type: "string" },
+		};
+
+		const res = v.validate({
+			"a\nbc\ndef": "test",
+			"a\rbc": "test",
+			"a\u2028bc": "test",
+			"a\u2029bc": "test",
+		}, schema);
+		expect(res).toBe(true);
+	});
+
+	it("should compile schema with escape characters", () => {
+		const schema = {
+			"\\o/": { type: "string" },
+		};
+
+		const res = v.validate({ "\\o/": "test" }, schema);
+		expect(res).toBe(true);
+	});
+
+	it("should compile schema with reserved keyword", () => {
+		// Reserved keywords are permitted as unquoted property names in ES5+. There is no special support for these
+		const schema = {
+			for: { type: "string" },
+			goto: { type: "string" },
+			var: { type: "string" },
+			try: { type: "string" },
+		};
+
+		const res = v.validate({
+			for: "hello",
+			goto: "hello",
+			var: "test",
+			try: "test",
+		}, schema);
+		expect(res).toBe(true);
+	});
 });

@@ -1,6 +1,6 @@
 {
   "name": "fastest-validator",
-  "version": "0.6.10",
+  "version": "0.6.13",
   "description": "The fastest JS validator library for NodeJS",
   "main": "dist/index.js",
   "browser": "dist/index.min.js",
@@ -39,18 +39,19 @@
   "homepage": "https://github.com/icebob/fastest-validator#readme",
   "devDependencies": {
     "benchmarkify": "2.1.0",
-    "coveralls": "3.0.0",
-    "eslint": "4.19.1",
-    "jest": "22.4.3",
-    "jest-cli": "22.4.3",
-    "npm-check": "5.6.0",
-    "rollup": "0.57.1",
-    "rollup-plugin-buble": "0.19.2",
+    "coveralls": "3.0.2",
+    "eslint": "5.8.0",
+    "jest": "23.6.0",
+    "jest-cli": "23.6.0",
+    "npm-check": "5.9.0",
+    "rollup": "0.67.0",
+    "rollup-plugin-buble": "0.19.4",
     "rollup-plugin-closure-compiler-js": "1.0.6",
-    "rollup-plugin-commonjs": "9.1.0",
+    "rollup-plugin-commonjs": "9.2.0",
     "rollup-plugin-uglify-es": "0.0.1"
   },
   "jest": {
+    "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "rootDir": "./lib",
     "roots": [
