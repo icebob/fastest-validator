@@ -110,19 +110,19 @@ describe("Test resolveMessage", () => {
 	const v = new Validator();
 
 	it("should resolve variables in message string", () => {
-		let res = v.resolveMessage({ type: "stringLength", field: "age", expected: 3, actual: 6 });
+	    let res = v.resolveMessage({ type: "stringLength", field: "age", expected: 3, actual: 6 }, v.messages["stringLength"] );
 		expect(res).toBe("The 'age' field length must be 3 characters long!");
 	});
 
 	it("should resolve 0 value in message string", () => {
-		let res = v.resolveMessage({ type: "numberNotEqual", field: "b", expected: 0, actual: 0 });
+	    let res = v.resolveMessage({ type: "numberNotEqual", field: "b", expected: 0, actual: 0 }, v.messages["numberNotEqual"] );
 		expect(res).toBe("The 'b' field can't be equal with 0!");
 	});
 
 	it("should resolve more variables in message string", () => {
-		v.messages.custom = "Field {field} and again {field}. Expected: {expected}, actual: {actual}.";
-		let res = v.resolveMessage({ type: "custom", field: "country", expected: "London", actual: 350 });
-		expect(res).toBe("Field country and again country. Expected: London, actual: 350.");
+	    v.messages.custom = "Field {field} and again {field}. Expected: {expected}, actual: {actual}.";
+	    let res = v.resolveMessage({ type: "custom", field: "country", expected: "London", actual: 350 },  v.messages.custom );
+	    expect(res).toBe("Field country and again country. Expected: London, actual: 350.");
 	});
 
 	it("should not resolve unknown errors", () => {
