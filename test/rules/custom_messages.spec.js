@@ -10,7 +10,7 @@ describe("Test custom messages", () => {
 		const message = "That wasn't a string!";
 		const s = { name: { type: "string", messages: { string: message } } };
 
-		expect(v.validate({ name: 123 }, s)).toEqual([{ type: "string", expected: undefined, actual: undefined, field: 'name', message }]);
+		expect(v.validate({ name: 123 }, s)).toEqual([{ type: "string", expected: undefined, actual: undefined, field: "name", message }]);
 
 	});
 
@@ -20,7 +20,7 @@ describe("Test custom messages", () => {
 
 		const s = { name: { type: "string", messages: { required: message } } };
 
-		expect(v.validate({}, s)).toEqual([{ type: "required", expected: undefined, actual: undefined, field: 'name', message: message }]);
+		expect(v.validate({}, s)).toEqual([{ type: "required", expected: undefined, actual: undefined, field: "name", message: message }]);
 
 	});
 
@@ -29,7 +29,7 @@ describe("Test custom messages", () => {
 		const message = "Incorrect name length. Your field: {field} had {actual} chars when it should have no more than {expected}";
 		const s = { name: { type: "string", max: 2, messages: { stringMax: message } } };
 
-		expect(v.validate({ name: "Long string" }, s)).toEqual([{ type: "stringMax", expected: 2, actual: 11, field: 'name', message: "Incorrect name length. Your field: name had 11 chars when it should have no more than 2" }]);
+		expect(v.validate({ name: "Long string" }, s)).toEqual([{ type: "stringMax", expected: 2, actual: 11, field: "name", message: "Incorrect name length. Your field: name had 11 chars when it should have no more than 2" }]);
 
 	});
 
@@ -40,9 +40,9 @@ describe("Test custom messages", () => {
 				{ type: "string", messages: { string: "Not a string" } },
 				{ type: "boolean", messages: { boolean: "Not a boolean" } }
 			]
-		}
+		};
 
-		expect(v.validate({ cache: 123 }, s)).toEqual([{ type: "string", field: 'cache', message: "Not a string" }, { type: "boolean", field: 'cache', message: "Not a boolean" }]);
+		expect(v.validate({ cache: 123 }, s)).toEqual([{ type: "string", field: "cache", message: "Not a string" }, { type: "boolean", field: "cache", message: "Not a boolean" }]);
 
 	});
 
@@ -60,7 +60,7 @@ describe("Test custom messages", () => {
 					}
 				}
 			}
-		}
+		};
 
 		expect(v.validate({
 			users: [
@@ -68,7 +68,7 @@ describe("Test custom messages", () => {
 				{ id: 2, name: 123, status: true },
 				{ id: 3, name: "Bill", status: false }
 			]
-		}, s)).toEqual([{ type: "number", field: 'users[0].id', message: "numbers only please" }, { type: "string", field: 'users[1].name', message: "make sure it's a string" }]);
+		}, s)).toEqual([{ type: "number", field: "users[0].id", message: "numbers only please" }, { type: "string", field: "users[1].name", message: "make sure it's a string" }]);
 
 	});
 
@@ -85,7 +85,7 @@ describe("Test custom messages", () => {
 					}
 				}
 			}
-		}
+		};
 
 		const check = v.compile(s);
 
@@ -95,7 +95,7 @@ describe("Test custom messages", () => {
 				{ id: 2, name: 123, status: true },
 				{ id: 3, name: "Bill", status: false }
 			]
-		})).toEqual([{ type: "number", field: 'users[0].id', message: "numbers only please" }, { type: "string", field: 'users[1].name', message: "make sure it's a string" }]);
+		})).toEqual([{ type: "number", field: "users[0].id", message: "numbers only please" }, { type: "string", field: "users[1].name", message: "make sure it's a string" }]);
 
 	});
 });
