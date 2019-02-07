@@ -29,7 +29,8 @@
     "dist",
     "examples",
     "lib",
-    "index.js"
+    "index.js",
+    "index.d.ts"
   ],
   "author": "Icebob",
   "license": "MIT",
