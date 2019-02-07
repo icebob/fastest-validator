@@ -27,6 +27,28 @@ describe("Test constructor", () => {
 		expect(v.messages.numberMax).toBe("The '{field}' field must be less than or equal to {expected}!");
 	});
 
+	it("should create multi instance with custom messages", () => {
+		let v1 = new Validator({
+			messages: {
+				numberMin: "Custom validation error message"
+			}
+		});
+		let v2 = new Validator({
+			messages: {
+				numberMin: "Egyedi hibaüzenet"
+			}
+		});
+		expect(v1).toBeDefined();
+		expect(v1.messages).toBeDefined();
+		expect(v1.messages.numberMin).toBe("Custom validation error message");
+		expect(v1.messages.numberMax).toBe("The '{field}' field must be less than or equal to {expected}!");
+
+		expect(v2).toBeDefined();
+		expect(v2.messages).toBeDefined();
+		expect(v2.messages.numberMin).toBe("Egyedi hibaüzenet");
+		expect(v2.messages.numberMax).toBe("The '{field}' field must be less than or equal to {expected}!");
+	});
+
 });
 
 describe("Test validate", () => {
@@ -88,18 +110,18 @@ describe("Test resolveMessage", () => {
 	const v = new Validator();
 
 	it("should resolve variables in message string", () => {
-		let res = v.resolveMessage({ type: "stringLength", field: "age", expected: 3, actual: 6 });
+		let res = v.resolveMessage({ type: "stringLength", field: "age", expected: 3, actual: 6 }, v.messages["stringLength"] );
 		expect(res).toBe("The 'age' field length must be 3 characters long!");
 	});
 
 	it("should resolve 0 value in message string", () => {
-		let res = v.resolveMessage({ type: "numberNotEqual", field: "b", expected: 0, actual: 0 });
+		let res = v.resolveMessage({ type: "numberNotEqual", field: "b", expected: 0, actual: 0 }, v.messages["numberNotEqual"] );
 		expect(res).toBe("The 'b' field can't be equal with 0!");
 	});
 
 	it("should resolve more variables in message string", () => {
 		v.messages.custom = "Field {field} and again {field}. Expected: {expected}, actual: {actual}.";
-		let res = v.resolveMessage({ type: "custom", field: "country", expected: "London", actual: 350 });
+		let res = v.resolveMessage({ type: "custom", field: "country", expected: "London", actual: 350 },  v.messages.custom );
 		expect(res).toBe("Field country and again country. Expected: London, actual: 350.");
 	});
 

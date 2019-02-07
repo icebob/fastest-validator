@@ -571,7 +571,50 @@ v.validate({ name: "John" }, { name: { type: "string", min: 6 }});
 ]
 */
 ```
+# Personalised Messages
+Sometimes the standard messages are too generic. You can customise messages per validation type per field:
 
+```js
+const Validator = require("fastest-validator");
+const v = new Validator();
+const schema = {
+    firstname: {
+        type: "string",
+        min: 6,
+        messages: {
+            string: "Please check your firstname",
+            stringMin: "Your firstname is too short"
+        }
+    },
+    lastname: {
+        type: "string",
+        min: 6,
+        messages: {
+            string: "Please check your lastname",
+            stringMin: "Your lastname is too short"
+        }
+    }
+}
+v.validate({ firstname: "John", lastname: 23 }, schema );
+/* Returns:
+[
+    {
+        type: 'stringMin',
+        expected: 6,
+        actual: 4,
+        field: 'firstname',
+        message: 'Your firstname is too short'
+    },
+    {
+        type: 'string',
+        expected: undefined,
+        actual: undefined,
+        field: 'lastname',
+        message: 'Please check your lastname'
+    }
+]
+*/
+```
 ## Message types
 Name                | Default text
 ------------------- | -------------

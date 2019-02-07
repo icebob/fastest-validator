@@ -41,6 +41,8 @@ describe("Test Messages", () => {
 		expect(msg.url).toBeDefined();
 		expect(msg.object).toBeDefined();
 		expect(msg.objectStrict).toBeDefined();
+		expect(msg.uuid).toBeDefined();
+		expect(msg.uuidVersion).toBeDefined();
 
 	});
 

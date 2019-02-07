@@ -1,4 +1,15 @@
 --------------------------------------------------
+<a name="0.6.13"></a>
+# 0.6.13 (2019-01-22)
+
+## Changes
+- add error message for `url` rule.
+- add `numeric` attribute to `string` rule.
+- add `alpha`, `alphanum` & `alphadash` attributes to `string` rule.
+- add `index.d.ts` file.
+- fix multiple validator with different messages issue.
+
+--------------------------------------------------
 <a name="0.6.12"></a>
 # 0.6.12 (2018-12-04)
 

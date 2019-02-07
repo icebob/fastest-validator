@@ -1,6 +1,6 @@
 {
   "name": "fastest-validator",
-  "version": "0.6.12",
+  "version": "0.6.13",
   "description": "The fastest JS validator library for NodeJS",
   "main": "dist/index.js",
   "browser": "dist/index.min.js",
@@ -11,7 +11,8 @@
     "dev": "nodemon examples/index.js",
     "ci": "jest --watch",
     "test": "jest --coverage",
-    "lint": "eslint --ext=.js src test rollup.config.js",
+    "lint": "eslint --ext=.js lib test rollup.config.js",
+    "lint:fix": "eslint --fix --ext=.js lib test rollup.config.js",
     "deps": "npm-check -u",
     "coverall": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
@@ -29,7 +30,8 @@
     "dist",
     "examples",
     "lib",
-    "index.js"
+    "index.js",
+    "index.d.ts"
   ],
   "author": "Icebob",
   "license": "MIT",
