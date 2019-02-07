@@ -16,6 +16,7 @@
 * 13 built-in validators
 * custom validators
 * nested objects & array handling
+* strict object validation
 * multiple validators
 * customizable error messages
 * programmable error object
@@ -153,6 +154,19 @@ let schema = {
 v.validate({ name: "John", age: 42 }, schema); // Valid
 v.validate({ name: "John" }, schema); // Valid
 v.validate({ age: 42 }, schema); // Fail
+```
+
+# Strict validation
+Object properties which are not specified on the schema are ignored by default. If you set the `$$strict` option to `true` any aditional properties will result in an `strictObject` error.
+
+```js
+let schema = {
+    name: { type: "string" }, // required
+    $$strict: true // no additional properties allowed
+}
+
+v.validate({ name: "John" }, schema); // Valid
+v.validate({ name: "John", age: 42 }, schema); // Fail
 ```
 
 # Multiple validators
@@ -409,6 +423,10 @@ v.validate({
 }, schema); // Fail ("The 'address.zip' field is required!")
 ```
 
+### Properties
+Property | Default  | Description
+-------- | -------- | -----------
+`strict`  | `false`| if `true` any properties which are not defined on the schema will throw an error.
 
 ## `string`
 This is a `String`.

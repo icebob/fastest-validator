@@ -1209,3 +1209,60 @@ describe("Test irregular object property names", () => {
 		expect(res).toBe(true);
 	});
 });
+
+describe("Test $$strict schema restriction on root-level", () => {
+	const v = new Validator();
+
+	let schema = {
+		name: "string",
+		$$strict: true
+	};
+
+	let check = v.compile(schema);
+
+	it("should give error if the object contains additional properties on the root-level", () => {
+		let obj = {
+			name: "test",
+			additionalProperty: "additional"
+		};
+
+		let res = check(obj);
+
+		expect(res).toBeInstanceOf(Array);
+		expect(res.length).toBe(1);
+		expect(res[0].field).toBe("rootObject");
+		expect(res[0].type).toBe("objectStrict");
+	});
+});
+
+describe("Test $$strict schema restriction on sub-level", () => {
+	const v = new Validator();
+
+	let schema = {
+		address: {
+			type: "object",
+			props: {
+				street: "string",
+				$$strict: true
+			}
+		}
+	};
+
+	let check = v.compile(schema);
+
+	it("should give error if the object contains additional properties on the sub-level", () => {
+		let obj = {
+			address: {
+				street: "test",
+				additionalProperty: "additional"
+			}
+		};
+
+		let res = check(obj);
+
+		expect(res).toBeInstanceOf(Array);
+		expect(res.length).toBe(1);
+		expect(res[0].field).toBe("address");
+		expect(res[0].type).toBe("objectStrict");
+	});
+});
