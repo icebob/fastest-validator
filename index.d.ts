@@ -22,7 +22,7 @@ declare interface ValidationRuleObject {
     convert?: boolean;
     items?: string;
     props?: ValidationSchema;
-    check?: (value: any, ValidationSchema) => boolean | ValidationResult;
+    check?: (value: any, schema: ValidationSchema) => boolean | ValidationResult;
 }
 
 declare type ValidationRule = ValidationRuleObject | ValidationRuleObject[] | string;
