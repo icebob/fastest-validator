@@ -470,6 +470,23 @@ v.validate({ url: "https://github.com/icebob" }, schema); // Valid
 v.validate({ url: "www.facebook.com" }, schema); // Fail
 ```
 
+## `uuid`
+This is an UUID validator. 
+
+```js
+let schema = {
+    uuid: { type: "uuid" }
+}
+
+v.validate({ uuid: "10ba038e-48da-487b-96e8-8d3b99b6d18a" }, schema); // Valid UUIDv4
+v.validate({ uuid: "9a7b330a-a736-51e5-af7f-feaf819cdc9f" }, schema); // Valid UUIDv5
+v.validate({ uuid: "10ba038e-48da-487b-96e8-8d3b99b6d18a", version: 5 }, schema); // Fail
+```
+### Properties
+Property | Default  | Description
+-------- | -------- | -----------
+`version`  | `4`   | UUID version in range 1-5.
+
 # Custom validator
 You can also create your custom validator.
 
@@ -670,26 +687,32 @@ npm test
 
 ### Coverage report
 ```
----------------|----------|----------|----------|----------|----------------|
-File           |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
----------------|----------|----------|----------|----------|----------------|
-All files      |      100 |      100 |      100 |      100 |                |
- lib           |      100 |      100 |      100 |      100 |                |
-  messages.js  |      100 |      100 |      100 |      100 |                |
-  validator.js |      100 |      100 |      100 |      100 |                |
- lib/rules     |      100 |      100 |      100 |      100 |                |
-  any.js       |      100 |      100 |      100 |      100 |                |
-  array.js     |      100 |      100 |      100 |      100 |                |
-  boolean.js   |      100 |      100 |      100 |      100 |                |
-  date.js      |      100 |      100 |      100 |      100 |                |
-  email.js     |      100 |      100 |      100 |      100 |                |
-  forbidden.js |      100 |      100 |      100 |      100 |                |
-  function.js  |      100 |      100 |      100 |      100 |                |
-  number.js    |      100 |      100 |      100 |      100 |                |
-  object.js    |      100 |      100 |      100 |      100 |                |
-  string.js    |      100 |      100 |      100 |      100 |                |
-  url.js       |      100 |      100 |      100 |      100 |                |
----------------|----------|----------|----------|----------|----------------|
+-----------------|----------|----------|----------|----------|-------------------|
+File             |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
+-----------------|----------|----------|----------|----------|-------------------|
+All files        |      100 |      100 |      100 |      100 |                   |
+ lib             |      100 |      100 |      100 |      100 |                   |
+  messages.js    |      100 |      100 |      100 |      100 |                   |
+  validator.js   |      100 |      100 |      100 |      100 |                   |
+ lib/helpers     |      100 |      100 |      100 |      100 |                   |
+  deep-extend.js |      100 |      100 |      100 |      100 |                   |
+  flatten.js     |      100 |      100 |      100 |      100 |                   |
+ lib/rules       |      100 |      100 |      100 |      100 |                   |
+  any.js         |      100 |      100 |      100 |      100 |                   |
+  array.js       |      100 |      100 |      100 |      100 |                   |
+  boolean.js     |      100 |      100 |      100 |      100 |                   |
+  custom.js      |      100 |      100 |      100 |      100 |                   |
+  date.js        |      100 |      100 |      100 |      100 |                   |
+  email.js       |      100 |      100 |      100 |      100 |                   |
+  enum.js        |      100 |      100 |      100 |      100 |                   |
+  forbidden.js   |      100 |      100 |      100 |      100 |                   |
+  function.js    |      100 |      100 |      100 |      100 |                   |
+  number.js      |      100 |      100 |      100 |      100 |                   |
+  object.js      |      100 |      100 |      100 |      100 |                   |
+  string.js      |      100 |      100 |      100 |      100 |                   |
+  url.js         |      100 |      100 |      100 |      100 |                   |
+  uuid.js        |      100 |      100 |      100 |      100 |                   |
+-----------------|----------|----------|----------|----------|-------------------|
 ```
 
 ## Contribution
