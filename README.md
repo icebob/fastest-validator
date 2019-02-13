@@ -16,6 +16,7 @@
 * 13 built-in validators
 * custom validators
 * nested objects & array handling
+* strict object validation
 * multiple validators
 * customizable error messages
 * programmable error object
@@ -48,7 +49,7 @@ You can install it via [NPM](http://npmjs.org/).
 ```
 $ npm install fastest-validator --save
 ```
-or 
+or
 ```
 $ yarn add fastest-validator
 ```
@@ -56,7 +57,7 @@ $ yarn add fastest-validator
 ## Usage
 
 ### Simple method
-Call the `validate` method with the `object` and the `schema`. 
+Call the `validate` method with the `object` and the `schema`.
 > If performance is important, you won't use this method.
 
 ```js
@@ -76,7 +77,7 @@ console.log(v.validate({ id: 5, name: "John", status: true }, schema));
 console.log(v.validate({ id: 5, name: "Al", status: true }, schema));
 /* Returns an array with errors:
     [
-        { 
+        {
             type: 'stringMin',
             expected: 3,
             actual: 2,
@@ -111,7 +112,7 @@ console.log(check({ id: 5, name: "John", status: true }));
 console.log(check({ id: 2, name: "Adam" }));
 /* Returns an array with errors:
     [
-        { 
+        {
             type: 'required',
             field: 'status',
             message: 'The \'status\' field is required!'
@@ -155,6 +156,19 @@ v.validate({ name: "John" }, schema); // Valid
 v.validate({ age: 42 }, schema); // Fail
 ```
 
+# Strict validation
+Object properties which are not specified on the schema are ignored by default. If you set the `$$strict` option to `true` any aditional properties will result in an `strictObject` error.
+
+```js
+let schema = {
+    name: { type: "string" }, // required
+    $$strict: true // no additional properties allowed
+}
+
+v.validate({ name: "John" }, schema); // Valid
+v.validate({ name: "John", age: 42 }, schema); // Fail
+```
+
 # Multiple validators
 It is possible to define more validators for a field. In this case, only one validator needs to succeed for the field to be valid.
 
@@ -187,7 +201,7 @@ v.validate({ prop: "John" }, schema); // Valid
 ```
 
 ## `array`
-This is an `Array` validator. 
+This is an `Array` validator.
 
 **Simple example with strings:**
 ```js
@@ -226,7 +240,7 @@ let schema = {
     } }
 }
 
-v.validate({ 
+v.validate({
     users: [
         { id: 1, name: "John", status: true },
         { id: 2, name: "Jane", status: true },
@@ -259,7 +273,7 @@ v.validate({ roles: ["guest"] }, schema); // Fail
 
 
 ## `boolean`
-This is a `Boolean` validator. 
+This is a `Boolean` validator.
 
 ```js
 let schema = {
@@ -278,7 +292,7 @@ Property | Default  | Description
 
 
 ## `date`
-This is a `Date` validator. 
+This is a `Date` validator.
 
 ```js
 let schema = {
@@ -295,7 +309,7 @@ Property | Default  | Description
 `convert`  | `false`| if `true` and the type is not `Date`, try to convert with `new Date()`.
 
 ## `email`
-This is an e-mail address validator. 
+This is an e-mail address validator.
 
 ```js
 let schema = {
@@ -313,7 +327,7 @@ Property | Default  | Description
 `mode`   | `quick`  | Checker method. Can be `quick` or `precise`.
 
 ## `enum`
-This is an enum validator. 
+This is an enum validator.
 
 ```js
 let schema = {
@@ -332,7 +346,7 @@ Property | Default  | Description
 
 
 ## `forbidden`
-This validator returns an error if the property exists in the object. 
+This validator returns an error if the property exists in the object.
 
 ```js
 let schema = {
@@ -393,15 +407,15 @@ let schema = {
     } }
 }
 
-v.validate({ 
+v.validate({
     address: {
         country: "Italy",
         city: "Rome",
         zip: 12345
-    } 
+    }
 }, schema); // Valid
 
-v.validate({ 
+v.validate({
     address: {
         country: "Italy",
         city: "Rome"
@@ -409,6 +423,10 @@ v.validate({
 }, schema); // Fail ("The 'address.zip' field is required!")
 ```
 
+### Properties
+Property | Default  | Description
+-------- | -------- | -----------
+`strict`  | `false`| if `true` any properties which are not defined on the schema will throw an error.
 
 ## `string`
 This is a `String`.
@@ -440,7 +458,7 @@ Property | Default  | Description
 
 
 ## `url`
-This is an URL validator. 
+This is an URL validator.
 
 ```js
 let schema = {
@@ -451,6 +469,23 @@ v.validate({ url: "http://google.com" }, schema); // Valid
 v.validate({ url: "https://github.com/icebob" }, schema); // Valid
 v.validate({ url: "www.facebook.com" }, schema); // Fail
 ```
+
+## `uuid`
+This is an UUID validator. 
+
+```js
+let schema = {
+    uuid: { type: "uuid" }
+}
+
+v.validate({ uuid: "10ba038e-48da-487b-96e8-8d3b99b6d18a" }, schema); // Valid UUIDv4
+v.validate({ uuid: "9a7b330a-a736-51e5-af7f-feaf819cdc9f" }, schema); // Valid UUIDv5
+v.validate({ uuid: "10ba038e-48da-487b-96e8-8d3b99b6d18a", version: 5 }, schema); // Fail
+```
+### Properties
+Property | Default  | Description
+-------- | -------- | -----------
+`version`  | `4`   | UUID version in range 1-5.
 
 # Custom validator
 You can also create your custom validator.
@@ -502,9 +537,9 @@ let v = new Validator({
 
 const schema = {
 	name: { type: "string", min: 3, max: 255 },
-	weight: { 
-		type: "custom", 
-		minWeight: 10, 
+	weight: {
+		type: "custom",
+		minWeight: 10,
 		check(value, schema) {
 			return (value < schema.minWeight)
 				? this.makeError("weightMin", schema.minWeight, value)
@@ -518,12 +553,12 @@ console.log(v.validate({ name: "John", weight: 50 }, schema));
 
 console.log(v.validate({ name: "John", weight: 8 }, schema));
 /* Returns an array with errors:
-	[{ 
-		type: 'weightMin',                                       
-		expected: 10,                                            
-		actual: 8,                                               
-		field: 'weight',                                         
-		message: 'The weight must be greater than 10! Actual: 8' 
+	[{
+		type: 'weightMin',
+		expected: 10,
+		actual: 8,
+		field: 'weight',
+		message: 'The weight must be greater than 10! Actual: 8'
 	}]
 */
 ```
@@ -542,18 +577,61 @@ const v = new Validator({
 
 v.validate({ name: "John" }, { name: { type: "string", min: 6 }});
 /* Returns:
-[ 
-    { 
+[
+    {
         type: 'stringMin',
         expected: 6,
         actual: 4,
         field: 'name',
-        message: 'A(z) \'name\' mező túl rövid. Minimum: 6, Jelenleg: 4' 
-    } 
+        message: 'A(z) \'name\' mező túl rövid. Minimum: 6, Jelenleg: 4'
+    }
 ]
 */
 ```
+# Personalised Messages
+Sometimes the standard messages are too generic. You can customise messages per validation type per field:
 
+```js
+const Validator = require("fastest-validator");
+const v = new Validator();
+const schema = {
+    firstname: {
+        type: "string",
+        min: 6,
+        messages: {
+            string: "Please check your firstname",
+            stringMin: "Your firstname is too short"
+        }
+    },
+    lastname: {
+        type: "string",
+        min: 6,
+        messages: {
+            string: "Please check your lastname",
+            stringMin: "Your lastname is too short"
+        }
+    }
+}
+v.validate({ firstname: "John", lastname: 23 }, schema );
+/* Returns:
+[
+    {
+        type: 'stringMin',
+        expected: 6,
+        actual: 4,
+        field: 'firstname',
+        message: 'Your firstname is too short'
+    },
+    {
+        type: 'string',
+        expected: undefined,
+        actual: undefined,
+        field: 'lastname',
+        message: 'Please check your lastname'
+    }
+]
+*/
+```
 ## Message types
 Name                | Default text
 ------------------- | -------------
@@ -609,26 +687,32 @@ npm test
 
 ### Coverage report
 ```
----------------|----------|----------|----------|----------|----------------|
-File           |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
----------------|----------|----------|----------|----------|----------------|
-All files      |      100 |      100 |      100 |      100 |                |
- lib           |      100 |      100 |      100 |      100 |                |
-  messages.js  |      100 |      100 |      100 |      100 |                |
-  validator.js |      100 |      100 |      100 |      100 |                |
- lib/rules     |      100 |      100 |      100 |      100 |                |
-  any.js       |      100 |      100 |      100 |      100 |                |
-  array.js     |      100 |      100 |      100 |      100 |                |
-  boolean.js   |      100 |      100 |      100 |      100 |                |
-  date.js      |      100 |      100 |      100 |      100 |                |
-  email.js     |      100 |      100 |      100 |      100 |                |
-  forbidden.js |      100 |      100 |      100 |      100 |                |
-  function.js  |      100 |      100 |      100 |      100 |                |
-  number.js    |      100 |      100 |      100 |      100 |                |
-  object.js    |      100 |      100 |      100 |      100 |                |
-  string.js    |      100 |      100 |      100 |      100 |                |
-  url.js       |      100 |      100 |      100 |      100 |                |
----------------|----------|----------|----------|----------|----------------|
+-----------------|----------|----------|----------|----------|-------------------|
+File             |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
+-----------------|----------|----------|----------|----------|-------------------|
+All files        |      100 |      100 |      100 |      100 |                   |
+ lib             |      100 |      100 |      100 |      100 |                   |
+  messages.js    |      100 |      100 |      100 |      100 |                   |
+  validator.js   |      100 |      100 |      100 |      100 |                   |
+ lib/helpers     |      100 |      100 |      100 |      100 |                   |
+  deep-extend.js |      100 |      100 |      100 |      100 |                   |
+  flatten.js     |      100 |      100 |      100 |      100 |                   |
+ lib/rules       |      100 |      100 |      100 |      100 |                   |
+  any.js         |      100 |      100 |      100 |      100 |                   |
+  array.js       |      100 |      100 |      100 |      100 |                   |
+  boolean.js     |      100 |      100 |      100 |      100 |                   |
+  custom.js      |      100 |      100 |      100 |      100 |                   |
+  date.js        |      100 |      100 |      100 |      100 |                   |
+  email.js       |      100 |      100 |      100 |      100 |                   |
+  enum.js        |      100 |      100 |      100 |      100 |                   |
+  forbidden.js   |      100 |      100 |      100 |      100 |                   |
+  function.js    |      100 |      100 |      100 |      100 |                   |
+  number.js      |      100 |      100 |      100 |      100 |                   |
+  object.js      |      100 |      100 |      100 |      100 |                   |
+  string.js      |      100 |      100 |      100 |      100 |                   |
+  url.js         |      100 |      100 |      100 |      100 |                   |
+  uuid.js        |      100 |      100 |      100 |      100 |                   |
+-----------------|----------|----------|----------|----------|-------------------|
 ```
 
 ## Contribution

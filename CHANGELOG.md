@@ -1,4 +1,23 @@
 --------------------------------------------------
+<a name="0.6.15"></a>
+# 0.6.15 (2019-02-13)
+
+## Changes
+- fix `uuid` rule. [#60](https://github.com/icebob/fastest-validator/issues/60)
+- fix typescript definitions. [#59](https://github.com/icebob/fastest-validator/issues/59)
+
+--------------------------------------------------
+<a name="0.6.14"></a>
+# 0.6.14 (2019-02-07)
+
+## Changes
+- add `uuid` rule by [@intech](https://github.com/intech). [#43](https://github.com/icebob/fastest-validator/issues/43)
+- fix typescript exposing by [@darky](https://github.com/darky). [#58](https://github.com/icebob/fastest-validator/issues/58)
+- add personalised error messages per field by [@ispyinternet](https://github.com/ispyinternet). [#57](https://github.com/icebob/fastest-validator/issues/57)
+- add strict object validation by [@fabioanderegg](https://github.com/fabioanderegg) & [@mbaertschi](https://github.com/mbaertschi). [#47](https://github.com/icebob/fastest-validator/issues/47)
+- linting sources.
+
+--------------------------------------------------
 <a name="0.6.13"></a>
 # 0.6.13 (2019-01-22)
 

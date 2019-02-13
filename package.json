@@ -1,6 +1,6 @@
 {
   "name": "fastest-validator",
-  "version": "0.6.13",
+  "version": "0.6.15",
   "description": "The fastest JS validator library for NodeJS",
   "main": "dist/index.js",
   "browser": "dist/index.min.js",
@@ -29,7 +29,8 @@
     "dist",
     "examples",
     "lib",
-    "index.js"
+    "index.js",
+    "index.d.ts"
   ],
   "author": "Icebob",
   "license": "MIT",
@@ -66,6 +67,9 @@
     }
   },
   "lint-staged": {
-	"*.js": ["npm run lint -- --fix", "git add"]
+    "*.js": [
+      "npm run lint -- --fix",
+      "git add"
+    ]
   }
 }

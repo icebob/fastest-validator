@@ -32,7 +32,27 @@ const schema = {
 	},
 	email: { type: "email" },
 	firstName: { type: "string" },
-	phone: { type: "string" },
+	phone: { type: "string"},
+	age: {
+		type: "number",
+		min: 18
+	}
+};
+
+const schema2 = {
+	name: {
+		type: "string",
+		min: 4,
+		max: 25,
+		messages: {
+			string: "Csak szöveges érték",
+			stringMin: "Túl rövid!",
+			stringMax: "Túl hosszú"
+		}
+	},
+	email: { type: "email" },
+	firstName: { type: "string" },
+	phone: { type: "string"},
 	age: {
 		type: "number",
 		min: 18
@@ -40,22 +60,27 @@ const schema = {
 };
 
 bench.ref("compile & validate", () => {
-	let res = v.validate(obj, schema);		
+	const res = v.validate(obj, schema);
 	if (res !== true)
 		throw new Error("Validation error!", res);
 });
 
+bench.add("compile & validate with custom messages", () => {
+	const res = v.validate(obj, schema2);
+	if (res !== true)
+		throw new Error("Validation error!", res);
+});
 
-let check = v.compile(schema);
+const check = v.compile(schema);
 
 bench.add("validate with pre-compiled schema", () => {
-	let res = check(obj);
+	const res = check(obj);
 	if (res !== true)
 		throw new Error("Validation error!", res);
 });
 
 bench.add("validate with wrong obj", () => {
-	let res = check(wrongObj);
+	const res = check(wrongObj);
 	if (res === true)
 		throw new Error("Validation error!", res);
 });
