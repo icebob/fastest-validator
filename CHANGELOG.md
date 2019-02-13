@@ -1,4 +1,12 @@
 --------------------------------------------------
+<a name="0.6.15"></a>
+# 0.6.15 (2019-02-13)
+
+## Changes
+- fix `uuid` rule. [#60](https://github.com/icebob/fastest-validator/issues/60)
+- fix typescript definitions. [#59](https://github.com/icebob/fastest-validator/issues/59)
+
+--------------------------------------------------
 <a name="0.6.14"></a>
 # 0.6.14 (2019-02-07)
 
