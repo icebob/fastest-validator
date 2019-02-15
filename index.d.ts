@@ -6,7 +6,7 @@ declare interface ValidationRuleObject {
     min?: number;
     max?: number;
     length?: number;
-    pattern?: RegExp;
+    pattern?: RegExp | string;
     contains?: string;
     enum?: any;
     values?: any[];
