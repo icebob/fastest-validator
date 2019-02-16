@@ -3,6 +3,7 @@
 declare interface ValidationRuleObject {
     type: string;
     optional?: boolean;
+	empty?: boolean;
     min?: number;
     max?: number;
     length?: number;
