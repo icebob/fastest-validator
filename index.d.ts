@@ -1,6 +1,6 @@
 /** type declaration for fastest-validator */
 
-declare interface ValidationRuleObject {
+interface ValidationRuleObject {
     type: string;
     optional?: boolean;
 	empty?: boolean;
@@ -23,17 +23,17 @@ declare interface ValidationRuleObject {
     convert?: boolean;
     items?: string;
     props?: ValidationSchema;
-    check?: (value: any, schema: ValidationSchema) => boolean | ValidationResult;
+    check?: (value: any, schema: ValidationSchema) => true | ValidationResult;
 }
 
-declare type ValidationRule = ValidationRuleObject | ValidationRuleObject[] | string;
+type ValidationRule = ValidationRuleObject | ValidationRuleObject[] | string;
 
-declare interface ValidationSchema {
+interface ValidationSchema {
     [key: string]: ValidationRule;
 }
 
 
-declare interface ValidationError {
+interface ValidationError {
     type: string;
     field: string;
     message: string;
@@ -41,21 +41,28 @@ declare interface ValidationError {
     actual?: any;
 }
 
-declare type ValidationResult = ValidationError[];
-declare type ValidationObject = { [key: string]: any };
+type ValidationResult = ValidationError[];
+type ValidationObject = { [key: string]: any };
 
-declare class Validator {
+class Validator {
     constructor(opts?: any);
 
     add(type: string, fn: any): void;
 
     makeError(type: string, expected: any, actual: any): ValidationResult;
 
-    compile(schema: ValidationSchema): (object: ValidationObject) => boolean | ValidationResult;
+    compile(schema: ValidationSchema | ValidationSchema[]): (object: ValidationObject) => boolean | ValidationResult;
 
     validate(obj: ValidationObject, schema: ValidationSchema): boolean | ValidationResult;
 }
 
-declare module "fastest-validator" {
-    export = Validator;
+export {
+	ValidationRuleObject,
+	ValidationRule,
+	ValidationSchema,
+	ValidationError,
+	ValidationResult,
+	ValidationObject,
 }
+
+export = Validator
