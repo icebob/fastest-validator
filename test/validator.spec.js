@@ -1291,6 +1291,20 @@ describe("Test sanitizer", () => {
 		expect(converted.value).toEqual([ "string1", "string2" ]);
 	});
 
+	it("should do nothing with string", () => {
+		const check = v.compile(["string"]);
+		const converted = {};
+		check("1", null, null, converted);
+		expect(converted.value).toEqual("1");
+	});
+
+	it("should do nothing with string in object", () => {
+		const check = v.compile({ name: "string"});
+		const converted = {};
+		check({name: "1"}, null, null, converted);
+		expect(converted.value).toEqual({name: "1"});
+	});
+
 	it("should not sanitize array with error", () => {
 		const check = v.compile([{type: "array", items: { type: "boolean", convert: true} }]);
 		const converted = {};
