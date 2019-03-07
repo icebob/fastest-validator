@@ -1235,6 +1235,40 @@ describe("Test $$strict schema restriction on root-level", () => {
 	});
 });
 
+describe("Test $$strict schema restriction on root-level for nested objects", () => {
+	const v = new Validator();
+
+	let schema = {
+		name: "string",
+		object: {
+			type: "object",
+			props: {
+				firstName: "string"
+			}
+		},
+		$$strict: true
+	};
+
+	let check = v.compile(schema);
+
+	it("should give error if the object contains additional properties on the root-level", () => {
+		let obj = {
+			name: "test",
+			object: {
+				firstName: "sub-test"
+			},
+			additionalProperty: "additional"
+		};
+
+		let res = check(obj);
+
+		expect(res).toBeInstanceOf(Array);
+		expect(res.length).toBe(1);
+		expect(res[0].field).toBe("rootObject");
+		expect(res[0].type).toBe("objectStrict");
+	});
+});
+
 describe("Test $$strict schema restriction on sub-level", () => {
 	const v = new Validator();
 
