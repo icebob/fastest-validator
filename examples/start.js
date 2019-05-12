@@ -3,15 +3,16 @@ let Validator = require("../index");
 let v = new Validator();
 
 const schema = {
-	id: { type: "number", positive: true, integer: true },
+	id: { type: "number", positive: true, integer: true, convert: true },
 	name: { type: "string", min: 3, max: 255 },
-	status: "boolean" // short-hand def
+	status: { type: "boolean", convert: true } // short-hand def
 };
 
-console.log(v.validate({ id: 5, name: "John", status: true }, schema));
-// Returns: true
+const data = { id: "5", name: "John", status: "true" };
+console.log(v.validate(data, schema), data);
+// Returns: true { id: 5, name: 'John', status: true }
 
-console.log(v.validate({ id: 5, name: "Al", status: true }, schema));
+console.log(v.validate({ id: "5", name: "Al", status: true }, schema));
 /* Returns an array with errors:
 	[
 		{ 
