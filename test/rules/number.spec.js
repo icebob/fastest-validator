@@ -115,4 +115,19 @@ describe("Test checkNumber", () => {
 		expect(check(-1, s)).toEqual(true);
 		expect(check(-45.8, s)).toEqual(true);
 	});
+
+	it("should convert original values", () => {
+		const s = { value: { type: "number", convert: true } };
+		const kb = { value: "1024" };
+		const pi = { value: "3.14159265359" };
+		const lv = { value: "299.792458e06" };
+
+		expect(v.validate(kb, s)).toEqual(true);
+		expect(kb.value).toEqual(1024);
+		expect(v.validate(pi, s)).toEqual(true);
+		expect(pi.value).toEqual(3.14159265359);
+		expect(v.validate(lv, s)).toEqual(true);
+		expect(lv.value).toEqual(299792458);
+	});
+
 });
