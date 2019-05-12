@@ -41,3 +41,6 @@ dist/*
 examples/**/bundle.js
 
 .next
+
+# JetBrains project dirs
+.idea
