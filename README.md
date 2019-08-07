@@ -660,6 +660,8 @@ Name                | Default text
 `arrayContains`     | The '{field}' field must contain the '{expected}' item!
 `arrayEnum`         | The '{field} field value '{expected}' does not match any of the allowed values!
 `boolean`           | The '{field}' field must be a boolean!
+`booleanEqual`      | The '{field}' field must be equal with {expected}!
+`booleanNotEqual`   | The '{field}' field can't be equal with {expected}!
 `function`          | The '{field}' field must be a function!
 `date`              | The '{field}' field must be a Date!
 `dateMin`           | The '{field}' field must be greater than or equal to {expected}!
@@ -674,6 +676,7 @@ Name        | Description
 `expected`  | The expected value
 `actual`    | The actual value
 `type`      | The field type
+`display`   | The field display name
 
 ## Development
 ```
