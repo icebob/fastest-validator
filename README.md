@@ -676,7 +676,7 @@ Name        | Description
 `expected`  | The expected value
 `actual`    | The actual value
 `type`      | The field type
-`display`   | The field display name
+`displayName`   | The field display name
 
 ## Development
 ```
