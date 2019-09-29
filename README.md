@@ -13,7 +13,7 @@
 
 ## Key features
 * fast! Really!
-* 13 built-in validators
+* 15+ built-in validators
 * custom validators
 * nested objects & array handling
 * strict object validation
@@ -486,6 +486,39 @@ v.validate({ uuid: "10ba038e-48da-487b-96e8-8d3b99b6d18a", version: 5 }, schema)
 Property | Default  | Description
 -------- | -------- | -----------
 `version`  | `4`   | UUID version in range 1-5.
+
+## `mac`
+This is an MAC addresses validator. 
+
+```js
+let schema = {
+    mac: { type: "mac" }
+}
+
+v.validate({ mac: "01:C8:95:4B:65:FE" }, schema); // Valid
+v.validate({ mac: "01:c8:95:4b:65:fe", schema); // Valid
+v.validate({ mac: "01C8.954B.65FE" }, schema); // Valid
+v.validate({ mac: "01c8.954b.65fe", schema); // Valid
+v.validate({ mac: "01-C8-95-4B-65-FE" }, schema); // Valid
+v.validate({ mac: "01-c8-95-4b-65-fe" }, schema); // Valid
+v.validate({ mac: "01:C8:95:4B:65:FE" }, schema); // Fail
+```
+
+## `luhn`
+This is an Luhn validator.
+[Luhn algorithm](https://en.wikipedia.org/wiki/Luhn_algorithm) checksum
+Credit Card numbers, IMEI numbers, National Provider Identifier numbers and others 
+
+```js
+let schema = {
+    cc: { type: "luhn" }
+}
+
+v.validate({ cc: "452373989901198" }, schema); // Valid
+v.validate({ cc: 452373989901198 }, schema); // Valid
+v.validate({ cc: "4523-739-8990-1198" }, schema); // Valid
+v.validate({ cc: "452373989901198" }, schema); // Fail
+```
 
 # Custom validator
 You can also create your custom validator.

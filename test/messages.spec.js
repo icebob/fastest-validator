@@ -43,6 +43,8 @@ describe("Test Messages", () => {
 		expect(msg.objectStrict).toBeDefined();
 		expect(msg.uuid).toBeDefined();
 		expect(msg.uuidVersion).toBeDefined();
+		expect(msg.mac).toBeDefined();
+		expect(msg.lunh).toBeDefined();
 
 	});
 
