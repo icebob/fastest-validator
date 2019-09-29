@@ -501,7 +501,7 @@ v.validate({ mac: "01C8.954B.65FE" }, schema); // Valid
 v.validate({ mac: "01c8.954b.65fe", schema); // Valid
 v.validate({ mac: "01-C8-95-4B-65-FE" }, schema); // Valid
 v.validate({ mac: "01-c8-95-4b-65-fe" }, schema); // Valid
-v.validate({ mac: "01:C8:95:4B:65:FE" }, schema); // Fail
+v.validate({ mac: "01C8954B65FE" }, schema); // Fail
 ```
 
 ## `luhn`
@@ -517,7 +517,7 @@ let schema = {
 v.validate({ cc: "452373989901198" }, schema); // Valid
 v.validate({ cc: 452373989901198 }, schema); // Valid
 v.validate({ cc: "4523-739-8990-1198" }, schema); // Valid
-v.validate({ cc: "452373989901198" }, schema); // Fail
+v.validate({ cc: "452373989901199" }, schema); // Fail
 ```
 
 # Custom validator
