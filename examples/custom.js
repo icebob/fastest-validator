@@ -4,7 +4,6 @@ let v = new Validator({
 	messages: {
 		// Register our new error message text
 		evenNumber: "The '{field}' field must be an even number! Actual: {actual}",
-		weightMin: "The weight must be greater than {expected}! Actual: {actual}"
 	}
 });
 
@@ -19,9 +18,13 @@ v.add("even", value => {
 const schema = {
 	name: { type: "string", min: 3, max: 255 },
 	age: { type: "even" },
-	weight: { 
-		type: "custom", 
-		minWeight: 10, 
+	weight: {
+		type: "custom",
+		minWeight: 10,
+		messages: {
+			// Register our new error message text
+			weightMin: "The weight must be greater than {expected}! Actual: {actual}"
+		},
 		check(value, schema) {
 			return (value < schema.minWeight)
 				? this.makeError("weightMin", schema.minWeight, value)
@@ -49,11 +52,11 @@ console.log(v.validate({ name: "John", age: 20, weight: 50 }, schema));
 
 console.log(v.validate({ name: "John", age: 20, weight: 8 }, schema));
 /* Returns an array with errors:
-	[{ 
-		type: 'weightMin',                                       
-		expected: 10,                                            
-		actual: 8,                                               
-		field: 'weight',                                         
-		message: 'The weight must be greater than 10! Actual: 8' 
+	[{
+		type: 'weightMin',
+		expected: 10,
+		actual: 8,
+		field: 'weight',
+		message: 'The weight must be greater than 10! Actual: 8'
 	}]
 */
