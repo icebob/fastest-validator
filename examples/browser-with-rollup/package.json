@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "fastest-validator": "^0.6.5",
-    "serve": "^6.0.2"
+    "serve": "^11.2.0"
   },
   "scripts": {
     "build": "rollup -c",
