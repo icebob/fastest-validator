@@ -5,6 +5,7 @@
 ## Changes
 - add `mac` and `luhn` rules by [@intech](https://github.com/intech);
 - update dev dependencies.
+- fix custom rule custom messages issue. [#83](https://github.com/icebob/fastest-validator/issues/83)
 
 --------------------------------------------------
 <a name="0.6.17"></a>
