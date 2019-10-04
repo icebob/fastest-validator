@@ -495,18 +495,18 @@ declare module 'fastest-validator' {
 	/**
 	 * Definition for validation schema based on validation rules
 	 */
-	interface ValidationSchema {
+	type ValidationSchema = {
+		/**
+		 * List of validation rules for each defined field
+		 */
+		[key: string]: ValidationRule
+	} & {
 		/**
 		 * Object properties which are not specified on the schema are ignored by default.
 		 * If you set the $$strict option to true any aditional properties will result in an strictObject error.
 		 * @default false
 		 */
-		// $$strict?: boolean;
-
-		/**
-		 * List of validation rules for each defined field
-		 */
-		[key: string]: ValidationRule;
+		$$strict?: boolean
 	}
 
 	/**
