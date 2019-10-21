@@ -2,7 +2,23 @@ declare module 'fastest-validator' {
 	/**
 	 * Type of all possible Built-in validators names
 	 */
-	type ValidationRuleName = 'any' | 'array' | 'boolean' | 'date' | 'email' | 'enum' | 'forbidden' | 'function' | 'number' | 'object' | 'string' | 'url' | 'uuid' | 'custom';
+	type ValidationRuleName =
+		'any'
+		| 'array'
+		| 'boolean'
+		| 'date'
+		| 'email'
+		| 'enum'
+		| 'forbidden'
+		| 'function'
+		| 'luhn'
+		| 'mac'
+		| 'number'
+		| 'object'
+		| 'string'
+		| 'url'
+		| 'uuid'
+		| 'custom';
 
 	/**
 	 * Validation schema definition for "any" built-in validator
@@ -289,6 +305,28 @@ declare module 'fastest-validator' {
 	}
 
 	/**
+	 * Validation schema definition for "mac" built-in validator
+	 * @see https://github.com/icebob/fastest-validator#mac
+	 */
+	interface RuleMac extends RuleCustom {
+		/**
+		 * Name of built-in validator
+		 */
+		type: 'mac';
+	}
+
+	/**
+	 * Validation schema definition for "luhn" built-in validator
+	 * @see https://github.com/icebob/fastest-validator#luhn
+	 */
+	interface RuleLuhn extends RuleCustom {
+		/**
+		 * Name of built-in validator
+		 */
+		type: 'luhn';
+	}
+
+	/**
 	 * Validation schema definition for custom inline validator
 	 * @see https://github.com/icebob/fastest-validator#custom-validator
 	 */
@@ -479,6 +517,8 @@ declare module 'fastest-validator' {
 		| RuleEnum
 		| RuleForbidden
 		| RuleFunction
+		| RuleLuhn
+		| RuleMac
 		| RuleNumber
 		| RuleObject
 		| RuleString
@@ -598,6 +638,8 @@ declare module 'fastest-validator' {
 		RuleEnum,
 		RuleForbidden,
 		RuleFunction,
+		RuleLuhn,
+		RuleMac,
 		RuleNumber,
 		RuleObject,
 		RuleString,
