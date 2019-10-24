@@ -77,8 +77,8 @@ describe("Test checkString", () => {
 	it("check enum", () => {
 		const s = { type: "string", enum: ["male", "female"] };
 		
-		expect(check("", s)).toEqual({ type: "stringEnum", expected: ["male", "female"] });
-		expect(check("human", s)).toEqual({ type: "stringEnum", expected: ["male", "female"] });
+		expect(check("", s)).toEqual({ type: "stringEnum", expected: ["male", "female"], actual: "" });
+		expect(check("human", s)).toEqual({ type: "stringEnum", expected: ["male", "female"], actual: "human" });
 		expect(check("male", s)).toEqual(true);
 		expect(check("female", s)).toEqual(true);
 	});
