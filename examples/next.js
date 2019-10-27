@@ -4,13 +4,14 @@ let v = new Validator();
 
 const schema = {
 	//id: { type: "number", positive: true, integer: true, convert: true },
-	//name: { type: "string", min: 3, max: 255 },
-	email: { type: "email", mode: "precise" },
-	status: "boolean" // short-hand def
+	name: { type: "string", min: 3, max: 255 },
+	password: { type: "forbidden" },
+	//email: { type: "email", mode: "precise" },
+	//status: "boolean" // short-hand def
 	//status: { type: "boolean", convert: true }
 };
 
-const check = v.compileSchemaObject2(schema);
+const check = v.compile(schema);
 
 console.log("============");
 console.log("John", check({ id: 5, name: "John", status: true, email: "john.doe@moleculer.services" }));
