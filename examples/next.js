@@ -7,9 +7,11 @@ let v = new Validator({
 });
 
 const schema = {
-	//id: { type: "number", positive: true, integer: true, convert: true },
+	id: { type: "number", positive: true, integer: true, convert: true },
 	//name: { type: "string", min: 3, max: 255 },
-	//password: { type: "forbidden" },
+	//token: { type: "forbidden" },
+	//password: { type: "string", min: 6 },
+	//confirmPassword: { type: "equal", field: "password" },
 	//roles: { type: "array", items: "string", min: 1 },
 	/*friends: { type: "array", items: { type: "object", properties: {
 		name: "string",
@@ -21,14 +23,18 @@ const schema = {
 		zip: "number"
 	} },*/
 	//email: { type: "email", mode: "precise" },
+	email: { type: "string", trim: true },
+	//verified: { type: "equal", value: true, strict: true },
 	//status: "boolean" // short-hand def
-	//status: { type: "boolean", convert: true }
+	createdAt: { type: "date", convert: true },
+	status: { type: "boolean", convert: true },
+	code: { type: "string", padEnd: 10, padChar: "\u2605" },
 	/*status: [
 		{ type: "boolean" },
 		{ type: "number" }
 	],*/
 
-	weight: {
+	/*weight: {
 		type: "custom",
 		minWeight: 10,
 		check(value, schema, field) {
@@ -39,16 +45,16 @@ const schema = {
 		messages: {
 			weightMin: "The '${field}' must be greater than {expected}! Actual: {actual}"
 		}
-	}
+	}*/
 };
 
 const check = v.compile(schema);
 
 console.log("============");
-console.log("John", check({
-	id: 5,
+const obj = {
+	id: "5",
 	name: "John",
-	email: "john.doe@moleculer.services",
+	email: "   John.DOE@moleculer.Services   ",
 	address: {
 		country: "Hungary",
 		city: "Budapest",
@@ -59,10 +65,17 @@ console.log("John", check({
 		{ name: "John", username: "johnny" },
 		{ name: "Jane", username: "jane" }
 	],
+	password: "123456",
+	confirmPassword: "123456",
+	code: "123",
 	status: 1,
+	verified: true,
+
+	createdAt: Date.now(),
 
 	weight: 10,
-}));
+};
+console.log("John", check(obj), obj);
 
 //console.log("Al", check({ id: "1", name: "Al", status: false, email: "a@b.cc" }));
 
