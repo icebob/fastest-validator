@@ -22,8 +22,7 @@ const schema = {
 		city: "string",
 		zip: "number"
 	} },*/
-	//email: { type: "email", mode: "precise" },
-	email: { type: "string", trim: true },
+	email: { type: "email", mode: "precise", normalize: true },
 	//verified: { type: "equal", value: true, strict: true },
 	//status: "boolean" // short-hand def
 	createdAt: { type: "date", convert: true },
