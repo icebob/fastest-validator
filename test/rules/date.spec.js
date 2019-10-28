@@ -1,47 +1,46 @@
 "use strict";
 
 const Validator = require("../../lib/validator");
-const fn = require("../../lib/rules/date");
 
 const v = new Validator();
-const check = fn.bind(v);
 
 describe("Test checkDate", () => {
 
 	it("should check values", () => {
-		const s = { type: "date" };
-		const err = { type: "date" };
+		const check = v.compile({ $$root: true, type: "date" });
+		const message = "The '' field must be a Date.";
 
-		expect(check(null, s)).toEqual(err);
-		expect(check(undefined, s)).toEqual(err);
-		expect(check(0, s)).toEqual(err);
-		expect(check(1, s)).toEqual(err);
-		expect(check("", s)).toEqual(err);
-		expect(check("true", s)).toEqual(err);
-		expect(check("false", s)).toEqual(err);
-		expect(check([], s)).toEqual(err);
-		expect(check({}, s)).toEqual(err);
+		expect(check(null)).toEqual([{ type: "date", actual: null, message }]);
+		expect(check(undefined)).toEqual([{ type: "date", actual: undefined, message }]);
+		expect(check(0)).toEqual([{ type: "date", actual: 0, message }]);
+		expect(check(1)).toEqual([{ type: "date", actual: 1, message }]);
+		expect(check("")).toEqual([{ type: "date", actual: "", message }]);
+		expect(check("true")).toEqual([{ type: "date", actual: "true", message }]);
+		expect(check("false")).toEqual([{ type: "date", actual: "false", message }]);
+		expect(check([])).toEqual([{ type: "date", actual: [], message }]);
+		expect(check({})).toEqual([{ type: "date", actual: {}, message }]);
 
-		expect(check(Date.now(), s)).toEqual(err);
-		
-		expect(check(new Date(), s)).toEqual(true);
-		expect(check(new Date(1488876927958), s)).toEqual(true);
+		const now = Date.now();
+		expect(check(now)).toEqual([{ type: "date", actual: now, message }]);
+
+		expect(check(new Date())).toEqual(true);
+		expect(check(new Date(1488876927958))).toEqual(true);
 	});
-	
-	it("should convert & check values", () => {
-		const s = { type: "date", convert: true };
-		const err = { type: "date" };
-		
-		expect(check(null, s)).toEqual(true);
-		expect(check(Date.now(), s)).toEqual(true);
-		expect(check("2017-03-07 10:11:23", s)).toEqual(true);
-		expect(check("2017-03-07T10:11:23Z", s)).toEqual(true);
-		expect(check("2017-03-07T10:11:23-01:00", s)).toEqual(true);
-		expect(check("Wed Mar 25 2015 09:56:24 GMT+0100 (W. Europe Standard Time)", s)).toEqual(true);
 
-		expect(check("", s)).toEqual(err);
-		expect(check("asd", s)).toEqual(err);		
-		expect(check(undefined, s)).toEqual(err);
+	it("should convert & check values", () => {
+		const check = v.compile({ $$root: true, type: "date", convert: true });
+		const message = "The '' field must be a Date.";
+
+		expect(check(null)).toEqual(true);
+		expect(check(Date.now())).toEqual(true);
+		expect(check("2017-03-07 10:11:23")).toEqual(true);
+		expect(check("2017-03-07T10:11:23Z")).toEqual(true);
+		expect(check("2017-03-07T10:11:23-01:00")).toEqual(true);
+		expect(check("Wed Mar 25 2015 09:56:24 GMT+0100 (W. Europe Standard Time)")).toEqual(true);
+
+		expect(check("")).toEqual([{ type: "date", actual: expect.anything(), message }]);
+		expect(check("asd")).toEqual([{ type: "date", actual: expect.anything(), message }]);
+		expect(check(undefined)).toEqual([{ type: "date", actual: expect.anything(), message }]);
 	});
 
 

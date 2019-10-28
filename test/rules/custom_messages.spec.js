@@ -10,7 +10,7 @@ describe("Test custom messages", () => {
 		const message = "That wasn't a string!";
 		const s = { name: { type: "string", messages: { string: message } } };
 
-		expect(v.validate({ name: 123 }, s)).toEqual([{ type: "string", expected: undefined, actual: undefined, field: "name", message }]);
+		expect(v.validate({ name: 123 }, s)).toEqual([{ type: "string", actual: 123, field: "name", message }]);
 
 	});
 
@@ -20,7 +20,7 @@ describe("Test custom messages", () => {
 
 		const s = { name: { type: "string", messages: { required: message } } };
 
-		expect(v.validate({}, s)).toEqual([{ type: "required", expected: undefined, actual: undefined, field: "name", message: message }]);
+		expect(v.validate({}, s)).toEqual([{ type: "required", actual: undefined, field: "name", message }]);
 
 	});
 
@@ -68,7 +68,10 @@ describe("Test custom messages", () => {
 				{ id: 2, name: 123, status: true },
 				{ id: 3, name: "Bill", status: false }
 			]
-		}, s)).toEqual([{ type: "number", field: "users[0].id", message: "numbers only please" }, { type: "string", field: "users[1].name", message: "make sure it's a string" }]);
+		}, s)).toEqual([
+			{ type: "number", field: "users[0].id", actual: "test", message: "numbers only please" },
+			{ type: "string", field: "users[1].name", actual: 123, message: "make sure it's a string" }
+		]);
 
 	});
 
@@ -95,7 +98,10 @@ describe("Test custom messages", () => {
 				{ id: 2, name: 123, status: true },
 				{ id: 3, name: "Bill", status: false }
 			]
-		})).toEqual([{ type: "number", field: "users[0].id", message: "numbers only please" }, { type: "string", field: "users[1].name", message: "make sure it's a string" }]);
+		})).toEqual([
+			{ type: "number", field: "users[0].id", actual: "test", message: "numbers only please" },
+			{ type: "string", field: "users[1].name", actual: 123, message: "make sure it's a string" }
+		]);
 
 	});
 });
