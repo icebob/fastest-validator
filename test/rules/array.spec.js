@@ -82,7 +82,7 @@ describe("Test rule: array", () => {
 		expect(check(["male", "female", "human"])).toEqual([{ type: "arrayEnum", actual: "human", expected: "male, female", message: "The 'human' value in '' field does not match any of the 'male, female' values." }]);
 	});
 
-	it.only("check items", () => {
+	it("check items", () => {
 		const check = v.compile({ $$root: true, type: "array", items: "string" });
 
 		expect(check([])).toEqual(true);

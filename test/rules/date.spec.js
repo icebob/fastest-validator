@@ -4,7 +4,7 @@ const Validator = require("../../lib/validator");
 
 const v = new Validator();
 
-describe("Test checkDate", () => {
+describe("Test rule: date", () => {
 
 	it("should check values", () => {
 		const check = v.compile({ $$root: true, type: "date" });

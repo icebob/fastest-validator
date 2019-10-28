@@ -3,7 +3,7 @@
 const Validator = require("../../lib/validator");
 const v = new Validator();
 
-describe("Test checkEmail", () => {
+describe("Test rule: email", () => {
 
 	it("should check values", () => {
 		const check = v.compile({ $$root: true, type: "email" });
@@ -51,6 +51,26 @@ describe("Test checkEmail", () => {
 		expect(check("john.doe@company.net")).toEqual(true);
 		expect(check("james.123.45@mail.co.uk")).toEqual(true);
 		expect(check("admin@nasa.space")).toEqual(true);
+	});
+
+	it("should not normalize", () => {
+		const check = v.compile({ email: { type: "email" } });
+
+		const obj = { email: "John.Doe@Gmail.COM" };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({
+			email: "John.Doe@Gmail.COM"
+		});
+	});
+
+	it("should normalize", () => {
+		const check = v.compile({ email: { type: "email", normalize: true } });
+
+		const obj = { email: " John.Doe@Gmail.COM   " };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({
+			email: "john.doe@gmail.com"
+		});
 	});
 
 });
