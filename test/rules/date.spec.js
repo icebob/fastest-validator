@@ -10,8 +10,6 @@ describe("Test rule: date", () => {
 		const check = v.compile({ $$root: true, type: "date" });
 		const message = "The '' field must be a Date.";
 
-		expect(check(null)).toEqual([{ type: "date", actual: null, message }]);
-		expect(check(undefined)).toEqual([{ type: "date", actual: undefined, message }]);
 		expect(check(0)).toEqual([{ type: "date", actual: 0, message }]);
 		expect(check(1)).toEqual([{ type: "date", actual: 1, message }]);
 		expect(check("")).toEqual([{ type: "date", actual: "", message }]);
@@ -39,7 +37,6 @@ describe("Test rule: date", () => {
 
 		expect(check("")).toEqual([{ type: "date", actual: "", message }]);
 		expect(check("asd")).toEqual([{ type: "date", actual: "asd", message }]);
-		expect(check(undefined)).toEqual([{ type: "date", actual: undefined, message }]);
 	});
 
 	it("should sanitize", () => {

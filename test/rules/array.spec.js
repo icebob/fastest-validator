@@ -10,8 +10,6 @@ describe("Test rule: array", () => {
 		const check = v.compile({ $$root: true, type: "array" });
 		const message = "The '' field must be an array.";
 
-		expect(check(null)).toEqual([{ type: "array", actual: null, message }]);
-		expect(check(undefined)).toEqual([{ type: "array", actual: undefined, message }]);
 		expect(check(0)).toEqual([{ type: "array", actual: 0, message }]);
 		expect(check(1)).toEqual([{ type: "array", actual: 1, message }]);
 		expect(check({})).toEqual([{ type: "array", actual: {}, message }]);

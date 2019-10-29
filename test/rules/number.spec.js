@@ -9,8 +9,6 @@ describe("Test rule: number", () => {
 		const check = v.compile({ $$root: true, type: "number" });
 		const message = "The '' field must be a number.";
 
-		expect(check(null)).toEqual([{ type: "number", actual: null, message }]);
-		expect(check(undefined)).toEqual([{ type: "number", actual: undefined, message }]);
 		expect(check("")).toEqual([{ type: "number", actual: "", message }]);
 		expect(check("test")).toEqual([{ type: "number", actual: "test", message }]);
 		expect(check("1")).toEqual([{ type: "number", actual: "1", message }]);
@@ -110,11 +108,9 @@ describe("Test rule: number", () => {
 		const check = v.compile({ $$root: true, type: "number", convert: true });
 		const message = "The '' field must be a number.";
 
-		expect(check(undefined)).toEqual([{ type: "number", actual: undefined, message }]);
 		expect(check({})).toEqual([{ type: "number", actual: {}, message }]);
 		expect(check("25abc")).toEqual([{ type: "number", actual: "25abc", message }]);
 
-		expect(check(null)).toEqual(true);
 		expect(check("")).toEqual(true);
 		expect(check([])).toEqual(true);
 		expect(check(false)).toEqual(true);
@@ -123,6 +119,38 @@ describe("Test rule: number", () => {
 		expect(check("100")).toEqual(true);
 		expect(check("34.76")).toEqual(true);
 		expect(check("-45")).toEqual(true);
+	});
+
+	it("should sanitize", () => {
+		const check = v.compile({ age: { type: "number", convert: true } });
+
+		let obj = { age: "" };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({ age: 0 });
+
+		obj = { age: [] };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({ age: 0 });
+
+		obj = { age: false };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({ age: 0 });
+
+		obj = { age: true };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({ age: 1 });
+
+		obj = { age: "100" };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({ age: 100 });
+
+		obj = { age: "34.76" };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({ age: 34.76 });
+
+		obj = { age: "-45" };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({ age: -45 });
 	});
 
 });

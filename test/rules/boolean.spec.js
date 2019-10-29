@@ -9,8 +9,6 @@ describe("Test rule: boolean", () => {
 		const check = v.compile({ $$root: true, type: "boolean" });
 		const message = "The '' field must be a boolean.";
 
-		expect(check(null)).toEqual([{ type: "boolean", actual: null, message }]);
-		expect(check(undefined)).toEqual([{ type: "boolean", actual: undefined, message }]);
 		expect(check(0)).toEqual([{ type: "boolean", actual: 0, message }]);
 		expect(check(1)).toEqual([{ type: "boolean", actual: 1, message }]);
 		expect(check("")).toEqual([{ type: "boolean", actual: "", message }]);
@@ -27,8 +25,6 @@ describe("Test rule: boolean", () => {
 		const check = v.compile({ $$root: true, type: "boolean", convert: true });
 		const message = "The '' field must be a boolean.";
 
-		expect(check(null)).toEqual([{ type: "boolean", actual: null, message }]);
-		expect(check(undefined)).toEqual([{ type: "boolean", actual: undefined, message }]);
 		expect(check(0)).toEqual(true);
 		expect(check(1)).toEqual(true);
 		expect(check("")).toEqual([{ type: "boolean", actual: "", message }]);
