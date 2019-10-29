@@ -1,118 +1,128 @@
 "use strict";
 
 const Validator = require("../../lib/validator");
-const fn = require("../../lib/rules/number");
-
 const v = new Validator();
-const check = fn.bind(v);
 
-describe("Test checkNumber", () => {
+describe("Test rule: number", () => {
 
 	it("should check type of value", () => {
-		const s = { type: "number" };
-		const err = { type: "number" };
+		const check = v.compile({ $$root: true, type: "number" });
+		const message = "The '' field must be a number.";
 
-		expect(check(null, s)).toEqual(err);
-		expect(check(undefined, s)).toEqual(err);
-		expect(check("", s)).toEqual(err);
-		expect(check("test", s)).toEqual(err);
-		expect(check("1", s)).toEqual(err);
-		expect(check([], s)).toEqual(err);
-		expect(check({}, s)).toEqual(err);
-		expect(check(false, s)).toEqual(err);
-		expect(check(true, s)).toEqual(err);
-		expect(check(NaN, s)).toEqual(err);
-		expect(check(Number.POSITIVE_INFINITY, s)).toEqual(err);
-		expect(check(Number.NEGATIVE_INFINITY, s)).toEqual(err);
-		
-		expect(check(0, s)).toEqual(true);
-		expect(check(5, s)).toEqual(true);
-		expect(check(-24, s)).toEqual(true);
-		expect(check(5.45, s)).toEqual(true);
+		expect(check(null)).toEqual([{ type: "number", actual: null, message }]);
+		expect(check(undefined)).toEqual([{ type: "number", actual: undefined, message }]);
+		expect(check("")).toEqual([{ type: "number", actual: "", message }]);
+		expect(check("test")).toEqual([{ type: "number", actual: "test", message }]);
+		expect(check("1")).toEqual([{ type: "number", actual: "1", message }]);
+		expect(check([])).toEqual([{ type: "number", actual: [], message }]);
+		expect(check({})).toEqual([{ type: "number", actual: {}, message }]);
+		expect(check(false)).toEqual([{ type: "number", actual: false, message }]);
+		expect(check(true)).toEqual([{ type: "number", actual: true, message }]);
+		expect(check(NaN)).toEqual([{ type: "number", actual: NaN, message }]);
+		expect(check(Number.POSITIVE_INFINITY)).toEqual([{ type: "number", actual: Number.POSITIVE_INFINITY, message }]);
+		expect(check(Number.NEGATIVE_INFINITY)).toEqual([{ type: "number", actual: Number.NEGATIVE_INFINITY, message }]);
+
+		expect(check(0)).toEqual(true);
+		expect(check(5)).toEqual(true);
+		expect(check(-24)).toEqual(true);
+		expect(check(5.45)).toEqual(true);
 	});
 
-	it("should convert & check values", () => {
-		const s = { type: "number", convert: true };
-		const err = { type: "number" };
-		
-		expect(check(undefined, s)).toEqual(err);
-		expect(check({}, s)).toEqual(err);
-		expect(check("25abc", s)).toEqual(err);
-
-		expect(check(null, s)).toEqual(true);
-		expect(check("", s)).toEqual(true);
-		expect(check([], s)).toEqual(true);
-		expect(check(false, s)).toEqual(true);
-		expect(check(true, s)).toEqual(true);
-
-		expect(check("100", s)).toEqual(true);
-		expect(check("34.76", s)).toEqual(true);
-		expect(check("-45", s)).toEqual(true);		
-	});
 
 	it("check min", () => {
-		const s = { type: "number", min: 5 };
-		
-		expect(check(3, s)).toEqual({ type: "numberMin", expected: 5, actual: 3 });
-		expect(check(-20, s)).toEqual({ type: "numberMin", expected: 5, actual: -20 });
-		expect(check(5, s)).toEqual(true);
-		expect(check(8, s)).toEqual(true);
+		const check = v.compile({ $$root: true, type: "number", min: 5});
+		const message = "The '' field must be greater than or equal to 5.";
+
+		expect(check(3)).toEqual([{ type: "numberMin", expected: 5, actual: 3, message }]);
+		expect(check(-20)).toEqual([{ type: "numberMin", expected: 5, actual: -20, message }]);
+		expect(check(5)).toEqual(true);
+		expect(check(8)).toEqual(true);
 	});
 
 	it("check max", () => {
-		const s = { type: "number", max: 5 };
-		
-		expect(check(8, s)).toEqual({ type: "numberMax", expected: 5, actual: 8 });
-		expect(check(12345, s)).toEqual({ type: "numberMax", expected: 5, actual: 12345 });
-		expect(check(5, s)).toEqual(true);
-		expect(check(0, s)).toEqual(true);
-		expect(check(-20, s)).toEqual(true);
+		const check = v.compile({ $$root: true, type: "number", max: 5});
+		const message = "The '' field must be less than or equal to 5.";
+
+		expect(check(8)).toEqual([{ type: "numberMax", expected: 5, actual: 8, message }]);
+		expect(check(12345)).toEqual([{ type: "numberMax", expected: 5, actual: 12345, message }]);
+		expect(check(5)).toEqual(true);
+		expect(check(0)).toEqual(true);
+		expect(check(-20)).toEqual(true);
 	});
 
 	it("check equal value", () => {
-		const s = { type: "number", equal: 123 };
-		
-		expect(check(8, s)).toEqual({ type: "numberEqual", expected: 123, actual: 8 });
-		expect(check(123, s)).toEqual(true);
+		const check = v.compile({ $$root: true, type: "number", equal: 123 });
+		const message = "The '' field must be equal to 123.";
+
+		expect(check(8)).toEqual([{ type: "numberEqual", expected: 123, actual: 8, message }]);
+		expect(check(122)).toEqual([{ type: "numberEqual", expected: 123, actual: 122, message }]);
+		expect(check(124)).toEqual([{ type: "numberEqual", expected: 123, actual: 124, message }]);
+		expect(check(123)).toEqual(true);
 	});
 
 	it("check not equal value", () => {
-		const s = { type: "number", notEqual: 123 };
-		
-		expect(check(8, s)).toEqual(true);
-		expect(check(123, s)).toEqual({ type: "numberNotEqual", expected: 123 });
+		const check = v.compile({ $$root: true, type: "number", notEqual: 123 });
+		const message = "The '' field can't be equal to 123.";
+
+		expect(check(8)).toEqual(true);
+		expect(check(122)).toEqual(true);
+		expect(check(124)).toEqual(true);
+		expect(check(123)).toEqual([{ type: "numberNotEqual", expected: 123, actual: 123, message }]);
 	});
 
 	it("check integer", () => {
-		const s = { type: "number", integer: true };
-		
-		expect(check(8.5, s)).toEqual({ type: "numberInteger", expected: 8.5  });
-		expect(check(0.001, s)).toEqual({ type: "numberInteger", expected: 0.001 });
-		expect(check(-5.5, s)).toEqual({ type: "numberInteger", expected: -5.5 });
-		expect(check(0, s)).toEqual(true);
-		expect(check(-20, s)).toEqual(true);
-		expect(check(20, s)).toEqual(true);
+		const check = v.compile({ $$root: true, type: "number", integer: true });
+		const message = "The '' field must be an integer.";
+
+		expect(check(8.5)).toEqual([{ type: "numberInteger", actual: 8.5, message }]);
+		expect(check(0.001)).toEqual([{ type: "numberInteger", actual: 0.001, message }]);
+		expect(check(-5.5)).toEqual([{ type: "numberInteger", actual: -5.5, message }]);
+		expect(check(0)).toEqual(true);
+		expect(check(-20)).toEqual(true);
+		expect(check(20)).toEqual(true);
 	});
 
 	it("check positive number", () => {
-		const s = { type: "number", positive: true };
-		
-		expect(check(-5.5, s)).toEqual({ type: "numberPositive", expected: -5.5 });
-		expect(check(-45, s)).toEqual({ type: "numberPositive", expected: -45 });
-		expect(check(0, s)).toEqual({ type: "numberPositive", expected: 0 });
-		expect(check(0.001, s)).toEqual(true);
-		expect(check(1, s)).toEqual(true);
-		expect(check(45.8, s)).toEqual(true);
+		const check = v.compile({ $$root: true, type: "number", positive: true });
+		const message = "The '' field must be a positive number.";
+
+		expect(check(-5.5)).toEqual([{ type: "numberPositive", actual: -5.5, message }]);
+		expect(check(-45)).toEqual([{ type: "numberPositive", actual: -45, message }]);
+		expect(check(0)).toEqual([{ type: "numberPositive", actual: 0, message }]);
+		expect(check(0.001)).toEqual(true);
+		expect(check(1)).toEqual(true);
+		expect(check(45.8)).toEqual(true);
 	});
 
 	it("check negative number", () => {
-		const s = { type: "number", negative: true };
-		
-		expect(check(5.5, s)).toEqual({ type: "numberNegative", expected: 5.5 });
-		expect(check(45, s)).toEqual({ type: "numberNegative", expected: 45 });
-		expect(check(0, s)).toEqual({ type: "numberNegative", expected: 0 });
-		expect(check(-0.001, s)).toEqual(true);
-		expect(check(-1, s)).toEqual(true);
-		expect(check(-45.8, s)).toEqual(true);
+		const check = v.compile({ $$root: true, type: "number", negative: true });
+		const message = "The '' field must be a negative number.";
+
+		expect(check(5.5)).toEqual([{ type: "numberNegative", actual: 5.5, message }]);
+		expect(check(45)).toEqual([{ type: "numberNegative", actual: 45, message }]);
+		expect(check(0)).toEqual([{ type: "numberNegative", actual: 0, message }]);
+		expect(check(-0.001)).toEqual(true);
+		expect(check(-1)).toEqual(true);
+		expect(check(-45.8)).toEqual(true);
 	});
+
+	it("should convert & check values", () => {
+		const check = v.compile({ $$root: true, type: "number", convert: true });
+		const message = "The '' field must be a number.";
+
+		expect(check(undefined)).toEqual([{ type: "number", actual: undefined, message }]);
+		expect(check({})).toEqual([{ type: "number", actual: {}, message }]);
+		expect(check("25abc")).toEqual([{ type: "number", actual: "25abc", message }]);
+
+		expect(check(null)).toEqual(true);
+		expect(check("")).toEqual(true);
+		expect(check([])).toEqual(true);
+		expect(check(false)).toEqual(true);
+		expect(check(true)).toEqual(true);
+
+		expect(check("100")).toEqual(true);
+		expect(check("34.76")).toEqual(true);
+		expect(check("-45")).toEqual(true);
+	});
+
 });

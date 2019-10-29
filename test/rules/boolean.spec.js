@@ -43,4 +43,32 @@ describe("Test rule: boolean", () => {
 		expect(check(true)).toEqual(true);
 	});
 
+	it("should sanitize", () => {
+		const check = v.compile({ status: { type: "boolean", convert: true } });
+
+		let obj = { status: 0 };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({ status: false });
+
+		obj = { status: 1 };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({ status: true });
+
+		obj = { status: "true" };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({ status: true });
+
+		obj = { status: "false" };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({ status: false });
+
+		obj = { status: "off" };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({ status: false });
+
+		obj = { status: "on" };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({ status: true });
+	});
+
 });

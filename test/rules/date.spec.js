@@ -31,17 +31,34 @@ describe("Test rule: date", () => {
 		const check = v.compile({ $$root: true, type: "date", convert: true });
 		const message = "The '' field must be a Date.";
 
-		expect(check(null)).toEqual(true);
 		expect(check(Date.now())).toEqual(true);
 		expect(check("2017-03-07 10:11:23")).toEqual(true);
 		expect(check("2017-03-07T10:11:23Z")).toEqual(true);
 		expect(check("2017-03-07T10:11:23-01:00")).toEqual(true);
 		expect(check("Wed Mar 25 2015 09:56:24 GMT+0100 (W. Europe Standard Time)")).toEqual(true);
 
-		expect(check("")).toEqual([{ type: "date", actual: expect.anything(), message }]);
-		expect(check("asd")).toEqual([{ type: "date", actual: expect.anything(), message }]);
-		expect(check(undefined)).toEqual([{ type: "date", actual: expect.anything(), message }]);
+		expect(check("")).toEqual([{ type: "date", actual: "", message }]);
+		expect(check("asd")).toEqual([{ type: "date", actual: "asd", message }]);
+		expect(check(undefined)).toEqual([{ type: "date", actual: undefined, message }]);
 	});
 
+	it("should sanitize", () => {
+		const check = v.compile({ timestamp: { type: "date", convert: true } });
 
+		let obj = { timestamp: 1488876927958 };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({ timestamp: new Date(1488876927958) });
+
+		obj = { timestamp: "2017-03-07 10:11:23" };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({ timestamp: new Date("2017-03-07 10:11:23") });
+
+		obj = { timestamp: "2017-03-07T10:11:23Z" };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({ timestamp: new Date("2017-03-07T10:11:23Z") });
+
+		obj = { timestamp: "Wed Mar 25 2015 09:56:24 GMT+0100 (W. Europe Standard Time)" };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({ timestamp: new Date("Wed Mar 25 2015 09:56:24 GMT+0100 (W. Europe Standard Time)") });
+	});
 });
