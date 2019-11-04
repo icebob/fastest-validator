@@ -1,18 +1,19 @@
 let Validator = require("../index");
 
 let v = new Validator({
+	debug: true,
 	messages: {
 		stringMin: "A(z) '{field}' mező túl rövid. Minimum: {expected}, Jelenleg: {actual}"
 	}
 });
 
 const schema = {
-	id: { type: "number", positive: true, integer: true, convert: true },
+	//id: { type: "number", positive: true, integer: true, convert: true },
 	//name: { type: "string", min: 3, max: 255 },
 	//token: { type: "forbidden" },
 	//password: { type: "string", min: 6 },
 	//confirmPassword: { type: "equal", field: "password" },
-	//roles: { type: "array", items: "string", min: 1 },
+	roles: { type: "array", items: "string", min: 1 },
 	/*friends: { type: "array", items: { type: "object", properties: {
 		name: "string",
 		username: "string"
@@ -22,12 +23,12 @@ const schema = {
 		city: "string",
 		zip: "number"
 	} },*/
-	email: { type: "email", mode: "precise", normalize: true },
+	//email: { type: "email", mode: "precise", normalize: true },
 	//verified: { type: "equal", value: true, strict: true },
 	//status: "boolean" // short-hand def
-	createdAt: { type: "date", convert: true },
-	status: { type: "boolean", convert: true },
-	code: { type: "string", padEnd: 10, padChar: "\u2605" },
+	//createdAt: { type: "date", convert: true },
+	//status: { type: "boolean", convert: true },
+	//code: { type: "string", padEnd: 10, padChar: "\u2605" },
 	/*status: [
 		{ type: "boolean" },
 		{ type: "number" }
