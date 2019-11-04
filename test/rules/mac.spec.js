@@ -9,8 +9,6 @@ describe("Test rule: mac", () => {
 		const check = v.compile({ $$root: true, type: "mac" });
 		let message = "The '' field must be a string.";
 
-		expect(check(null)).toEqual([{ type: "string", actual: null, message }]);
-		expect(check(undefined)).toEqual([{ type: "string", actual: undefined, message }]);
 		expect(check(0)).toEqual([{ type: "string", actual: 0, message }]);
 		expect(check(1)).toEqual([{ type: "string", actual: 1, message }]);
 		expect(check([])).toEqual([{ type: "string", actual: [], message }]);

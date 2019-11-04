@@ -18,7 +18,6 @@ describe("Test rule: enum", () => {
 		const check = v.compile({ $$root: true, type: "enum", values: [null, 1, 2, "done", false] });
 
 		expect(check("male")).toEqual([{ type: "enumValue", expected: ", 1, 2, done, false", actual: "male", message: "The '' field value ', 1, 2, done, false' does not match any of the allowed values." }]);
-		expect(check(null)).toEqual(true);
 		expect(check(2)).toEqual(true);
 		expect(check("done")).toEqual(true);
 		expect(check(false)).toEqual(true);

@@ -14,8 +14,6 @@ describe("Test checkObject", () => {
 		const strict = { type: "object", strict: true, props: { a: "string" } };
 		const strictErr = {type: "objectStrict" };
 
-		expect(check(null, s)).toEqual(err);
-		expect(check(undefined, s)).toEqual(err);
 		expect(check(0, s)).toEqual(err);
 		expect(check(1, s)).toEqual(err);
 		expect(check("", s)).toEqual(err);
