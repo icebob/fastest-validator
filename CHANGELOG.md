@@ -1,4 +1,22 @@
 --------------------------------------------------
+<a name="1.0.0"></a>
+# 1.0.0 (2019-11-xx)
+The full module has been rewritten. It uses code generators in order to be much faster.
+
+## Breaking changes
+
+### Rule logic changed
+The rule codes have been rewritten to code generator functions.
+
+## New
+
+### Sanitizations
+
+### Root element validation
+
+## Other changes
+
+--------------------------------------------------
 <a name="0.6.19"></a>
 # 0.6.19 (2019-10-25)
 
