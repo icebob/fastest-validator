@@ -1,23 +1,19 @@
 "use strict";
 
 const Validator = require("../../lib/validator");
-const v = new Validator();
+const v = new Validator({ debug: false });
 
 describe("Test custom messages", () => {
 
 	it("should give back not a string message", () => {
-
 		const message = "That wasn't a string!";
 		const s = { name: { type: "string", messages: { string: message } } };
 
 		expect(v.validate({ name: 123 }, s)).toEqual([{ type: "string", actual: 123, field: "name", message }]);
-
 	});
 
 	it("should give back required message", () => {
-
 		const message = "Your name is required!";
-
 		const s = { name: { type: "string", messages: { required: message } } };
 
 		expect(v.validate({}, s)).toEqual([{ type: "required", actual: undefined, field: "name", message }]);
@@ -25,7 +21,6 @@ describe("Test custom messages", () => {
 	});
 
 	it("should do replacements in custom messages", () => {
-
 		const message = "Incorrect name length. Your field: {field} had {actual} chars when it should have no more than {expected}";
 		const s = { name: { type: "string", max: 2, messages: { stringMax: message } } };
 
@@ -34,7 +29,6 @@ describe("Test custom messages", () => {
 	});
 
 	it("should do custom messages in arrays", () => {
-
 		const s = {
 			cache: [
 				{ type: "string", messages: { string: "Not a string" } },
@@ -42,12 +36,16 @@ describe("Test custom messages", () => {
 			]
 		};
 
-		expect(v.validate({ cache: 123 }, s)).toEqual([{ type: "string", field: "cache", message: "Not a string" }, { type: "boolean", field: "cache", message: "Not a boolean" }]);
+		expect(v.validate({ cache: 123 }, s)).toEqual([
+			{ type: "string", field: "cache", actual: 123, message: "Not a string" },
+			{ type: "boolean", field: "cache", actual: 123, message: "Not a boolean" }
+		]);
 
+		expect(v.validate({ cache: true }, s)).toEqual(true);
+		expect(v.validate({ cache: "hello" }, s)).toEqual(true);
 	});
 
 	it("should do custom messages in objects", () => {
-
 		const s = {
 			users: {
 				type: "array",
@@ -104,4 +102,5 @@ describe("Test custom messages", () => {
 		]);
 
 	});
+
 });

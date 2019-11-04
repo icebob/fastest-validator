@@ -1,7 +1,7 @@
 "use strict";
 
 const Validator = require("../../lib/validator");
-const v = new Validator();
+const v = new Validator({ debug: false });
 
 describe("Test rule: object", () => {
 
@@ -43,5 +43,17 @@ describe("Test rule: object", () => {
 		} });
 		expect(check({})).toEqual([{ type: "required", field: "read-only", actual: undefined, message: "The 'read-only' field is required." }]);
 		expect(check({ "read-only": false })).toEqual(true);
+	});
+
+	it("should work with nested fields", () => {
+		const check = v.compile({ user: { type: "object", properties: {
+			firstName: "string",
+			address: { type: "object", properties: {
+				country: "string",
+				city: "string"
+			} }
+		} } });
+		expect(check({ user: { firstName: "John", address: { country: "UK" }}}))
+			.toEqual([{ type: "required", field: "user.address.city", actual: undefined, message: "The 'user.address.city' field is required." }]);
 	});
 });

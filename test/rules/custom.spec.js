@@ -29,13 +29,15 @@ describe("Test rule: custom", () => {
 		const checker = jest.fn(function(value, schema, field) {
 			return [{ type: "myError", field, expected: 3, actual: 4 }];
 		});
-		const schema = { weight: { type: "custom", a: 5, check: checker } };
+		const schema = { weight: { type: "custom", a: 5, check: checker, messages: { myError: "My error message. Expected: {expected}, actual: {actual}, field: {field}" } } };
 		const check = v.compile(schema);
 
 		expect(check({ weight: 10 })).toEqual([{
 			type: "myError",
+			field: "weight",
 			actual: 4,
 			expected: 3,
+			message: "My error message. Expected: 3, actual: 4, field: weight"
 		}]);
 		expect(checker).toHaveBeenCalledTimes(1);
 		expect(checker).toHaveBeenCalledWith(10, schema.weight, "weight", { weight: 10 }, { weight: 10 });

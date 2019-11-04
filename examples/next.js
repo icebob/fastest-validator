@@ -13,16 +13,16 @@ const schema = {
 	//token: { type: "forbidden" },
 	//password: { type: "string", min: 6 },
 	//confirmPassword: { type: "equal", field: "password" },
-	roles: { type: "array", items: "string", min: 1 },
+	//roles: { type: "array", items: "string", min: 1 },
 	/*friends: { type: "array", items: { type: "object", properties: {
 		name: "string",
 		username: "string"
 	}}},*/
-	/*address: { type: "object", properties: {
+	address: { type: "object", properties: {
 		country: "string",
 		city: "string",
 		zip: "number"
-	} },*/
+	} },
 	//email: { type: "email", mode: "precise", normalize: true },
 	//verified: { type: "equal", value: true, strict: true },
 	//status: "boolean" // short-hand def

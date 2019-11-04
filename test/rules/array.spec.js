@@ -86,8 +86,8 @@ describe("Test rule: array", () => {
 		expect(check([])).toEqual(true);
 		expect(check(["human"])).toEqual(true);
 		expect(check(["male", 3, "female", true])).toEqual([
-			{ type: "string", actual: 3, message: "The '' field must be a string."},
-			{ type: "string", actual: true, message: "The '' field must be a string."}
+			{ type: "string", field: "[1]", actual: 3, message: "The '[1]' field must be a string."},
+			{ type: "string", field: "[3]", actual: true, message: "The '[3]' field must be a string."}
 		]);
 	});
 
