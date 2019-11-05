@@ -58,7 +58,7 @@ const schema2 = {
 		min: 18
 	}
 };
-
+/*
 bench.ref("compile & validate", () => {
 	const res = v.validate(obj, schema);
 	if (res !== true)
@@ -70,10 +70,10 @@ bench.add("compile & validate with custom messages", () => {
 	if (res !== true)
 		throw new Error("Validation error!", res);
 });
-
+*/
 const check = v.compile(schema);
 
-bench.add("validate with pre-compiled schema", () => {
+bench.add("validate", () => {
 	const res = check(obj);
 	if (res !== true)
 		throw new Error("Validation error!", res);

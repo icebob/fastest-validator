@@ -9,7 +9,7 @@ let v = new Validator({
 
 const schema = {
 	//id: { type: "number", positive: true, integer: true, convert: true },
-	//name: { type: "string", min: 3, max: 255 },
+	name: { type: "string", min: 3, max: 255, padStart: 5 },
 	//token: { type: "forbidden" },
 	//password: { type: "string", min: 6 },
 	//confirmPassword: { type: "equal", field: "password" },
@@ -18,21 +18,22 @@ const schema = {
 		name: "string",
 		username: "string"
 	}}},*/
-	address: { type: "object", properties: {
+	/*address: { type: "object", properties: {
 		country: "string",
 		city: "string",
 		zip: "number"
-	} },
-	//email: { type: "email", mode: "precise", normalize: true },
+	} },*/
+	//age: { type: "number", min: 18 },
+	email: { type: "email", mode: "precise", normalize: true },
 	//verified: { type: "equal", value: true, strict: true },
 	//status: "boolean" // short-hand def
 	//createdAt: { type: "date", convert: true },
 	//status: { type: "boolean", convert: true },
 	//code: { type: "string", padEnd: 10, padChar: "\u2605" },
-	/*status: [
+	status: [
 		{ type: "boolean" },
 		{ type: "number" }
-	],*/
+	],
 
 	/*weight: {
 		type: "custom",
@@ -55,6 +56,7 @@ const obj = {
 	id: "5",
 	name: "John",
 	email: "   John.DOE@moleculer.Services   ",
+	age: 5,
 	address: {
 		country: "Hungary",
 		city: "Budapest",
@@ -75,7 +77,7 @@ const obj = {
 
 	weight: 10,
 };
-console.log("John", check(obj), obj);
+console.log(check(obj), obj);
 
 //console.log("Al", check({ id: "1", name: "Al", status: false, email: "a@b.cc" }));
 
