@@ -741,17 +741,17 @@ describe("Test array without items", () => {
 	});
 });
 
-describe.skip("Test recursive/cyclic schema", () => {
-	const v = new Validator();
+describe("Test recursive/cyclic schema", () => {
+	const v = new Validator({ debug: false });
 
 	let schema = {};
 	Object.assign(schema, {
 		name: { type: "string" },
-		parent: { type: "object", props: schema, optional: true },
+		parent: { type: "object", properties: schema, optional: true },
 		subcategories: {
 			type: "array",
 			optional: true,
-			items: { type: "object", props: schema}
+			items: { type: "object", properties: schema}
 		}
 	});
 

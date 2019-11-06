@@ -14,14 +14,13 @@ const schema = {
 	//password: { type: "string", min: 6 },
 	//confirmPassword: { type: "equal", field: "password" },
 	//roles: { type: "array", items: "string", min: 1 },
-	/*friends: { type: "array", items: { type: "object", properties: {
+	friends: { type: "array", items: { type: "object", properties: {
 		name: "string",
 		username: "string"
-	}}},*/
-	address: { type: "object", strict: true, properties: {
+	}}},
+	address: { type: "object", properties: {
 		country: "string",
-		city: "string",
-		//zip: "number"
+		city: "string"
 	} },
 	//age: { type: "number", min: 18 },
 	//email: { type: "email", mode: "precise", normalize: true },
