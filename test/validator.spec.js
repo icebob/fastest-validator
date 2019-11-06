@@ -102,12 +102,16 @@ describe("Test add", () => {
 
 		const context = {
 			customs: {},
-			index: 1,
-			level: 0
+			errors: [],
+			rules: expect.any(Array),
+			fn: expect.any(Array),
+			index: 2,
+			level: 0,
+			data: { a: 5 }
 		};
 
 		expect(validFn).toHaveBeenCalledTimes(1);
-		expect(validFn).toHaveBeenCalledWith(schema.a, "a", v.messages, context);
+		expect(validFn).toHaveBeenCalledWith(expect.any(Object), "a", context);
 	});
 
 	// TODO: add a real example

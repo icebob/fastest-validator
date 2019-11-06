@@ -896,7 +896,7 @@ describe("Test $$strict schema restriction on root-level", () => {
 });
 
 describe("Test $$strict schema restriction on root-level for nested objects", () => {
-	const v = new Validator();
+	const v = new Validator({ debug: false });
 
 	let schema = {
 		name: "string",

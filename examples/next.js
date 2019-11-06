@@ -9,7 +9,7 @@ let v = new Validator({
 
 const schema = {
 	//id: { type: "number", positive: true, integer: true, convert: true },
-	name: { type: "string", min: 3, max: 255, padStart: 5 },
+	//name: { type: "string", min: 3, max: 255, padStart: 5 },
 	//token: { type: "forbidden" },
 	//password: { type: "string", min: 6 },
 	//confirmPassword: { type: "equal", field: "password" },
@@ -18,22 +18,22 @@ const schema = {
 		name: "string",
 		username: "string"
 	}}},*/
-	/*address: { type: "object", properties: {
+	address: { type: "object", strict: true, properties: {
 		country: "string",
 		city: "string",
-		zip: "number"
-	} },*/
+		//zip: "number"
+	} },
 	//age: { type: "number", min: 18 },
-	email: { type: "email", mode: "precise", normalize: true },
+	//email: { type: "email", mode: "precise", normalize: true },
 	//verified: { type: "equal", value: true, strict: true },
 	//status: "boolean" // short-hand def
 	//createdAt: { type: "date", convert: true },
 	//status: { type: "boolean", convert: true },
 	//code: { type: "string", padEnd: 10, padChar: "\u2605" },
-	status: [
+	/*status: [
 		{ type: "boolean" },
 		{ type: "number" }
-	],
+	],*/
 
 	/*weight: {
 		type: "custom",

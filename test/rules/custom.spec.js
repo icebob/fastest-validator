@@ -12,7 +12,7 @@ describe("Test rule: custom", () => {
 
 		expect(check(10)).toEqual(true);
 		expect(checker).toHaveBeenCalledTimes(1);
-		expect(checker).toHaveBeenCalledWith(10, schema, "null", undefined, 10);
+		expect(checker).toHaveBeenCalledWith(10, schema, "null", null, expect.any(Object));
 	});
 
 	it("should call custom checker", () => {
@@ -22,7 +22,7 @@ describe("Test rule: custom", () => {
 
 		expect(check({ weight: 10 })).toEqual(true);
 		expect(checker).toHaveBeenCalledTimes(1);
-		expect(checker).toHaveBeenCalledWith(10, schema.weight, "weight", { weight: 10 }, { weight: 10 });
+		expect(checker).toHaveBeenCalledWith(10, schema.weight, "weight", { weight: 10 }, expect.any(Object));
 	});
 
 	it("should handle returned errors", () => {
@@ -40,7 +40,7 @@ describe("Test rule: custom", () => {
 			message: "My error message. Expected: 3, actual: 4, field: weight"
 		}]);
 		expect(checker).toHaveBeenCalledTimes(1);
-		expect(checker).toHaveBeenCalledWith(10, schema.weight, "weight", { weight: 10 }, { weight: 10 });
+		expect(checker).toHaveBeenCalledWith(10, schema.weight, "weight", { weight: 10 }, expect.any(Object));
 	});
 
 });

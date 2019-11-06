@@ -6,6 +6,7 @@
   "browser": "dist/index.min.js",
   "scripts": {
     "bench": "node benchmark/index.js",
+    "bench:watch": "nodemon benchmark/index.js",
     "build": "rollup -c",
     "prepublish": "npm run build",
     "dev": "nodemon examples/index.js",
