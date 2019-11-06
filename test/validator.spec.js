@@ -102,11 +102,9 @@ describe("Test add", () => {
 
 		const context = {
 			customs: {},
-			errors: [],
 			rules: expect.any(Array),
 			fn: expect.any(Array),
 			index: 2,
-			level: 0,
 			data: { a: 5 }
 		};
 
