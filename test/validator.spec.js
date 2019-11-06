@@ -116,17 +116,17 @@ describe("Test add", () => {
 
 });
 
-describe("Test compileSchemaRule method", () => {
+describe("Test getRuleFromSchema method", () => {
 
 	const v = new Validator();
 
 	it("should convert string shorthand", () => {
-		const res = v.compileSchemaRule("string");
+		const res = v.getRuleFromSchema("string");
 		expect(res.schema).toEqual({ type: "string" });
 	});
 
 	it("should convert array to multi rule", () => {
-		const res = v.compileSchemaRule([
+		const res = v.getRuleFromSchema([
 			"string",
 			"number"
 		]);
