@@ -10,26 +10,26 @@ let v = new Validator({
 const schema = {
 	//id: { type: "number", positive: true, integer: true, convert: true },
 	//name: { type: "string", min: 3, max: 255, padStart: 5 },
-	//token: { type: "forbidden" },
+	token: { type: "forbidden", remove: true },
 	//password: { type: "string", min: 6 },
 	//confirmPassword: { type: "equal", field: "password" },
-	//roles: { type: "array", items: "string", min: 1 },
+	//roles: { type: "array", items: "string", min: 1, default: ["user"] },
 	/*friends: { type: "array", items: { type: "object", properties: {
 		name: "string",
 		username: "string"
 	}}},*/
-	/*address: { type: "object", properties: {
+	/*address: { type: "object", strict: "remove", properties: {
 		country: "string",
 		city: "string"
 	} },*/
-	bio: { type: "string", convert: true },
+	//bio: { type: "string", convert: true },
 	//age: { type: "number", min: 18 },
 	//email: { type: "email", mode: "precise", normalize: true },
 	//verified: { type: "equal", value: true, strict: true },
 	//status: "boolean" // short-hand def
 	//createdAt: { type: "date", convert: true },
 	//status: { type: "boolean", convert: true },
-	//code: { type: "string", padEnd: 10, padChar: "\u2605" },
+	//code: { type: "string", padEnd: 10, padChar: "\u2605", default: "default-code" },
 	/*status: [
 		{ type: "boolean" },
 		{ type: "number" }
@@ -63,14 +63,15 @@ const obj = {
 		zip: "1112"
 	},
 	bio: null,
-	roles: ["admin", "user", 3, 2, true],
+	//roles: ["admin", "user", 3, 2, true],
 	friends: [
 		{ name: "John", username: "johnny" },
 		{ name: "Jane", username: "jane" }
 	],
 	password: "123456",
 	confirmPassword: "123456",
-	code: "123",
+	token: "abcdef",
+	//code: "123",
 	status: 1,
 	verified: true,
 
