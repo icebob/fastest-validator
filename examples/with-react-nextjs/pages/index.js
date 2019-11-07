@@ -1,5 +1,5 @@
 import React from "react";
-import Validator from "fastest-validator";
+import Validator from "../../../dist/index";
 
 class Index extends React.Component {
 	render() {
