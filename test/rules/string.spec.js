@@ -134,7 +134,49 @@ describe("Test rule: string", () => {
 
 	});
 
+	it("should convert & check values", () => {
+		const check = v.compile({ $$root: true, type: "string", convert: true });
+		expect(check("")).toEqual(true);
+		expect(check([])).toEqual(true);
+		expect(check(false)).toEqual(true);
+		expect(check(true)).toEqual(true);
+
+		expect(check(100)).toEqual(true);
+		expect(check(34.76)).toEqual(true);
+		expect(check(-45)).toEqual(true);
+		expect(check(new Date())).toEqual(true);
+	});
+
 	describe("Test sanitization", () => {
+
+		it("should convert & check values", () => {
+			const check = v.compile({ age: { type: "string", convert: true } });
+
+			let obj = { age: 100 };
+			expect(check(obj)).toEqual(true);
+			expect(obj).toEqual({ age: "100" });
+
+			obj = { age: 34.76 };
+			expect(check(obj)).toEqual(true);
+			expect(obj).toEqual({ age: "34.76" });
+
+			obj = { age: true };
+			expect(check(obj)).toEqual(true);
+			expect(obj).toEqual({ age: "true" });
+
+			obj = { age: false };
+			expect(check(obj)).toEqual(true);
+			expect(obj).toEqual({ age: "false" });
+
+			obj = { age: [1,2,3] };
+			expect(check(obj)).toEqual(true);
+			expect(obj).toEqual({ age: "1,2,3" });
+
+			const d = new Date();
+			obj = { age: d };
+			expect(check(obj)).toEqual(true);
+			expect(obj).toEqual({ age: d.toString() });
+		});
 
 		it("should trim", () => {
 			const check = v.compile({ username: { type: "string", trim: true, max: 6 } });
