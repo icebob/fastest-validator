@@ -56,4 +56,39 @@ describe("Test rule: object", () => {
 		expect(check({ user: { firstName: "John", address: { country: "UK" }}}))
 			.toEqual([{ type: "required", field: "user.address.city", actual: undefined, message: "The 'user.address.city' field is required." }]);
 	});
+
+
+	describe("Test sanitization", () => {
+
+		it("should remove additional fields if 'strict: 'remove''", () => {
+			let schema = {
+				name: { type: "string" },
+				address: { type: "object", strict: "remove", properties: {
+					country: "string",
+					city: "string"
+				} }
+			};
+			let check = v.compile(schema);
+
+			const obj = {
+				name: "John",
+				address: {
+					country: "Hungary",
+					city: "Budapest",
+					street: "Kossuth Lajos street",
+					zip: 1234
+				}
+			};
+
+			expect(check(obj)).toEqual(true);
+			expect(obj).toEqual({
+				name: "John",
+				address: {
+					country: "Hungary",
+					city: "Budapest"
+				}
+			});
+		});
+
+	});
 });

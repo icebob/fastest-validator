@@ -19,4 +19,30 @@ describe("Test rule: forbidden", () => {
 		expect(check(false)).toEqual([{ type: "forbidden", actual: false, message }]);
 		expect(check(true)).toEqual([{ type: "forbidden", actual: true, message }]);
 	});
+
+
+	describe("Test sanitization", () => {
+
+		it("should remove the field if 'remove: true'", () => {
+			let schema = {
+				id: { type: "number" },
+				name: { type: "string" },
+				token: { type: "forbidden", remove: true }
+			};
+			let check = v.compile(schema);
+
+			const obj = {
+				id: 2,
+				name: "John"
+			};
+
+			expect(check(obj)).toEqual(true);
+			expect(obj).toEqual({
+				id: 2,
+				name: "John"
+			});
+		});
+
+	});
+
 });

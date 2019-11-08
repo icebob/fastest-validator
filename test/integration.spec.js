@@ -895,7 +895,7 @@ describe("Test $$strict schema restriction on root-level", () => {
 	});
 });
 
-describe("Test $$strict schema restriction on root-level for nested objects", () => {
+describe("Test $$strict schema restriction for nested objects", () => {
 	const v = new Validator({ debug: false });
 
 	let schema = {
@@ -932,7 +932,7 @@ describe("Test $$strict schema restriction on root-level for nested objects", ()
 	});
 });
 
-describe("Test $$strict schema restriction on sub-level", () => {
+describe("Test strict schema restriction on sub-level", () => {
 	const v = new Validator();
 
 	let schema = {
@@ -961,6 +961,37 @@ describe("Test $$strict schema restriction on sub-level", () => {
 		expect(res.length).toBe(1);
 		expect(res[0].field).toBe("address");
 		expect(res[0].type).toBe("objectStrict");
+	});
+});
+
+describe("Test default value sanitizer", () => {
+	const v = new Validator();
+
+	let schema = {
+		id: { type: "number", default: 5 },
+		name: { type: "string", default: "John" },
+		age: { type: "number", optional: true, default: 33 },
+		roles: { type: "array", items: "string", default: ["user"] },
+		status: { type: "boolean", default: true }
+	};
+	let check = v.compile(schema);
+
+	it("should fill not defined properties", () => {
+		let obj = {
+			name: null,
+			status: false
+		};
+
+		let res = check(obj);
+
+		expect(res).toBe(true);
+		expect(obj).toEqual({
+			id: 5,
+			name: "John",
+			age: 33,
+			roles: ["user"],
+			status: false
+		});
 	});
 });
 
