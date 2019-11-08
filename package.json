@@ -1,6 +1,6 @@
 {
   "name": "fastest-validator",
-  "version": "0.6.19",
+  "version": "1.0.0",
   "description": "The fastest JS validator library for NodeJS",
   "main": "dist/index.js",
   "browser": "dist/index.min.js",
@@ -8,7 +8,7 @@
     "bench": "node benchmark/index.js",
     "bench:watch": "nodemon benchmark/index.js",
     "build": "rollup -c",
-    "prepublish": "npm run build",
+    "prepublishOnly": "npm run build",
     "dev": "nodemon examples/index.js",
     "ci": "jest --watch",
     "test": "jest --coverage",
@@ -29,7 +29,6 @@
   ],
   "files": [
     "dist",
-    "examples",
     "lib",
     "index.js",
     "index.d.ts"
