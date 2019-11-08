@@ -41,6 +41,7 @@
   "homepage": "https://github.com/icebob/fastest-validator#readme",
   "devDependencies": {
     "benchmarkify": "^2.1.2",
+    "cli-highlight": "^2.1.1",
     "coveralls": "^3.0.7",
     "eslint": "^6.5.1",
     "jest": "^24.9.0",
