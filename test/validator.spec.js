@@ -120,11 +120,6 @@ describe("Test getRuleFromSchema method", () => {
 
 	const v = new Validator();
 
-	it("should convert string shorthand", () => {
-		const res = v.getRuleFromSchema("string");
-		expect(res.schema).toEqual({ type: "string" });
-	});
-
 	it("should convert array to multi rule", () => {
 		const res = v.getRuleFromSchema([
 			"string",
@@ -171,6 +166,25 @@ describe("Test getRuleFromSchema method", () => {
 		expect(() => {
 			v.compile(schema);
 		}).toThrowError("Invalid 's' type in validator schema.");
+	});
+
+	describe("Test string shorthard rules", () => {
+
+		it("should convert only type", () => {
+			const res = v.getRuleFromSchema("string");
+			expect(res.schema).toEqual({ type: "string" });
+		});
+
+		it("should convert with properties", () => {
+			const res = v.getRuleFromSchema("string|min:3 | max : 10| trim");
+			expect(res.schema).toEqual({ type: "string", min: 3, max: 10, trim: true });
+		});
+
+		it("should convert with disabled properties", () => {
+			const res = v.getRuleFromSchema("string|no-empty|trim:true|alpha:false|some:1234kg");
+			expect(res.schema).toEqual({ type: "string", empty: false, alpha: false, trim: true, some: "1234kg" });
+		});
+
 	});
 });
 

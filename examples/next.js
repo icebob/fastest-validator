@@ -8,9 +8,9 @@ let v = new Validator({
 });
 
 const schema = {
-	//id: { type: "number", positive: true, integer: true, convert: true },
-	//name: { type: "string", min: 3, max: 255, padStart: 5 },
-	token: { type: "forbidden", remove: true },
+	id: "number|positive|integer|convert",
+	name: "string|min: 3|max: 255|padStart: 5",
+	token: "forbidden|remove",
 	//password: { type: "string", min: 6 },
 	//confirmPassword: { type: "equal", field: "password" },
 	//roles: { type: "array", items: "string", min: 1, default: ["user"] },
