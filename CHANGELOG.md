@@ -1,20 +1,97 @@
 --------------------------------------------------
 <a name="1.0.0"></a>
 # 1.0.0 (2019-11-xx)
-The full module has been rewritten. It uses code generators in order to be much faster.
+
+The full library has been rewritten. It uses code generators in order to be much faster.
 
 ## Breaking changes
+This new version contains several breaking changes.
 
 ### Rule logic changed
-The rule codes have been rewritten to code generator functions.
+The rule codes have been rewritten to code generator functions. Therefore if you use custom validators, you should rewrite them after upgrading.
+
+### Convert values
+The `number`, `boolean` and `date` rules have a `convert: true` property. In the previous version it doesn't modify the value in the checked object, just converted the value to the rules. In the version 1.0 this property converts the values in the checked object, as well.
 
 ## New
 
 ### Sanitizations
+The sanitization function is implemented. There are several rules which contains sanitizers. **Please note, the sanitizers change the original checked object values.**
+
+| Rule | Property | Description |
+| ---- | -------- | ----------- |
+`boolean` | `convert` | Convert the value to a boolean.
+`number` | `convert` | Convert the value to a number.
+`date` | `convert` | Convert the value to a date.
+`string` | `trim` | Trim the value.
+`string` | `trimLeft` | Left trim the value.
+`string` | `trimRight` | Right trim the value.
+`string` | `lowercase` | Lowercase the value.
+`string` | `uppercase` | Uppercase the value.
+`string` | `localeLowercase` | Lowercase the value with `String.toLocaleLowerCase`.
+`string` | `localeUppercase` | Uppercase the value with `String.toLocaleUpperCase`.
+`string` | `padStart` | Left padding the value.
+`string` | `padEnd` | Right padding the value.
+`string` | `convert` | Convert the value to a string.
+`email` | `normalize` | Trim & lowercase the value.
+`forbidden` | `remove` | Remove the forbidden field.
+`object` | `strict: "remove"` | Remove additional properties in the object.
+`*` | `default` | Use this default value if the value is `null` or `undefined`.
 
 ### Root element validation
+Basically the validator expects that you want to validate a Javascript object. If you want others, you can define the root level schema, as well. In this case set the `$$root: true` property.
+
+**Example to validate a `string` variable instead of `object`**
+```js
+const schema = {
+    $$root: true,
+    type: "string", 
+    min: 3, 
+    max: 6
+};
+
+v.validate("John", schema); // Valid
+v.validate("Al", schema); // Fail, too short.
+```
+
+### Enhanced shorthand types
+You can use string-based shorthand validation definitions in the schema with properties.
+
+```js
+{
+    password: "string|min:6",
+    age: "number|optional|integer|positive|min:0|max:99",
+
+    retry: ["number|integer|min:0", "boolean"] // multiple types
+}
+```
 
 ## Other changes
+
+### New `equal` rule
+It checks the value equal (`==`) to a static value or another property. The `strict` property uses `===` to check values.
+
+**Example with static value**:
+```js
+const schema = {
+    agreeTerms: { type: "equal", value: true, strict: true } // strict means `===`
+}
+
+v.validate({ agreeTerms: true }, schema); // Valid
+v.validate({ agreeTerms: false }, schema); // Fail
+```
+
+**Example with other field**:
+```js
+const schema = {
+    password: { type: "string", min: 6 },
+    confirmPassword: { type: "equal", field: "password" }
+}
+
+v.validate({ password: "123456", confirmPassword: "123456" }, schema); // Valid
+v.validate({ password: "123456", confirmPassword: "pass1234" }, schema); // Fail
+```
+
 
 --------------------------------------------------
 <a name="0.6.19"></a>

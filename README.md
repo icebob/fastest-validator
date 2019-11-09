@@ -245,7 +245,7 @@ v.validate("Al", schema); // Fail, too short.
 ```
 
 # Sanitizations
-The library contains several sanitizations. **Please note, the sanitizers change the original object.**
+The library contains several sanitizaters. **Please note, the sanitizers change the original checked object.**
 
 ## Default values
 The most common sanitizer is the `default` property. With it, you can define a default value for all properties. If the property value is `null` or `undefined`, the validator set the defined default value into the property.
@@ -455,15 +455,27 @@ Property | Default  | Description
 `values` | `null`   | The valid values.
 
 ## `equal`
-This is an equal value validator.
+This is an equal value validator. It checks a value with a static value or with another property.
 
+**Example with static value**:
 ```js
 const schema = {
-    agreeTerms: { type: "equal", value: true }
+    agreeTerms: { type: "equal", value: true, strict: true } // strict means `===`
 }
 
 v.validate({ agreeTerms: true }, schema); // Valid
 v.validate({ agreeTerms: false }, schema); // Fail
+```
+
+**Example with other field**:
+```js
+const schema = {
+    password: { type: "string", min: 6 },
+    confirmPassword: { type: "equal", field: "password" }
+}
+
+v.validate({ password: "123456", confirmPassword: "123456" }, schema); // Valid
+v.validate({ password: "123456", confirmPassword: "pass1234" }, schema); // Fail
 ```
 
 ### Properties
@@ -926,37 +938,51 @@ v.validate({ firstname: "John", lastname: 23 }, schema );
 # Message types
 Name                | Default text
 ------------------- | -------------
-`required`          | The '{field}' field is required!
-`string`            | The '{field}' field must be a string!
-`stringEmpty`       | The '{field}' field must not be empty!
-`stringMin`         | The '{field}' field length must be greater than or equal to {expected} characters long!
-`stringMax`         | The '{field}' field length must be less than or equal to {expected} characters long!
-`stringLength`      | The '{field}' field length must be {expected} characters long!
-`stringPattern`     | The '{field}' field fails to match the required pattern!
-`stringContains`    | The '{field}' field must contain the '{expected}' text!
-`stringEnum`        | The '{field}' field does not match any of the allowed values!
-`number`            | The '{field}' field must be a number!
-`numberMin`         | The '{field}' field must be greater than or equal to {expected}!
-`numberMax`         | The '{field}' field must be less than or equal to {expected}!
-`numberEqual`       | The '{field}' field must be equal with {expected}!
-`numberNotEqual`    | The '{field}' field can't be equal with {expected}!
-`numberInteger`     | The '{field}' field must be an integer!
-`numberPositive`    | The '{field}' field must be a positive number!
-`numberNegative`    | The '{field}' field must be a negative number!
-`array`             | The '{field}' field must be an array!
-`arrayEmpty`        | The '{field}' field must not be an empty array!
-`arrayMin`          | The '{field}' field must contain at least {expected} items!
-`arrayMax`          | The '{field}' field must contain less than or equal to {expected} items!
-`arrayLength`       | The '{field}' field must contain {expected} items!
-`arrayContains`     | The '{field}' field must contain the '{expected}' item!
-`arrayEnum`         | The '{field} field value '{expected}' does not match any of the allowed values!
-`boolean`           | The '{field}' field must be a boolean!
-`function`          | The '{field}' field must be a function!
-`date`              | The '{field}' field must be a Date!
-`dateMin`           | The '{field}' field must be greater than or equal to {expected}!
-`dateMax`           | The '{field}' field must be less than or equal to {expected}!
-`forbidden`         | The '{field}' field is forbidden!
-`email`             | The '{field}' field must be a valid e-mail!
+`required`	| The '{field}' field is required.
+`string`	| The '{field}' field must be a string.
+`stringEmpty`	| The '{field}' field must not be empty.
+`stringMin`	| The '{field}' field length must be greater than or equal to {expected} characters long.
+`stringMax`	| The '{field}' field length must be less than or equal to {expected} characters long.
+`stringLength`	| The '{field}' field length must be {expected} characters long.
+`stringPattern`	| The '{field}' field fails to match the required pattern.
+`stringContains`	| The '{field}' field must contain the '{expected}' text.
+`stringEnum`	| The '{field}' field does not match any of the allowed values.
+`stringNumeric`	| The '{field}' field must be a numeric string.
+`stringAlpha`	| The '{field}' field must be an alphabetic string.
+`stringAlphanum`	| The '{field}' field must be an alphanumeric string.
+`stringAlphadash`	| The '{field}' field must be an alphadash string.
+`number`	| The '{field}' field must be a number.
+`numberMin`	| The '{field}' field must be greater than or equal to {expected}.
+`numberMax`	| The '{field}' field must be less than or equal to {expected}.
+`numberEqual`	| The '{field}' field must be equal to {expected}.
+`numberNotEqual`	| The '{field}' field can't be equal to {expected}.
+`numberInteger`	| The '{field}' field must be an integer.
+`numberPositive`	| The '{field}' field must be a positive number.
+`numberNegative`	| The '{field}' field must be a negative number.
+`array`	| The '{field}' field must be an array.
+`arrayEmpty`	| The '{field}' field must not be an empty array.
+`arrayMin`	| The '{field}' field must contain at least {expected} items.
+`arrayMax`	| The '{field}' field must contain less than or equal to {expected} items.
+`arrayLength`	| The '{field}' field must contain {expected} items.
+`arrayContains`	| The '{field}' field must contain the '{expected}' item.
+`arrayEnum`	| The '{actual}' value in '{field}' field does not match any of the '{expected}' values.
+`boolean`	| The '{field}' field must be a boolean.
+`function`	| The '{field}' field must be a function.
+`date`	| The '{field}' field must be a Date.
+`dateMin`	| The '{field}' field must be greater than or equal to {expected}.
+`dateMax`	| The '{field}' field must be less than or equal to {expected}.
+`forbidden`	| The '{field}' field is forbidden.
+`email`	| The '{field}' field must be a valid e-mail.
+`url`	| The '{field}' field must be a valid URL.
+`enumValue`	| The '{field}' field value '{expected}' does not match any of the allowed values.
+`equalValue`	| The '{field}' field value must be equal to '{expected}'.
+`equalField`	| The '{field}' field value must be equal to '{expected}' field value.
+`object`	| The '{field}' must be an Object.
+`objectStrict`	| The object '{field}' contains forbidden keys: '{actual}'.
+`uuid`	| The '{field}' field must be a valid UUID.
+`uuidVersion`	| The '{field}' field must be a valid UUID version provided.
+`mac`	| The '{field}' field must be a valid MAC address.
+`luhn`	| The '{field}' field must be a valid checksum luhn.
 
 ## Message fields
 Name        | Description
@@ -964,7 +990,6 @@ Name        | Description
 `field`     | The field name
 `expected`  | The expected value
 `actual`    | The actual value
-`type`      | The field type
 
 # Development
 ```
@@ -981,28 +1006,30 @@ npm test
 -----------------|----------|----------|----------|----------|-------------------|
 File             |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
 -----------------|----------|----------|----------|----------|-------------------|
-All files        |      100 |      100 |      100 |      100 |                   |
+All files        |      100 |    97.73 |      100 |      100 |                   |
  lib             |      100 |      100 |      100 |      100 |                   |
   messages.js    |      100 |      100 |      100 |      100 |                   |
   validator.js   |      100 |      100 |      100 |      100 |                   |
  lib/helpers     |      100 |      100 |      100 |      100 |                   |
   deep-extend.js |      100 |      100 |      100 |      100 |                   |
   flatten.js     |      100 |      100 |      100 |      100 |                   |
- lib/rules       |      100 |      100 |      100 |      100 |                   |
+ lib/rules       |      100 |    96.43 |      100 |      100 |                   |
   any.js         |      100 |      100 |      100 |      100 |                   |
   array.js       |      100 |      100 |      100 |      100 |                   |
   boolean.js     |      100 |      100 |      100 |      100 |                   |
-  custom.js      |      100 |      100 |      100 |      100 |                   |
+  custom.js      |      100 |       50 |      100 |      100 |                 6 |
   date.js        |      100 |      100 |      100 |      100 |                   |
   email.js       |      100 |      100 |      100 |      100 |                   |
-  enum.js        |      100 |      100 |      100 |      100 |                   |
+  enum.js        |      100 |       50 |      100 |      100 |                 6 |
+  equal.js       |      100 |      100 |      100 |      100 |                   |
   forbidden.js   |      100 |      100 |      100 |      100 |                   |
   function.js    |      100 |      100 |      100 |      100 |                   |
   luhn.js        |      100 |      100 |      100 |      100 |                   |
   mac.js         |      100 |      100 |      100 |      100 |                   |
+  multi.js       |      100 |      100 |      100 |      100 |                   |
   number.js      |      100 |      100 |      100 |      100 |                   |
   object.js      |      100 |      100 |      100 |      100 |                   |
-  string.js      |      100 |      100 |      100 |      100 |                   |
+  string.js      |      100 |    95.83 |      100 |      100 |             55,63 |
   url.js         |      100 |      100 |      100 |      100 |                   |
   uuid.js        |      100 |      100 |      100 |      100 |                   |
 -----------------|----------|----------|----------|----------|-------------------|
