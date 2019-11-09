@@ -12,8 +12,9 @@
 **If you like my work, please [donate](https://www.paypal.me/meregnorbert). Thank you!**
 
 ## Key features
-* fast! Really!
+* blazing fast! Really!
 * 15+ built-in validators
+* many sanitizations
 * custom validators
 * nested objects & array handling
 * strict object validation
@@ -24,9 +25,9 @@
 * unit tests & 100% coverage
 
 # How fast?
-Very fast! ~5 million validations/sec (on Intel i7-4770K, Node.JS: 8.11.0)
+Very fast! ~5 million validations/sec (on Intel i7-4770K, Node.JS: 10.16.0)
 ```
-√ validate with pre-compiled schema         5,460,129 rps
+√ validate                        8,461,975 rps
 ```
 
 Compared to other popular libraries:
@@ -43,11 +44,46 @@ $ npm install
 $ npm run bench
 ```
 
+# Table of contents
+- [Installations](#Installation)
+- [Usage](#Usage)
+- [Optional & required fields](#)
+- [Strict validation](#)
+- [Multiple validators](#)
+- [Root element schema](#)
+- [Sanitizations](#Sanitizations)
+- [Shorthand definitions](#)
+- [Built-in validators](#)
+    - [any](#any)
+    - [array](#array)
+    - [boolean](#boolean)
+    - [date](#date)
+    - [email](#email)
+    - [enum](#enum)
+    - [equal](#equal)
+    - [forbidden](#forbidden)
+    - [function](#function)
+    - [luhn](#luhn)
+    - [mac](#mac)
+    - [multi](#multi)
+    - [number](#number)
+    - [object](#object)
+    - [string](#string)
+    - [url](#url)
+    - [uuid](#uuid)
+- [Custom validator](#)
+- [Custom error messages (l10n)](#)
+- [Development](#Development)
+- [Test](#Test)
+- [Contribution](#Contribution)
+- [License](#License)
+- [Contact](#Contact)
+
 ## Installation
 ### NPM
 You can install it via [NPM](http://npmjs.org/).
 ```
-$ npm install fastest-validator --save
+$ npm i fastest-validator --save
 ```
 or
 ```
@@ -58,7 +94,7 @@ $ yarn add fastest-validator
 
 ### Simple method
 Call the `validate` method with the `object` and the `schema`.
-> If performance is important, you won't use this method.
+> If performance is important, you won't use this method because it's slow.
 
 ```js
 let Validator = require("fastest-validator");
@@ -91,7 +127,7 @@ console.log(v.validate({ id: 5, name: "Al", status: true }, schema));
 
 ### Fast method
 In this case, the first step is to compile the schema to a compiled "checker" function. After that, to validate your object, just call this "checker" function.
-> This method is ~10x faster than the "simple method".
+> This method is the fastest.
 
 ```js
 let Validator = require("fastest-validator");
@@ -146,21 +182,21 @@ console.log(check({ id: 5, name: "John", status: true }));
 Every field in the schema will be required by default. If you'd like to define optional fields, set `optional: true`.
 
 ```js
-let schema = {
+const schema = {
     name: { type: "string" }, // required
     age: { type: "number", optional: true }
 }
 
 v.validate({ name: "John", age: 42 }, schema); // Valid
 v.validate({ name: "John" }, schema); // Valid
-v.validate({ age: 42 }, schema); // Fail
+v.validate({ age: 42 }, schema); // Fail because name is required
 ```
 
 # Strict validation
 Object properties which are not specified on the schema are ignored by default. If you set the `$$strict` option to `true` any aditional properties will result in an `strictObject` error.
 
 ```js
-let schema = {
+const schema = {
     name: { type: "string" }, // required
     $$strict: true // no additional properties allowed
 }
@@ -169,11 +205,15 @@ v.validate({ name: "John" }, schema); // Valid
 v.validate({ name: "John", age: 42 }, schema); // Fail
 ```
 
+## Remove additional fields
+To remove the additional fields in the object, set `$$strict: "remove"`.
+
+
 # Multiple validators
 It is possible to define more validators for a field. In this case, only one validator needs to succeed for the field to be valid.
 
 ```js
-let schema = {
+const schema = {
     cache: [
         { type: "string" },
         { type: "boolean" }
@@ -185,13 +225,65 @@ v.validate({ cache: "redis://" }, schema); // Valid
 v.validate({ cache: 150 }, schema); // Fail
 ```
 
+# Root element schema
+Basically the validator expects that you want to validate a Javascript object. If you want others, you can define the root level schema, as well. In this case set the `$$root: true` property.
+
+**Example to validate a `string` variable instead of `object`**
+```js
+const schema = {
+    $$root: true,
+    type: "string", 
+    min: 3, 
+    max: 6
+};
+
+v.validate("John", schema); // Valid
+v.validate("Al", schema); // Fail, too short.
+```
+
+# Sanitizations
+The library contains several sanitizations. **Please note, the sanitizers change the original object.**
+
+## Default values
+The most common sanitizer is the `default` property. With it, you can define a default value for all properties. If the property value is `null` or `undefined`, the validator set the defined default value into the property.
+
+**Default value example**:
+```js
+const schema = {
+    roles: { type: "array", items: "string", default: ["user"] },
+    status: { type: "boolean", default: true },
+};
+
+const obj = {}
+
+v.validate(obj, schema); // Valid
+console.log(obj);
+/*
+{
+    roles: ["user"],
+    status: true
+}
+*/
+```
+
+# Shorthand definitions
+You can use string-based shorthand validation definitions in the schema.
+
+```js
+const schema = {
+    password: "string|min:6",
+    age: "number|optional|integer|positive|min:0|max:99", // additional properties
+    state: ["boolean", "number|min:0|max:1"] // multiple types
+}
+```
+
 # Built-in validators
 
 ## `any`
 This does not do type validation. Accepts any types.
 
 ```js
-let schema = {
+const schema = {
     prop: { type: "any" }
 }
 
@@ -205,7 +297,7 @@ This is an `Array` validator.
 
 **Simple example with strings:**
 ```js
-let schema = {
+const schema = {
     roles: { type: "array", items: "string" }
 }
 
@@ -216,7 +308,7 @@ v.validate({ roles: "user" }, schema); // Fail
 
 **Example with only positive numbers:**
 ```js
-let schema = {
+const schema = {
     list: { type: "array", min: 2, items: {
         type: "number", positive: true, integer: true
     } }
@@ -230,7 +322,7 @@ v.validate({ list: [1, -7] }, schema); // Fail (negative number)
 
 **Example with an object list:**
 ```js
-let schema = {
+const schema = {
     users: { type: "array", items: {
         type: "object", props: {
             id: { type: "number", positive: true },
@@ -249,20 +341,9 @@ v.validate({
 }, schema); // Valid
 ```
 
-
-### Properties
-Property | Default  | Description
--------- | -------- | -----------
-`empty`  | `true`   | If true, the validator accepts an empty array `[]`.
-`min`  	 | `null`   | Minimum count of elements.
-`max`  	 | `null`   | Maximum count of elements.
-`length` | `null`   | Fix count of elements.
-`contains` | `null` | The array must contain this element too.
-`enum`	 | `null`   | Every element must be an element of the `enum` array.
-
 **Example for `enum`:**
 ```js
-let schema = {
+const schema = {
     roles: { type: "array", items: "string", enum: [ "user", "admin" ] }
 }
 
@@ -271,12 +352,23 @@ v.validate({ roles: ["user", "admin"] }, schema); // Valid
 v.validate({ roles: ["guest"] }, schema); // Fail
 ```
 
+### Properties
+Property | Default  | Description
+-------- | -------- | -----------
+`empty`  | `true`   | If `true`, the validator accepts an empty array `[]`.
+`min`  	 | `null`   | Minimum count of elements.
+`max`  	 | `null`   | Maximum count of elements.
+`length` | `null`   | Fix count of elements.
+`contains` | `null` | The array must contain this element too.
+`enum`	 | `null`   | Every element must be an element of the `enum` array.
+`items`	 | `null`   | Schema for array items.
+
 
 ## `boolean`
 This is a `Boolean` validator.
 
 ```js
-let schema = {
+const schema = {
     status: { type: "boolean" }
 }
 
@@ -288,14 +380,20 @@ v.validate({ status: "true" }, schema); // Fail
 ### Properties
 Property | Default  | Description
 -------- | -------- | -----------
-`convert` | `false` | if `true` and the type is not `Boolean`, try to convert. `1`, `"true"`, `"1"`, `"on"` will be true. `0`, `"false"`, `"0"`, `"off"` will be false.
+`convert` | `false` | if `true` and the type is not `Boolean`, it will be converted. `1`, `"true"`, `"1"`, `"on"` will be true. `0`, `"false"`, `"0"`, `"off"` will be false. _It's a sanitizer, it will change the value in the original object._
 
+**Example for `convert`:**
+```js
+v.validate({ status: "true" }, {
+    status: { type: "boolean", convert: true}
+}); // Valid
+```
 
 ## `date`
 This is a `Date` validator.
 
 ```js
-let schema = {
+const schema = {
     dob: { type: "date" }
 }
 
@@ -303,16 +401,24 @@ v.validate({ dob: new Date() }, schema); // Valid
 v.validate({ dob: new Date(1488876927958) }, schema); // Valid
 v.validate({ dob: 1488876927958 }, schema); // Fail
 ```
+
 ### Properties
 Property | Default  | Description
 -------- | -------- | -----------
-`convert`  | `false`| if `true` and the type is not `Date`, try to convert with `new Date()`.
+`convert`  | `false`| if `true` and the type is not `Date`, try to convert with `new Date()`. _It's a sanitizer, it will change the value in the original object._
+
+**Example for `convert`:**
+```js
+v.validate({ dob: 1488876927958 }, {
+    dob: { type: "date", convert: true}
+}); // Valid
+```
 
 ## `email`
 This is an e-mail address validator.
 
 ```js
-let schema = {
+const schema = {
     email: { type: "email" }
 }
 
@@ -325,12 +431,13 @@ v.validate({ email: "abc@gmail" }, schema); // Fail
 Property | Default  | Description
 -------- | -------- | -----------
 `mode`   | `quick`  | Checker method. Can be `quick` or `precise`.
+`normalize`   | `false`  | Normalize the e-mail address (trim & lower-case). _It's a sanitizer, it will change the value in the original object._
 
 ## `enum`
 This is an enum validator.
 
 ```js
-let schema = {
+const schema = {
     sex: { type: "enum", values: ["male", "female"] }
 }
 
@@ -344,12 +451,29 @@ Property | Default  | Description
 -------- | -------- | -----------
 `values` | `null`   | The valid values.
 
+## `equal`
+This is an equal value validator.
+
+```js
+const schema = {
+    agreeTerms: { type: "equal", value: true }
+}
+
+v.validate({ agreeTerms: true }, schema); // Valid
+v.validate({ agreeTerms: false }, schema); // Fail
+```
+
+### Properties
+Property | Default  | Description
+-------- | -------- | -----------
+`value`  | `undefined`| The expected value. It can be any primitive types.
+`strict`  | `false`| if `true`, it uses strict equal `===` for checking.
 
 ## `forbidden`
 This validator returns an error if the property exists in the object.
 
 ```js
-let schema = {
+const schema = {
     password: { type: "forbidden" }
 }
 
@@ -357,25 +481,118 @@ v.validate({ user: "John" }, schema); // Valid
 v.validate({ user: "John", password: "pass1234" }, schema); // Fail
 ```
 
+### Properties
+Property | Default  | Description
+-------- | -------- | -----------
+`remove` | `false`   | If `true`, the value will be removed in the original object. _It's a sanitizer, it will change the value in the original object._
+
+**Example for `remove`:**
+```js
+const schema = {
+    user: { type: "string" },
+    token: { type: "forbidden", remove: true }
+};
+
+const obj = {
+    user: "John",
+    token: "123456"
+}
+
+v.validate(obj, schema); // Valid
+console.log(obj);
+/*
+{
+    user: "John",
+    token: undefined
+}
+*/
+```
+
 ## `function`
-This a `Function`validator.
+This a `Function` type validator.
 
 ```js
-let schema = {
+const schema = {
     show: { type: "function" }
 }
 
 v.validate({ show: function() {} }, schema); // Valid
 v.validate({ show: Date.now }, schema); // Valid
-v.validate({ show: null }, schema); // Fail
+v.validate({ show: "function" }, schema); // Fail
 ```
 
+## `luhn`
+This is an Luhn validator.
+[Luhn algorithm](https://en.wikipedia.org/wiki/Luhn_algorithm) checksum
+Credit Card numbers, IMEI numbers, National Provider Identifier numbers and others 
+
+```js
+const schema = {
+    cc: { type: "luhn" }
+}
+
+v.validate({ cc: "452373989901198" }, schema); // Valid
+v.validate({ cc: 452373989901198 }, schema); // Valid
+v.validate({ cc: "4523-739-8990-1198" }, schema); // Valid
+v.validate({ cc: "452373989901199" }, schema); // Fail
+```
+
+## `mac`
+This is an MAC addresses validator. 
+
+```js
+const schema = {
+    mac: { type: "mac" }
+}
+
+v.validate({ mac: "01:C8:95:4B:65:FE" }, schema); // Valid
+v.validate({ mac: "01:c8:95:4b:65:fe", schema); // Valid
+v.validate({ mac: "01C8.954B.65FE" }, schema); // Valid
+v.validate({ mac: "01c8.954b.65fe", schema); // Valid
+v.validate({ mac: "01-C8-95-4B-65-FE" }, schema); // Valid
+v.validate({ mac: "01-c8-95-4b-65-fe" }, schema); // Valid
+v.validate({ mac: "01C8954B65FE" }, schema); // Fail
+```
+
+## `multi`
+This is a multiple definitions validator. 
+
+```js
+const schema = {
+    status: { type: "multi", rules: [
+        { type: "boolean" },
+        { type: "number" }
+    ], default: true }
+}
+
+v.validate({ status: true }, schema); // Valid
+v.validate({ status: false }, schema); // Valid
+v.validate({ status: 1 }, schema); // Valid
+v.validate({ status: 0 }, schema); // Valid
+v.validate({ status: "yes" }, schema); // Fail
+```
+
+**Shorthand multiple definitions**:
+```js
+const schema = {
+    status: [
+        "boolean",
+        "number"
+    ]
+}
+
+v.validate({ status: true }, schema); // Valid
+v.validate({ status: false }, schema); // Valid
+v.validate({ status: 1 }, schema); // Valid
+v.validate({ status: 0 }, schema); // Valid
+v.validate({ status: "yes" }, schema); // Fail
+```
 
 ## `number`
 This is a `Number` validator.
 
 ```js
-let schema = {
+const schema = {
     age: { type: "number" }
 }
 
@@ -394,13 +611,14 @@ Property | Default  | Description
 `integer` | `false` | The value must be a non-decimal value.
 `positive` | `false`| The value must be greater than zero.
 `negative` | `false`| The value must be less than zero.
-`convert`  | `false`| if `true` and the type is not `Number`, tries to convert with `parseFloat`.
+`convert`  | `false`| if `true` and the type is not `Number`, it's converted with `Number()`. _It's a sanitizer, it will change the value in the original object._
 
 ## `object`
 This is a nested object validator.
+
 ```js
-let schema = {
-    address: { type: "object", props: {
+const schema = {
+    address: { type: "object", strict: true, props: {
         country: { type: "string" },
         city: "string", // short-hand
         zip: "number" // short-hand
@@ -421,18 +639,58 @@ v.validate({
         city: "Rome"
     }
 }, schema); // Fail ("The 'address.zip' field is required!")
+
+v.validate({
+    address: {
+        country: "Italy",
+        city: "Rome",
+        zip: 12345,
+        state: "IT"
+    }
+}, schema); // Fail ("The 'address.state' is an additional field!")
 ```
 
 ### Properties
 Property | Default  | Description
 -------- | -------- | -----------
-`strict`  | `false`| if `true` any properties which are not defined on the schema will throw an error.
-
-## `string`
-This is a `String`.
+`strict`  | `false`| if `true` any properties which are not defined on the schema will throw an error. If `remove` all additional properties will be removed from the original object. _It's a sanitizer, it will change the original object._
 
 ```js
-let schema = {
+const schema = {
+    address: { type: "object", strict: "remove", props: {
+        country: { type: "string" },
+        city: "string", // short-hand
+        zip: "number" // short-hand
+    } }
+}
+
+const obj = {
+    address: {
+        country: "Italy",
+        city: "Rome",
+        zip: 12345,
+        state: "IT"
+    }
+};
+
+v.validate(obj, schema); // Valid
+console.log(obj);
+/*
+{
+    address: {
+        country: "Italy",
+        city: "Rome",
+        zip: 12345
+    }   
+}
+*/
+```
+
+## `string`
+This is a `String` validator.
+
+```js
+const schema = {
     name: { type: "string" }
 }
 
@@ -444,7 +702,7 @@ v.validate({ name: 123 }, schema); // Fail
 ### Properties
 Property | Default  | Description
 -------- | -------- | -----------
-`empty`  | `true`   | If true, the validator accepts an empty string `""`.
+`empty`  | `true`   | If `true`, the validator accepts an empty string `""`.
 `min`  	 | `null`   | Minimum value length.
 `max`  	 | `null`   | Maximum value length.
 `length` | `null`   | Fixed value length.
@@ -455,13 +713,42 @@ Property | Default  | Description
 `numeric`   | `null`   | The value must be a numeric string.
 `alphanum`   | `null`   | The value must be an alphanumeric string.
 `alphadash`   | `null`   | The value must be an alphabetic string that contains dashes.
+`trim`   | `null`   | If `true`, the value will be trimmed. _It's a sanitizer, it will change the value in the original object._
+`trimLeft`   | `null`   | If `true`, the value will be left trimmed. _It's a sanitizer, it will change the value in the original object._
+`trimRight`   | `null`   | If `true`, the value will be right trimmed. _It's a sanitizer, it will change the value in the original object._
+`padStart`   | `null`   | If it's a number, the value will be left padded. _It's a sanitizer, it will change the value in the original object._
+`padEnd`   | `null`   | If it's a number, the value will be right padded. _It's a sanitizer, it will change the value in the original object._
+`padChar`   | `" "`   | The padding characther for the `padStart` and `padEnd`.
+`lowercase`   | `null`   | If `true`, the value will be lower-cased. _It's a sanitizer, it will change the value in the original object._
+`uppercase`   | `null`   | If `true`, the value will be upper-cased. _It's a sanitizer, it will change the value in the original object._
+`localeLowercase`   | `null`   | If `true`, the value will be locale lower-cased. _It's a sanitizer, it will change the value in the original object._
+`localeUppercase`   | `null`   | If `true`, the value will be locale upper-cased. _It's a sanitizer, it will change the value in the original object._
+`convert`  | `false`| if `true` and the type is not a `String`, it's converted with `String()`. _It's a sanitizer, it will change the value in the original object._
 
+**Sanitization example**
+```js
+const schema = {
+    username: { type: "string", min: 3, trim: true, lowercase: true}
+}
+
+const obj = {
+    username: "   Icebob  "
+};
+
+v.validate(obj, schema); // Valid
+console.log(obj);
+/*
+{
+    username: "icebob"
+}
+*/
+```
 
 ## `url`
 This is an URL validator.
 
 ```js
-let schema = {
+const schema = {
     url: { type: "url" }
 }
 
@@ -474,7 +761,7 @@ v.validate({ url: "www.facebook.com" }, schema); // Fail
 This is an UUID validator. 
 
 ```js
-let schema = {
+const schema = {
     uuid: { type: "uuid" }
 }
 
@@ -487,38 +774,6 @@ Property | Default  | Description
 -------- | -------- | -----------
 `version`  | `4`   | UUID version in range 1-5.
 
-## `mac`
-This is an MAC addresses validator. 
-
-```js
-let schema = {
-    mac: { type: "mac" }
-}
-
-v.validate({ mac: "01:C8:95:4B:65:FE" }, schema); // Valid
-v.validate({ mac: "01:c8:95:4b:65:fe", schema); // Valid
-v.validate({ mac: "01C8.954B.65FE" }, schema); // Valid
-v.validate({ mac: "01c8.954b.65fe", schema); // Valid
-v.validate({ mac: "01-C8-95-4B-65-FE" }, schema); // Valid
-v.validate({ mac: "01-c8-95-4b-65-fe" }, schema); // Valid
-v.validate({ mac: "01C8954B65FE" }, schema); // Fail
-```
-
-## `luhn`
-This is an Luhn validator.
-[Luhn algorithm](https://en.wikipedia.org/wiki/Luhn_algorithm) checksum
-Credit Card numbers, IMEI numbers, National Provider Identifier numbers and others 
-
-```js
-let schema = {
-    cc: { type: "luhn" }
-}
-
-v.validate({ cc: "452373989901198" }, schema); // Valid
-v.validate({ cc: 452373989901198 }, schema); // Valid
-v.validate({ cc: "4523-739-8990-1198" }, schema); // Valid
-v.validate({ cc: "452373989901199" }, schema); // Fail
-```
 
 # Custom validator
 You can also create your custom validator.
@@ -665,7 +920,7 @@ v.validate({ firstname: "John", lastname: 23 }, schema );
 ]
 */
 ```
-## Message types
+# Message types
 Name                | Default text
 ------------------- | -------------
 `required`          | The '{field}' field is required!
@@ -708,17 +963,17 @@ Name        | Description
 `actual`    | The actual value
 `type`      | The field type
 
-## Development
+# Development
 ```
 npm run dev
 ```
 
-## Test
+# Test
 ```
 npm test
 ```
 
-### Coverage report
+## Coverage report
 ```
 -----------------|----------|----------|----------|----------|-------------------|
 File             |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
@@ -750,14 +1005,14 @@ All files        |      100 |      100 |      100 |      100 |                  
 -----------------|----------|----------|----------|----------|-------------------|
 ```
 
-## Contribution
+# Contribution
 Please send pull requests improving the usage and fixing bugs, improving documentation and providing better examples, or providing some tests, because these things are important.
 
-## License
+# License
 fastest-validator is available under the [MIT license](https://tldrlegal.com/license/mit-license).
 
-## Contact
+# Contact
 
-Copyright (C) 2017 Icebob
+Copyright (C) 2019 Icebob
 
 [![@icebob](https://img.shields.io/badge/github-icebob-green.svg)](https://github.com/icebob) [![@icebob](https://img.shields.io/badge/twitter-Icebobcsi-blue.svg)](https://twitter.com/Icebobcsi)

@@ -58,6 +58,23 @@ const schema2 = {
 		min: 18
 	}
 };
+
+const schema3 = {
+	name: {
+		type: "string",
+		min: 4,
+		max: 25,
+		trim: true
+	},
+	email: { type: "email" },
+	firstName: { type: "string", trim: true },
+	phone: { type: "string", trim: true },
+	age: {
+		type: "number",
+		min: 18,
+		convert: true
+	}
+};
 /*
 bench.ref("compile & validate", () => {
 	const res = v.validate(obj, schema);
@@ -72,9 +89,16 @@ bench.add("compile & validate with custom messages", () => {
 });
 */
 const check = v.compile(schema);
+const check3 = v.compile(schema3);
 
 bench.add("validate", () => {
 	const res = check(obj);
+	if (res !== true)
+		throw new Error("Validation error!", res);
+});
+
+bench.add("validate with sanitizations", () => {
+	const res = check3(obj);
 	if (res !== true)
 		throw new Error("Validation error!", res);
 });
