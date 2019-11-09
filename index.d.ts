@@ -6,19 +6,21 @@ declare module 'fastest-validator' {
 		'any'
 		| 'array'
 		| 'boolean'
+		| 'custom'
 		| 'date'
 		| 'email'
 		| 'enum'
+		| 'equal'
 		| 'forbidden'
 		| 'function'
 		| 'luhn'
 		| 'mac'
+		| 'multi'
 		| 'number'
 		| 'object'
 		| 'string'
 		| 'url'
-		| 'uuid'
-		| 'custom';
+		| 'uuid';
 
 	/**
 	 * Validation schema definition for "any" built-in validator
@@ -116,6 +118,8 @@ declare module 'fastest-validator' {
 		 * Checker method. Can be quick or precise
 		 */
 		mode?: 'quick' | 'precise';
+
+		normalize?: boolean;
 	}
 
 	/**
@@ -134,6 +138,34 @@ declare module 'fastest-validator' {
 	}
 
 	/**
+	 * Validation schema definition for "equal" built-in validator
+	 * @see https://github.com/icebob/fastest-validator#equal
+	 */
+	interface RuleEqual<T = any> extends RuleCustom {
+		/**
+		 * Name of built-in validator
+		 */
+		type: 'equal';
+		/**
+		 * The valid value
+		 */
+		value?: T;
+
+		/**
+		 * Another field name
+		 */
+		field?: string;
+
+		/**
+		 * Strict value checking.
+		 *
+		 * @type {'boolean'}
+		 * @memberof RuleEqual
+		 */
+		strict?: boolean;
+	}
+
+	/**
 	 * Validation schema definition for "forbidden" built-in validator
 	 * @see https://github.com/icebob/fastest-validator#forbidden
 	 */
@@ -142,6 +174,14 @@ declare module 'fastest-validator' {
 		 * Name of built-in validator
 		 */
 		type: 'forbidden';
+
+		/**
+		 * Removes the forbidden value.
+		 *
+		 * @type {'boolean'}
+		 * @memberof RuleForbidden
+		 */
+		remove?: boolean;
 	}
 
 	/**
@@ -153,6 +193,41 @@ declare module 'fastest-validator' {
 		 * Name of built-in validator
 		 */
 		type: 'function';
+	}
+
+	/**
+	 * Validation schema definition for "luhn" built-in validator
+	 * @see https://github.com/icebob/fastest-validator#luhn
+	 */
+	interface RuleLuhn extends RuleCustom {
+		/**
+		 * Name of built-in validator
+		 */
+		type: 'luhn';
+	}
+
+	/**
+	 * Validation schema definition for "mac" built-in validator
+	 * @see https://github.com/icebob/fastest-validator#mac
+	 */
+	interface RuleMac extends RuleCustom {
+		/**
+		 * Name of built-in validator
+		 */
+		type: 'mac';
+	}
+
+	/**
+	 * Validation schema definition for "multi" built-in validator
+	 * @see https://github.com/icebob/fastest-validator#multi
+	 */
+	interface RuleMulti extends RuleCustom {
+		/**
+		 * Name of built-in validator
+		 */
+		type: 'multi';
+
+		rules: RuleCustom[] | string[];
 	}
 
 	/**
@@ -196,7 +271,7 @@ declare module 'fastest-validator' {
 		 */
 		negative?: boolean;
 		/**
-		 * if true and the type is not Number, tries to convert with parseFloat
+		 * if true and the type is not Number, converts with Number()
 		 * @default false
 		 */
 		convert?: boolean;
@@ -219,6 +294,7 @@ declare module 'fastest-validator' {
 		/**
 		 * List of properties that should be validated by this rule
 		 */
+		properties?: ValidationSchema;
 		props?: ValidationSchema;
 	}
 
@@ -276,6 +352,24 @@ declare module 'fastest-validator' {
 		 * The value must be an alphabetic string that contains dashes
 		 */
 		alphadash?: boolean;
+		/**
+		 * if true and the type is not a String, converts with String()
+		 * @default false
+		 */
+		convert?: boolean;
+
+		trim?: boolean;
+		trimLeft?: boolean;
+		trimRight?: boolean;
+
+		padStart?: number;
+		padEnd?: number;
+		padChar?: string;
+
+		lowercase?: boolean;
+		uppercase?: boolean;
+		localeLowercase?: boolean;
+		localeUppercase?: boolean;
 	}
 
 	/**
@@ -305,32 +399,10 @@ declare module 'fastest-validator' {
 	}
 
 	/**
-	 * Validation schema definition for "mac" built-in validator
-	 * @see https://github.com/icebob/fastest-validator#mac
-	 */
-	interface RuleMac extends RuleCustom {
-		/**
-		 * Name of built-in validator
-		 */
-		type: 'mac';
-	}
-
-	/**
-	 * Validation schema definition for "luhn" built-in validator
-	 * @see https://github.com/icebob/fastest-validator#luhn
-	 */
-	interface RuleLuhn extends RuleCustom {
-		/**
-		 * Name of built-in validator
-		 */
-		type: 'luhn';
-	}
-
-	/**
 	 * Validation schema definition for custom inline validator
 	 * @see https://github.com/icebob/fastest-validator#custom-validator
 	 */
-	interface RuleCustomInline extends RuleCustom {
+	interface RuleCustomInline<T = any> extends RuleCustom {
 		/**
 		 * Name of built-in validator
 		 */
@@ -341,7 +413,7 @@ declare module 'fastest-validator' {
 		 * @param {ValidationRuleObject} schema Validation schema that describes current custom validator
 		 * @return {{true} | ValidationError[]} true if result is valid or array of validation error messages
 		 */
-		check: (value: any, schema: ValidationRuleObject) => true | ValidationError[];
+		check: (value: T, schema: ValidationRuleObject, path: string, parent?: object, context: any) => true | ValidationError[];
 	}
 
 	/**
@@ -365,6 +437,11 @@ declare module 'fastest-validator' {
 		messages?: MessagesType;
 
 		/**
+		 * Default value
+		 */
+		default: any;
+
+		/**
 		 * You can define any additional options for custom validators
 		 */
 		[key: string]: any;
@@ -375,129 +452,199 @@ declare module 'fastest-validator' {
 	 */
 	interface BuiltInMessages {
 		/**
-		 * The '{field}' field is required!
+		 * The '{field}' field is required.
 		 */
 		required?: string;
 		/**
-		 * The '{field}' field must be a string!
+		 * The '{field}' field must be a string.
 		 */
 		string?: string;
 		/**
-		 * The '{field}' field must not be empty!
+		 * The '{field}' field must not be empty.
 		 */
 		stringEmpty?: string;
 		/**
-		 * The '{field}' field length must be greater than or equal to {expected} characters long!
+		 * The '{field}' field length must be greater than or equal to {expected} characters long.
 		 */
 		stringMin?: string;
 		/**
-		 * The '{field}' field length must be less than or equal to {expected} characters long!
+		 * The '{field}' field length must be less than or equal to {expected} characters long.
 		 */
 		stringMax?: string;
 		/**
-		 * The '{field}' field length must be {expected} characters long!
+		 * The '{field}' field length must be {expected} characters long.
 		 */
 		stringLength?: string;
 		/**
-		 * The '{field}' field fails to match the required pattern!
+		 * The '{field}' field fails to match the required pattern.
 		 */
 		stringPattern?: string;
 		/**
-		 * The '{field}' field must contain the '{expected}' text!
+		 * The '{field}' field must contain the '{expected}' text.
 		 */
 		stringContains?: string;
 		/**
-		 * The '{field}' field does not match any of the allowed values!
+		 * The '{field}' field does not match any of the allowed values.
 		 */
 		stringEnum?: string;
 		/**
-		 * The '{field}' field must be a number!
+		 * The '{field}' field must be a numeric string.
+		 */
+		stringNumeric?: string;
+		/**
+		 * The '{field}' field must be an alphabetic string.
+		 */
+		stringAlpha?: string;
+		/**
+		 * The '{field}' field must be an alphanumeric string.
+		 */
+		stringAlphanum?: string;
+		/**
+		 * The '{field}' field must be an alphadash string.
+		 */
+		stringAlphadash?: string;
+
+		/**
+		 * The '{field}' field must be a number.
 		 */
 		number?: string;
 		/**
-		 * The '{field}' field must be greater than or equal to {expected}!
+		 * The '{field}' field must be greater than or equal to {expected}.
 		 */
 		numberMin?: string;
 		/**
-		 * The '{field}' field must be less than or equal to {expected}!
+		 * The '{field}' field must be less than or equal to {expected}.
 		 */
 		numberMax?: string;
 		/**
-		 * The '{field}' field must be equal with {expected}!
+		 * The '{field}' field must be equal with {expected}.
 		 */
 		numberEqual?: string;
 		/**
-		 * The '{field}' field can't be equal with {expected}!
+		 * The '{field}' field can't be equal with {expected}.
 		 */
 		numberNotEqual?: string;
 		/**
-		 * The '{field}' field must be an integer!
+		 * The '{field}' field must be an integer.
 		 */
 		numberInteger?: string;
 		/**
-		 * The '{field}' field must be a positive number!
+		 * The '{field}' field must be a positive number.
 		 */
 		numberPositive?: string;
 		/**
-		 * The '{field}' field must be a negative number!
+		 * The '{field}' field must be a negative number.
 		 */
 		numberNegative?: string;
+
 		/**
-		 * The '{field}' field must be an array!
+		 * The '{field}' field must be an array.
 		 */
 		array?: string;
 		/**
-		 * The '{field}' field must not be an empty array!
+		 * The '{field}' field must not be an empty array.
 		 */
 		arrayEmpty?: string;
 		/**
-		 * The '{field}' field must contain at least {expected} items!
+		 * The '{field}' field must contain at least {expected} items.
 		 */
 		arrayMin?: string;
 		/**
-		 * The '{field}' field must contain less than or equal to {expected} items!
+		 * The '{field}' field must contain less than or equal to {expected} items.
 		 */
 		arrayMax?: string;
 		/**
-		 * The '{field}' field must contain {expected} items!
+		 * The '{field}' field must contain {expected} items.
 		 */
 		arrayLength?: string;
 		/**
-		 * The '{field}' field must contain the '{expected}' item!
+		 * The '{field}' field must contain the '{expected}' item.
 		 */
 		arrayContains?: string;
 		/**
-		 * The '{field} field value '{expected}' does not match any of the allowed values!
+		 * The '{field} field value '{expected}' does not match any of the allowed values.
 		 */
 		arrayEnum?: string;
+
 		/**
-		 * The '{field}' field must be a boolean!
+		 * The '{field}' field must be a boolean.
 		 */
 		boolean?: string;
+
 		/**
-		 * The '{field}' field must be a function!
-		 */
-		function?: string;
-		/**
-		 * The '{field}' field must be a Date!
+		 * The '{field}' field must be a Date.
 		 */
 		date?: string;
 		/**
-		 * The '{field}' field must be greater than or equal to {expected}!
+		 * The '{field}' field must be greater than or equal to {expected}.
 		 */
 		dateMin?: string;
 		/**
-		 * The '{field}' field must be less than or equal to {expected}!
+		 * The '{field}' field must be less than or equal to {expected}.
 		 */
 		dateMax?: string;
+
 		/**
-		 * The '{field}' field is forbidden!
+		 * The '{field}' field value '{expected}' does not match any of the allowed values.
+		 */
+		enumValue?: string;
+
+		/**
+		 * The '{field}' field value must be equal to '{expected}'.
+		 */
+		equalValue?: string;
+		/**
+		 * The '{field}' field value must be equal to '{expected}' field value.
+		 */
+		equalField?: string;
+
+		/**
+		 * The '{field}' field is forbidden.
 		 */
 		forbidden?: string;
+
 		/**
-		 * The '{field}' field must be a valid e-mail!
+		 * The '{field}' field must be a function.
+		 */
+		function?: string;
+
+		/**
+		 * The '{field}' field must be a valid e-mail.
 		 */
 		email?: string;
+
+		/**
+		 * The '{field}' field must be a valid checksum luhn.
+		 */
+		luhn?: string;
+
+		/**
+		 * The '{field}' field must be a valid MAC address.
+		 */
+		mac?: string;
+
+		/**
+		 * The '{field}' must be an Object.
+		 */
+		object?: string;
+		/**
+		 * The object '{field}' contains forbidden keys: '{actual}'.
+		 */
+		objectStrict?: string;
+
+		/**
+		 * The '{field}' field must be a valid URL.
+		 */
+		url?: string;
+
+		/**
+		 * The '{field}' field must be a valid UUID.
+		 */
+		uuid?: string;
+		/**
+		 * The '{field}' field must be a valid UUID version provided.
+		 */
+		uuidVersion?: string;
 	}
 
 	/**
@@ -514,11 +661,13 @@ declare module 'fastest-validator' {
 		| RuleBoolean
 		| RuleDate
 		| RuleEmail
+		| RuleEqual
 		| RuleEnum
 		| RuleForbidden
 		| RuleFunction
 		| RuleLuhn
 		| RuleMac
+		| RuleMulti
 		| RuleNumber
 		| RuleObject
 		| RuleString
@@ -546,6 +695,8 @@ declare module 'fastest-validator' {
 		 * @default false
 		 */
 		$$strict?: boolean;
+
+		$$root?: boolean;
 	}
 
 	/**
@@ -578,6 +729,7 @@ declare module 'fastest-validator' {
 	 * List of possible validator constructor options
 	 */
 	type ValidatorConstructorOptions = {
+		debug?: boolean,
 		/**
 		 * List of possible error messages
 		 */
@@ -635,10 +787,12 @@ declare module 'fastest-validator' {
 		RuleDate,
 		RuleEmail,
 		RuleEnum,
+		RuleEqual,
 		RuleForbidden,
 		RuleFunction,
 		RuleLuhn,
 		RuleMac,
+		RuleMulti,
 		RuleNumber,
 		RuleObject,
 		RuleString,

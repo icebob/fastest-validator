@@ -92,6 +92,8 @@ v.validate({ password: "123456", confirmPassword: "123456" }, schema); // Valid
 v.validate({ password: "123456", confirmPassword: "pass1234" }, schema); // Fail
 ```
 
+### `properties` in object rule
+You can use the `properties` property besides the `props` property in the object rule.
 
 --------------------------------------------------
 <a name="0.6.19"></a>
