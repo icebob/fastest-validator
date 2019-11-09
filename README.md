@@ -45,15 +45,15 @@ $ npm run bench
 ```
 
 # Table of contents
-- [Installations](#Installation)
-- [Usage](#Usage)
-- [Optional & required fields](#)
-- [Strict validation](#)
-- [Multiple validators](#)
-- [Root element schema](#)
-- [Sanitizations](#Sanitizations)
-- [Shorthand definitions](#)
-- [Built-in validators](#)
+- [Installations](#installation)
+- [Usage](#usage)
+- [Optional & required fields](#optional--required-fields)
+- [Strict validation](#strict-validation)
+- [Multiple validators](#multiple-validators)
+- [Root element schema](#root-element-schema)
+- [Sanitizations](#sanitizations)
+- [Shorthand definitions](#shorthand-definitions)
+- [Built-in validators](#built-in-validators)
     - [any](#any)
     - [array](#array)
     - [boolean](#boolean)
@@ -71,15 +71,18 @@ $ npm run bench
     - [string](#string)
     - [url](#url)
     - [uuid](#uuid)
-- [Custom validator](#)
-- [Custom error messages (l10n)](#)
-- [Development](#Development)
-- [Test](#Test)
-- [Contribution](#Contribution)
-- [License](#License)
-- [Contact](#Contact)
+- [Custom validator](#custom-validator)
+- [Custom error messages (l10n)](#custom-error-messages-l10n)
+- [Personalised Messages](#personalised-messages)
+- [Message types](#message-types)
+- [Development](#development)
+- [Test](#test)
+- [Contribution](#contribution)
+- [License](#license)
+- [Contact](#contact)
 
 ## Installation
+
 ### NPM
 You can install it via [NPM](http://npmjs.org/).
 ```
