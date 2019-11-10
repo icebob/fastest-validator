@@ -413,7 +413,7 @@ declare module 'fastest-validator' {
 		 * @param {ValidationRuleObject} schema Validation schema that describes current custom validator
 		 * @return {{true} | ValidationError[]} true if result is valid or array of validation error messages
 		 */
-		check: (value: T, schema: ValidationRuleObject, path: string, parent?: object, context: any) => true | ValidationError[];
+		check: (value: T, schema: ValidationRuleObject, path: string, parent?: object, context?: any) => true | ValidationError[];
 	}
 
 	/**
@@ -686,10 +686,6 @@ declare module 'fastest-validator' {
 	 */
 	interface ValidationSchema {
 		/**
-		 * List of validation rules for each defined field
-		 */
-		[key: string]: ValidationRule | boolean;
-		/**
 		 * Object properties which are not specified on the schema are ignored by default.
 		 * If you set the $$strict option to true any aditional properties will result in an strictObject error.
 		 * @default false
@@ -697,6 +693,11 @@ declare module 'fastest-validator' {
 		$$strict?: boolean;
 
 		$$root?: boolean;
+
+		/**
+		 * List of validation rules for each defined field
+		 */
+		[key: string]: ValidationRule | boolean | undefined;
 	}
 
 	/**

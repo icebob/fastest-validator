@@ -7,5 +7,9 @@ node_js:
     - "12"
     - "10"
     - "8"
+
+script:
+  - npm run test:travis
+
 after_success:
   - npm run coverall

@@ -2,7 +2,7 @@
   "name": "fastest-validator",
   "version": "1.0.0",
   "description": "The fastest JS validator library for NodeJS",
-  "main": "dist/index.js",
+  "main": "index.js",
   "browser": "dist/index.min.js",
   "scripts": {
     "bench": "node benchmark/index.js",
@@ -11,11 +11,13 @@
     "prepublishOnly": "npm run build",
     "dev": "nodemon examples/index.js",
     "ci": "jest --watch",
-    "test": "jest --coverage",
     "lint": "eslint --ext=.js lib test rollup.config.js",
     "lint:fix": "eslint --fix --ext=.js lib test rollup.config.js",
     "deps": "npm-check -u",
-    "coverall": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+    "coverall": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
+    "test": "jest --coverage",
+    "test:ts": "tsc -p test/typescript/full && ts-node -P test/typescript/full/tsconfig.json test/typescript/full/index.ts",
+    "test:travis": "npm test"
   },
   "repository": {
     "type": "git",
@@ -52,9 +54,11 @@
     "rollup-plugin-buble": "^0.19.8",
     "rollup-plugin-closure-compiler-js": "^1.0.6",
     "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-uglify-es": "^0.0.1"
+    "rollup-plugin-uglify-es": "^0.0.1",
+    "ts-node": "^8.4.1",
+    "tsd": "^0.10.0",
+    "typescript": "^3.7.2"
   },
-  "types": "./index.d.ts",
   "jest": {
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
