@@ -17,12 +17,7 @@
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
         "outDir": "./out",
-        "baseUrl": ".",
-        "paths": {
-            "*": [
-                "*"
-            ]
-        }
+        "baseUrl": "."
     },
     "exclude": [
         "node_modules",
