@@ -78,41 +78,57 @@ describe("Test validate", () => {
 });
 
 describe("Test add", () => {
+	let check;
 
-	const v = new Validator();
-	const validFn = jest.fn(() => true);
+	const v = new Validator({
+		messages: {
+			// Register our new error message text
+			evenNumber: "The '{field}' field must be an even number! Actual: {actual}"
+		}
+	});
+
+	const validFn = jest.fn(function({ schema, messages }, path, context) {
+		return {
+			source: `
+				if (value % 2 != 0)
+					${this.makeError({ type: "evenNumber",  actual: "value", messages })}
+
+				return value;
+			`
+		};
+	});
 
 	it("should not contain the new validator", () => {
-		expect(v.rules.myValidator).toBeUndefined();
+		expect(v.rules.even).toBeUndefined();
 	});
 
 	it("should contain the new validator", () => {
-		v.add("myValidator", validFn);
-		expect(v.rules.myValidator).toBeDefined();
+		v.add("even", validFn);
+		expect(v.rules.even).toBeDefined();
 	});
 
 	it("should call the new validator", () => {
 		const schema = {
-			a: { type: "myValidator" }
+			a: { type: "even" }
 		};
 
-		const obj = { a: 5 };
-
-		v.validate(obj, schema);
+		check = v.compile(schema);
 
 		const context = {
 			customs: {},
 			rules: expect.any(Array),
 			fn: expect.any(Array),
-			index: 2,
-			data: { a: 5 }
+			index: 2
 		};
 
 		expect(validFn).toHaveBeenCalledTimes(1);
 		expect(validFn).toHaveBeenCalledWith(expect.any(Object), "a", context);
 	});
 
-	// TODO: add a real example
+	it("should check the new rule", () => {
+		expect(check({ a: 5 })).toEqual([{"type": "evenNumber", "field": "a", "actual": 5, "message": "The 'a' field must be an even number! Actual: 5"}]);
+		expect(check({ a: 6 })).toEqual(true);
+	});
 
 });
 

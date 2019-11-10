@@ -802,11 +802,15 @@ let v = new Validator({
 });
 
 // Register a custom 'even' validator
-v.add("even", value => {
-    if (value % 2 != 0)
-        return v.makeError("evenNumber", null, value);
+v.add("even", function({ schema, messages }, path, context) {
+    return {
+        source: `
+            if (value % 2 != 0)
+                ${this.makeError({ type: "evenNumber",  actual: "value", messages })}
 
-    return true;
+            return value;
+        `
+    };
 });
 
 const schema = {
@@ -832,23 +836,23 @@ console.log(v.validate({ name: "John", age: 19 }, schema));
 Or you can use the `custom` type with an inline checker function:
 ```js
 let v = new Validator({
-	messages: {
-		// Register our new error message text
-		weightMin: "The weight must be greater than {expected}! Actual: {actual}"
-	}
+    messages: {
+        // Register our new error message text
+        weightMin: "The weight must be greater than {expected}! Actual: {actual}"
+    }
 });
 
 const schema = {
-	name: { type: "string", min: 3, max: 255 },
-	weight: {
-		type: "custom",
-		minWeight: 10,
-		check(value, schema) {
-			return (value < schema.minWeight)
-				? this.makeError("weightMin", schema.minWeight, value)
-				: true;
-		}
-	}
+    name: { type: "string", min: 3, max: 255 },
+    weight: {
+        type: "custom",
+        minWeight: 10,
+        check(value, schema) {
+            return (value < schema.minWeight)
+                ? this.makeError("weightMin", schema.minWeight, value)
+                : true;
+        }
+    }
 };
 
 console.log(v.validate({ name: "John", weight: 50 }, schema));
@@ -856,13 +860,13 @@ console.log(v.validate({ name: "John", weight: 50 }, schema));
 
 console.log(v.validate({ name: "John", weight: 8 }, schema));
 /* Returns an array with errors:
-	[{
-		type: 'weightMin',
-		expected: 10,
-		actual: 8,
-		field: 'weight',
-		message: 'The weight must be greater than 10! Actual: 8'
-	}]
+    [{
+        type: 'weightMin',
+        expected: 10,
+        actual: 8,
+        field: 'weight',
+        message: 'The weight must be greater than 10! Actual: 8'
+    }]
 */
 ```
 

@@ -3,8 +3,20 @@ let Validator = require("../index");
 let v = new Validator({
 	debug: true,
 	messages: {
-		stringMin: "A(z) '{field}' mező túl rövid. Minimum: {expected}, Jelenleg: {actual}"
+		stringMin: "A(z) '{field}' mező túl rövid. Minimum: {expected}, Jelenleg: {actual}",
+		evenNumber: "The '{field}' field must be an even number! Actual: {actual}"
 	}
+});
+
+v.add("even", function({ schema, messages }, path, context) {
+	return {
+		source: `
+			if (value % 2 != 0)
+				${this.makeError({ type: "evenNumber",  actual: "value", messages })}
+
+			return value;
+		`
+	};
 });
 
 const schema = {
@@ -47,6 +59,7 @@ const schema = {
 			weightMin: "The '${field}' must be greater than {expected}! Actual: {actual}"
 		}
 	}*/
+	num: { type: "even" }
 };
 
 const check = v.compile(schema);
@@ -78,6 +91,7 @@ const obj = {
 	createdAt: Date.now(),
 
 	weight: 10,
+	num: 2
 };
 console.log(check(obj), obj);
 
