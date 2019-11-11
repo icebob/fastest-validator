@@ -17,11 +17,8 @@
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
         "outDir": "./out",
-        "baseUrl": "."
+        "baseUrl": ".",
+        "allowJs": true
     },
-    "exclude": [
-        "node_modules",
-        "typings/main",
-        "typings/main.d.ts"
-    ]
+    "include": ["test", "lib", "index.d.ts", "index.js"]
 }
