@@ -6,9 +6,17 @@ const Validator: typeof ValidatorType = require('../../index'); // here we impor
 describe('Typescript Definitions', () => {
     it('should compile validator', async () => {
         const v = new Validator();
-        const compiled = v.compile({});
+        const compiled = v.compile({
+			id: { type: "number", min: 1, integer: true }
+		});
 
         expect(compiled).toBeInstanceOf(Function)
+
+		const res = compiled({
+			id: 2
+		});
+
+		expect(res).toBe(true);
     });
 });
 
