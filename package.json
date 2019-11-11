@@ -74,7 +74,7 @@
     },
     "globals": {
       "ts-jest": {
-        "tsConfig": "test/typescript/full/tsconfig.json",
+        "tsConfig": "test/typescript/tsconfig.json",
         "diagnostics": true
       }
     }

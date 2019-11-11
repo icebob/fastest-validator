@@ -16,7 +16,6 @@
 		"strictFunctionTypes": false,
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
-        "outDir": "./out",
         "baseUrl": ".",
         "allowJs": true
     },
