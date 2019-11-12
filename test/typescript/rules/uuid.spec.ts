@@ -1,5 +1,5 @@
 /// <reference path="../../../index.d.ts" /> // here we make a reference to exists module definition
-import ValidatorType from 'fastest-validator'; // here we importing type definition of default export
+import ValidatorType, { RuleUUID } from 'fastest-validator'; // here we importing type definition of default export
 
 const Validator: typeof ValidatorType = require('../../../index'); // here we importing real Validator Constructor
 const v: ValidatorType = new Validator();
@@ -32,11 +32,11 @@ describe('TypeScript Definitions', () => {
             expect(check('00000000-0000-7000-0000-000000000000')).toEqual([{ type: 'uuid', actual: '00000000-0000-7000-0000-000000000000', message }]);
             expect(check('fdda765f-fc57-5604-c269-52a7df8164ec')).toEqual([{ type: 'uuid', actual: 'fdda765f-fc57-5604-c269-52a7df8164ec', message }]);
 
-            const check1 = v.compile({ $$root: true, type: 'uuid', version: 1 });
-            const check2 = v.compile({ $$root: true, type: 'uuid', version: 2 });
-            const check3 = v.compile({ $$root: true, type: 'uuid', version: 3 });
-            const check4 = v.compile({ $$root: true, type: 'uuid', version: 4 });
-            const check5 = v.compile({ $$root: true, type: 'uuid', version: 5 });
+            const check1 = v.compile({ $$root: true, type: 'uuid', version: 1 } as RuleUUID);
+            const check2 = v.compile({ $$root: true, type: 'uuid', version: 2 } as RuleUUID);
+            const check3 = v.compile({ $$root: true, type: 'uuid', version: 3 } as RuleUUID);
+            const check4 = v.compile({ $$root: true, type: 'uuid', version: 4 } as RuleUUID);
+            const check5 = v.compile({ $$root: true, type: 'uuid', version: 5 } as RuleUUID);
             message = 'The \'\' field must be a valid UUID version provided.';
 
             expect(check1('9a7b330a-a736-51e5-af7f-feaf819cdc9f')).toEqual([{ 'actual': 5, 'expected': 1, 'type': 'uuidVersion', message }]);
@@ -48,11 +48,11 @@ describe('TypeScript Definitions', () => {
         });
 
         it('check valid version', () => {
-            const check1 = v.compile({ $$root: true, type: 'uuid', version: 1 });
-            const check2 = v.compile({ $$root: true, type: 'uuid', version: 2 });
-            const check3 = v.compile({ $$root: true, type: 'uuid', version: 3 });
-            const check4 = v.compile({ $$root: true, type: 'uuid', version: 4 });
-            const check5 = v.compile({ $$root: true, type: 'uuid', version: 5 });
+            const check1 = v.compile({ $$root: true, type: 'uuid', version: 1 } as RuleUUID);
+            const check2 = v.compile({ $$root: true, type: 'uuid', version: 2 } as RuleUUID);
+            const check3 = v.compile({ $$root: true, type: 'uuid', version: 3 } as RuleUUID);
+            const check4 = v.compile({ $$root: true, type: 'uuid', version: 4 } as RuleUUID);
+            const check5 = v.compile({ $$root: true, type: 'uuid', version: 5 } as RuleUUID);
 
             expect(check1('45745c60-7b1a-11e8-9c9c-2d42b21b1a3e')).toEqual(true);
             expect(check2('9a7b330a-a736-21e5-af7f-feaf819cdc9f')).toEqual(true);
