@@ -680,7 +680,7 @@ declare module 'fastest-validator' {
 	/**
 	 * Description of validation rule definition for a some property
 	 */
-	type ValidationRule = ValidationRuleObject | ValidationRuleObject[] | ValidationRuleName | number;
+	type ValidationRule = ValidationRuleObject | ValidationRuleObject[] | ValidationRuleName;
 
 	/**
 	 * Definition for validation schema based on validation rules
