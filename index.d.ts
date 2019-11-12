@@ -20,7 +20,8 @@ declare module 'fastest-validator' {
 		| 'object'
 		| 'string'
 		| 'url'
-		| 'uuid';
+		| 'uuid'
+		| string;
 
 	/**
 	 * Validation schema definition for "any" built-in validator
@@ -62,7 +63,7 @@ declare module 'fastest-validator' {
 		/**
 		 * The array must contain this element too
 		 */
-		contains?: T[];
+		contains?: T | T[];
 		/**
 		 * Every element must be an element of the enum array
 		 */
@@ -70,7 +71,7 @@ declare module 'fastest-validator' {
 		/**
 		 * Validation rules that should be applied to each element of array
 		 */
-		items: ValidationRule;
+		items?: ValidationRule;
 	}
 
 	/**
@@ -439,7 +440,7 @@ declare module 'fastest-validator' {
 		/**
 		 * Default value
 		 */
-		default: any;
+		default?: any;
 
 		/**
 		 * You can define any additional options for custom validators
@@ -679,7 +680,7 @@ declare module 'fastest-validator' {
 	/**
 	 * Description of validation rule definition for a some property
 	 */
-	type ValidationRule = ValidationRuleObject | ValidationRuleObject[] | ValidationRuleName | string;
+	type ValidationRule = ValidationRuleObject | ValidationRuleObject[] | ValidationRuleName | number;
 
 	/**
 	 * Definition for validation schema based on validation rules
@@ -707,7 +708,7 @@ declare module 'fastest-validator' {
 		/**
 		 * Name of validation rule that generates this message
 		 */
-		type: ValidationRuleName | string;
+		type: ValidationRuleName;
 		/**
 		 * Field that catch validation error
 		 */
@@ -739,6 +740,16 @@ declare module 'fastest-validator' {
 
 	class Validator {
 		/**
+		 * List of possible error messages
+		 */
+		messages: MessagesType;
+
+		/**
+		 * List of rules attached to current validator
+		 */
+		rules: { [key: string]: ValidationRuleObject };
+
+		/**
 		 * Constructor of validation class
 		 * @param {ValidatorConstructorOptions} opts List of possible validator constructor options
 		 */
@@ -753,19 +764,22 @@ declare module 'fastest-validator' {
 
 		/**
 		 * Build error message
-		 * @param {string} type Name of validation rule (equal to "type" option)
-		 * @param {{any}} [expected] Expected value for validation rule
-		 * @param {{any}} [actual] Actual value received to validation
 		 * @return {ValidationError}
+		 * @param {Object} opts
+		 * @param {String} opts.type
+		 * @param {String} opts.field
+		 * @param {any=} opts.expected
+		 * @param {any=} opts.actual
+		 * @param {MessagesType} opts.messages
 		 */
-		makeError(type: keyof BuiltInMessages | string, expected?: any, actual?: any): ValidationError;
+		makeError(opts: { type: keyof MessagesType, field?: string, expected?: any, actual?: any, messages: MessagesType }): ValidationError;
 
 		/**
 		 * Compile validator functiona that working up 100 times faster that native validation process
 		 * @param {ValidationSchema | ValidationSchema[]} schema Validation schema definition that should be used for validation
 		 * @return {(object: object) => (true | ValidationError[])} function that can be used next for validation of current schema
 		 */
-		compile(schema: ValidationSchema | ValidationSchema[]): (object: object) => true | ValidationError[];
+		compile(schema: ValidationSchema | ValidationSchema[]): (object: any) => true | ValidationError[];
 
 		/**
 		 * Native validation method to validate obj
@@ -774,6 +788,13 @@ declare module 'fastest-validator' {
 		 * @return {{true} | ValidationError[]}
 		 */
 		validate(obj: object, schema: ValidationSchema): true | ValidationError[];
+
+		/**
+		 * Get defined in validator rule
+		 * @param {ValidationRuleName | ValidationRuleName[]} name List or name of defined rule
+		 * @return {ValidationRule}
+		 */
+		getRuleFromSchema(name: ValidationRuleName | ValidationRuleName[]): { messages: MessagesType, schema: ValidationSchema, ruleFunction: Function }
 	}
 
 	export {
