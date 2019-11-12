@@ -30,21 +30,21 @@ describe('TypeScript Definitions', () => {
         });
 
         it('check min length', () => {
-            const check = v.compile({ $$root: true, type: 'string', min: 5 });
+            const check = v.compile({ $$root: true, type: 'string', min: 5 } as RuleString);
 
             expect(check('John')).toEqual([{ type: 'stringMin', expected: 5, actual: 4, message: 'The \'\' field length must be greater than or equal to 5 characters long.' }]);
             expect(check('Icebob')).toEqual(true);
         });
 
         it('check max length', () => {
-            const check = v.compile({ $$root: true, type: 'string', max: 5 });
+            const check = v.compile({ $$root: true, type: 'string', max: 5 } as RuleString);
 
             expect(check('John')).toEqual(true);
             expect(check('Icebob')).toEqual([{ type: 'stringMax', expected: 5, actual: 6, message: 'The \'\' field length must be less than or equal to 5 characters long.' }]);
         });
 
         it('check fix length', () => {
-            const check = v.compile({ $$root: true, type: 'string', length: 6 });
+            const check = v.compile({ $$root: true, type: 'string', length: 6 } as RuleString);
 
             expect(check('John')).toEqual([{ type: 'stringLength', expected: 6, actual: 4, message: 'The \'\' field length must be 6 characters long.' }]);
             expect(check('Icebob')).toEqual(true);
