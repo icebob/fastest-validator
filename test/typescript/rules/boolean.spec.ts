@@ -1,5 +1,5 @@
 /// <reference path="../../../index.d.ts" /> // here we make a reference to exists module definition
-import ValidatorType, { ValidationSchema } from 'fastest-validator'; // here we importing type definition of default export
+import ValidatorType from 'fastest-validator'; // here we importing type definition of default export
 
 const Validator: typeof ValidatorType = require('../../../index'); // here we importing real Validator Constructor
 const v: ValidatorType = new Validator();
@@ -44,7 +44,7 @@ describe('TypeScript Definitions', () => {
         it('should sanitize', () => {
             const check = v.compile({ status: { type: 'boolean', convert: true } });
 
-            let obj: ValidationSchema = { status: 0 };
+            let obj: { status: number | boolean | 'true' | 'false' | 'on' | 'off' } = { status: 0 };
             expect(check(obj)).toEqual(true);
             expect(obj).toEqual({ status: false });
 
