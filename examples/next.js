@@ -20,9 +20,9 @@ v.add("even", function({ schema, messages }, path, context) {
 });
 
 const schema = {
-	id: "number|positive|integer|convert",
-	name: "string|min: 3|max: 255|padStart: 5",
-	token: "forbidden|remove",
+	//id: "number|positive|integer|convert",
+	//name: "string|min: 3|max: 255|padStart: 5",
+	//token: "forbidden|remove",
 	//password: { type: "string", min: 6 },
 	//confirmPassword: { type: "equal", field: "password" },
 	//roles: { type: "array", items: "string", min: 1, default: ["user"] },
@@ -59,7 +59,8 @@ const schema = {
 			weightMin: "The '${field}' must be greater than {expected}! Actual: {actual}"
 		}
 	}*/
-	num: { type: "even" }
+	includes: { type: "multi", optional: true, rules: [ { type: "string" }, { type: "array", items: "string" } ] },
+	//num: { type: "even" }
 };
 
 const check = v.compile(schema);
@@ -89,6 +90,9 @@ const obj = {
 	verified: true,
 
 	createdAt: Date.now(),
+
+	//includes: "test1",
+	//includes: ["test1", "test2"],
 
 	weight: 10,
 	num: 2

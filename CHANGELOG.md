@@ -1,6 +1,13 @@
 --------------------------------------------------
-<a name="1.0.0"></a>
-# 1.0.0 (2019-11-xx)
+<a name="1.0.0-beta2"></a>
+# 1.0.0-beta2 (2019-11-15)
+
+## Changes
+- fix array rule return value issue.
+
+--------------------------------------------------
+<a name="1.0.0-beta1"></a>
+# 1.0.0-beta1 (2019-11-15)
 
 The full library has been rewritten. It uses code generators in order to be much faster.
 
