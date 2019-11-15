@@ -32,7 +32,7 @@ Very fast! 8 million validations/sec (on Intel i7-4770K, Node.JS: 10.16.0)
 
 Compared to other popular libraries:
 
-[![Result](https://user-images.githubusercontent.com/306521/68977782-57d43e80-07f9-11ea-885c-4c0d30de6b0a.png)](https://github.com/icebob/validator-benchmark#result)
+[![Result](https://user-images.githubusercontent.com/306521/68978853-404a8500-07fc-11ea-94e4-0c25546dad04.png)](https://github.com/icebob/validator-benchmark#result)
 > 50x faster than Joi.
 
 **Would you like to test it?**
