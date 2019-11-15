@@ -1,44 +1,39 @@
 "use strict";
 
 const Validator = require("../../lib/validator");
-const fn = require("../../lib/rules/url");
-
 const v = new Validator();
-const check = fn.bind(v);
 
-describe("Test checkUrl", () => {
+describe("Test rule: url", () => {
 
 	it("should check values", () => {
-		const s = { type: "url" };
-		const err = { type: "url" };
-		const errString = { type: "string" };
-		
-		expect(check(null, s)).toEqual(errString);
-		expect(check(undefined, s)).toEqual(errString);
-		expect(check(0, s)).toEqual(errString);
-		expect(check(1, s)).toEqual(errString);
-		expect(check("", s)).toEqual(err);
-		expect(check("true", s)).toEqual(err);
-		expect(check([], s)).toEqual(errString);
-		expect(check({}, s)).toEqual(errString);
-		expect(check(false, s)).toEqual(errString);
-		expect(check(true, s)).toEqual(errString);
+		const check = v.compile({ $$root: true, type: "url" });
+		let message = "The '' field must be a string.";
 
-		expect(check("abcdefg", s)).toEqual(err);
-		expect(check("1234.c", s)).toEqual(err);
-		expect(check("gmail.company1234", s)).toEqual(err);
-		expect(check("@gmail.com", s)).toEqual(err);
-		expect(check("https://", s)).toEqual(err);
+		expect(check(0)).toEqual([{ type: "string", actual: 0, message }]);
+		expect(check(1)).toEqual([{ type: "string", actual: 1, message }]);
+		expect(check([])).toEqual([{ type: "string", actual: [], message }]);
+		expect(check({})).toEqual([{ type: "string", actual: {}, message }]);
+		expect(check(false)).toEqual([{ type: "string", actual: false, message }]);
+		expect(check(true)).toEqual([{ type: "string", actual: true, message }]);
 
-		expect(check("http://www.google.com", s)).toEqual(true);
-		expect(check("https://google.com", s)).toEqual(true);
-		expect(check("http://nasa.gov", s)).toEqual(true);
-		expect(check("https://github.com", s)).toEqual(true);
-		expect(check("http://github.com/icebob/fastest-validator", s)).toEqual(true);
-		expect(check("http://clipboard.space", s)).toEqual(true);
-		expect(check("https://localhost:3000/?id=5&name=Test#result", s)).toEqual(true);
+		message = "The '' field must be a valid URL.";
+		expect(check("")).toEqual([{ type: "url", actual: "", message }]);
+		expect(check("true")).toEqual([{ type: "url", actual: "true", message }]);
+		expect(check("abcdefg")).toEqual([{ type: "url", actual: "abcdefg", message }]);
+		expect(check("1234.c")).toEqual([{ type: "url", actual: "1234.c", message }]);
+		expect(check("gmail.company1234")).toEqual([{ type: "url", actual: "gmail.company1234", message }]);
+		expect(check("@gmail.com")).toEqual([{ type: "url", actual: "@gmail.com", message }]);
+		expect(check("https://")).toEqual([{ type: "url", actual: "https://", message }]);
 
-		
+		expect(check("http://www.google.com")).toEqual(true);
+		expect(check("https://google.com")).toEqual(true);
+		expect(check("http://nasa.gov")).toEqual(true);
+		expect(check("https://github.com")).toEqual(true);
+		expect(check("http://github.com/icebob/fastest-validator")).toEqual(true);
+		expect(check("http://clipboard.space")).toEqual(true);
+		expect(check("https://localhost:3000/?id=5&name=Test#result")).toEqual(true);
+
+
 
 	});
 });

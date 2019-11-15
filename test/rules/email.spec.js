@@ -1,59 +1,74 @@
 "use strict";
 
 const Validator = require("../../lib/validator");
-const fn = require("../../lib/rules/email");
-
 const v = new Validator();
-const check = fn.bind(v);
 
-describe("Test checkEmail", () => {
+describe("Test rule: email", () => {
 
 	it("should check values", () => {
-		const s = { type: "email" };
-		const err = { type: "email" };
-		const errString = { type: "string" };
-		
-		expect(check(null, s)).toEqual(errString);
-		expect(check(undefined, s)).toEqual(errString);
-		expect(check(0, s)).toEqual(errString);
-		expect(check(1, s)).toEqual(errString);
-		expect(check("", s)).toEqual(err);
-		expect(check("true", s)).toEqual(err);
-		expect(check([], s)).toEqual(errString);
-		expect(check({}, s)).toEqual(errString);
-		expect(check(false, s)).toEqual(errString);
-		expect(check(true, s)).toEqual(errString);
+		const check = v.compile({ $$root: true, type: "email" });
+		const message = "The '' field must be a string.";
+
+		expect(check(0)).toEqual([{ type: "string", actual: 0, message }]);
+		expect(check(1)).toEqual([{ type: "string", actual: 1, message }]);
+		expect(check("")).toEqual([{ type: "email", actual: "", message: "The '' field must be a valid e-mail." }]);
+		expect(check("true")).toEqual([{ type: "email", actual: "true", message: "The '' field must be a valid e-mail." }]);
+		expect(check([])).toEqual([{ type: "string", actual: [], message }]);
+		expect(check({})).toEqual([{ type: "string", actual: {}, message }]);
+		expect(check(false)).toEqual([{ type: "string", actual: false, message }]);
+		expect(check(true)).toEqual([{ type: "string", actual: true, message }]);
 	});
 
 	it("should check values with quick pattern", () => {
-		const s = { type: "email" };
-		const err = { type: "email" };
+		const check = v.compile({ $$root: true, type: "email" });
+		const message = "The '' field must be a valid e-mail.";
 
-		expect(check("abcdefg", s)).toEqual(err);
-		expect(check("1234", s)).toEqual(err);
-		expect(check("abc@gmail", s)).toEqual(err);
-		expect(check("@gmail.com", s)).toEqual(err);
-		
+		expect(check("abcdefg")).toEqual([{ type: "email", actual: "abcdefg", message }]);
+		expect(check("1234")).toEqual([{ type: "email", actual: "1234", message }]);
+		expect(check("abc@gmail")).toEqual([{ type: "email", actual: "abc@gmail", message }]);
+		expect(check("@gmail.com")).toEqual([{ type: "email", actual: "@gmail.com", message }]);
+
 		// Invalid but we are in quick mode
-		expect(check("https://john@company.net", s)).toEqual(true);
+		expect(check("https://john@company.net")).toEqual(true);
 
-		expect(check("john.doe@company.net", s)).toEqual(true);
-		expect(check("james.123.45@mail.co.uk", s)).toEqual(true);
-		expect(check("admin@nasa.space", s)).toEqual(true);
+		expect(check("john.doe@company.net")).toEqual(true);
+		expect(check("james.123.45@mail.co.uk")).toEqual(true);
+		expect(check("admin@nasa.space")).toEqual(true);
 	});
 
 	it("should check values", () => {
-		const s = { type: "email", mode: "precise" };
-		const err = { type: "email" };
+		const check = v.compile({ $$root: true, type: "email", mode: "precise" });
+		const message = "The '' field must be a valid e-mail.";
 
-		expect(check("abcdefg", s)).toEqual(err);
-		expect(check("1234", s)).toEqual(err);
-		expect(check("abc@gmail", s)).toEqual(err);
-		expect(check("@gmail.com", s)).toEqual(err);
-		expect(check("https://john@company.net", s)).toEqual(err);
+		expect(check("abcdefg")).toEqual([{ type: "email", actual: "abcdefg", message }]);
+		expect(check("1234")).toEqual([{ type: "email", actual: "1234", message }]);
+		expect(check("abc@gmail")).toEqual([{ type: "email", actual: "abc@gmail", message }]);
+		expect(check("@gmail.com")).toEqual([{ type: "email", actual: "@gmail.com", message }]);
+		expect(check("https://john@company.net")).toEqual([{ type: "email", actual: "https://john@company.net", message }]);
 
-		expect(check("john.doe@company.net", s)).toEqual(true);
-		expect(check("james.123.45@mail.co.uk", s)).toEqual(true);
-		expect(check("admin@nasa.space", s)).toEqual(true);
+		expect(check("john.doe@company.net")).toEqual(true);
+		expect(check("james.123.45@mail.co.uk")).toEqual(true);
+		expect(check("admin@nasa.space")).toEqual(true);
 	});
+
+	it("should not normalize", () => {
+		const check = v.compile({ email: { type: "email" } });
+
+		const obj = { email: "John.Doe@Gmail.COM" };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({
+			email: "John.Doe@Gmail.COM"
+		});
+	});
+
+	it("should normalize", () => {
+		const check = v.compile({ email: { type: "email", normalize: true } });
+
+		const obj = { email: " John.Doe@Gmail.COM   " };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({
+			email: "john.doe@gmail.com"
+		});
+	});
+
 });

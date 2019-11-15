@@ -1,49 +1,70 @@
 "use strict";
 
 const Validator = require("../../lib/validator");
-const fn = require("../../lib/rules/boolean");
-
 const v = new Validator();
-const check = fn.bind(v);
 
-describe("Test checkBoolean", () => {
+describe("Test rule: boolean", () => {
 
 	it("should check values", () => {
-		const s = { type: "boolean" };
-		const err = { type: "boolean" };
+		const check = v.compile({ $$root: true, type: "boolean" });
+		const message = "The '' field must be a boolean.";
 
-		expect(check(null, s)).toEqual(err);
-		expect(check(undefined, s)).toEqual(err);
-		expect(check(0, s)).toEqual(err);
-		expect(check(1, s)).toEqual(err);
-		expect(check("", s)).toEqual(err);
-		expect(check("true", s)).toEqual(err);
-		expect(check("false", s)).toEqual(err);
-		expect(check([], s)).toEqual(err);
-		expect(check({}, s)).toEqual(err);
+		expect(check(0)).toEqual([{ type: "boolean", actual: 0, message }]);
+		expect(check(1)).toEqual([{ type: "boolean", actual: 1, message }]);
+		expect(check("")).toEqual([{ type: "boolean", actual: "", message }]);
+		expect(check("true")).toEqual([{ type: "boolean", actual: "true", message }]);
+		expect(check("false")).toEqual([{ type: "boolean", actual: "false", message }]);
+		expect(check([])).toEqual([{ type: "boolean", actual: [], message }]);
+		expect(check({})).toEqual([{ type: "boolean", actual: {}, message }]);
 
-		expect(check(false, s)).toEqual(true);
-		expect(check(true, s)).toEqual(true);
+		expect(check(false)).toEqual(true);
+		expect(check(true)).toEqual(true);
 	});
 
 	it("should convert & check values", () => {
-		const s = { type: "boolean", convert: true };
-		const err = { type: "boolean" };
-		
-		expect(check(null, s)).toEqual(err);
-		expect(check(undefined, s)).toEqual(err);
-		expect(check(0, s)).toEqual(true);
-		expect(check(1, s)).toEqual(true);
-		expect(check("", s)).toEqual(err);
-		expect(check("true", s)).toEqual(true);
-		expect(check("false", s)).toEqual(true);
-		expect(check("on", s)).toEqual(true);
-		expect(check("off", s)).toEqual(true);
-		expect(check([], s)).toEqual(err);
-		expect(check({}, s)).toEqual(err);
+		const check = v.compile({ $$root: true, type: "boolean", convert: true });
+		const message = "The '' field must be a boolean.";
 
-		expect(check(false, s)).toEqual(true);
-		expect(check(true, s)).toEqual(true);
+		expect(check(0)).toEqual(true);
+		expect(check(1)).toEqual(true);
+		expect(check("")).toEqual([{ type: "boolean", actual: "", message }]);
+		expect(check("true")).toEqual(true);
+		expect(check("false")).toEqual(true);
+		expect(check("on")).toEqual(true);
+		expect(check("off")).toEqual(true);
+		expect(check([])).toEqual([{ type: "boolean", actual: [], message }]);
+		expect(check({})).toEqual([{ type: "boolean", actual: {}, message }]);
+
+		expect(check(false)).toEqual(true);
+		expect(check(true)).toEqual(true);
+	});
+
+	it("should sanitize", () => {
+		const check = v.compile({ status: { type: "boolean", convert: true } });
+
+		let obj = { status: 0 };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({ status: false });
+
+		obj = { status: 1 };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({ status: true });
+
+		obj = { status: "true" };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({ status: true });
+
+		obj = { status: "false" };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({ status: false });
+
+		obj = { status: "off" };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({ status: false });
+
+		obj = { status: "on" };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({ status: true });
 	});
 
 });

@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head lang='en'>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width'>
+  <title>Fastest Validator Demo</title>
+
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      color: #333;
+      font-weight: 300;
+    }
+  </style>
+</head>
+<body>
+  <h1>Fastest Validator demo</h1>
+  <div id="content"></div>
+  <script src='../../dist/index.js'></script>
+  <script>
+	document.addEventListener("DOMContentLoaded", function(event) {
+		var v = new FastestValidator({ debug: true });
+
+		var schema = {
+			multi: [
+				{ type: "string" },
+				{ type: "boolean" }
+			]
+		};
+		var check = v.compile(schema);
+		var content = document.querySelector("#content");
+		var p = document.createElement("p");
+		p.innerHTML = "<p>Validate 'John' as string: <b>" + check({ multi: "John" }) + "</b></p>";
+		// Returns: true
+		content.appendChild(p);
+
+		var p = document.createElement("p");
+		p.innerHTML = "<p>Validate 'false' as boolean: <b>" + check({ multi: false }) + "</b></p>";
+		// Returns: true
+		content.appendChild(p);
+
+		var p = document.createElement("p");
+		p.innerHTML = "<p>Validate '123' as number: <pre>" + JSON.stringify(check({ multi: 123 }), null, 4) + "</pre></p>";
+		// Returns: an array with errors
+		content.appendChild(p);
+	});
+  </script>
+</body>
+</html>

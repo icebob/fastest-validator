@@ -23,7 +23,7 @@ const schema = {
 	comments: { type: "array", items: { type: "object", props: {
 		user: { type: "number", positive: true, integer: true },
 		content: { type: "string" },
-		voters: { type: "array", optional: true, items: { type: "number", optional: true }}
+		voters: { type: "array", optional: true, items: { type: "number" }}
 	} } },
 	multiarray: { type: "array", empty: false, items: {
 		type: "array", empty: true, items: {
@@ -38,7 +38,8 @@ const schema = {
 	uuidv4: { type: "uuid", version: 4 },
 	uuid: "uuid",
 	action: "function",
-	created: "date"
+	created: "date",
+	now: { type: "date", convert: true }
 };
 
 const obj = {
@@ -84,9 +85,10 @@ const obj = {
 	age: "28",
 	apikey: null,
 	uuidv4: "10ba038e-48da-487b-96e8-8d3b99b6d18a",
-	uuid: "10ba038e-48da-487b-96e8-8d3b99b6d18a",
+	uuid:   "10ba038e-48da-487b-96e8-8d3b99b6d18a",
 	action: () => {},
-	created: new Date()
+	created: new Date(),
+	now: Date.now()
 };
 
 const res = v.validate(obj, schema);
