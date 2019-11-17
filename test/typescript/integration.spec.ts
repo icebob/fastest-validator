@@ -361,6 +361,27 @@ describe('TypeScript Definitions', () => {
             expect(res).toBe(true);
         });
 
+
+		it("should work with optional (legacy)", () => {
+
+			let schemaOptional = {
+				a: [
+					{ type: "number", optional: true },
+					{ type: "string", optional: true },
+				]
+			};
+
+			let checkOptional = v.compile(schemaOptional);
+
+			expect(checkOptional({})).toBe(true);
+			expect(checkOptional({ a: 5 })).toBe(true);
+			expect(checkOptional({ a: "five" })).toBe(true);
+			expect(checkOptional({ a: false })).toEqual([
+				{ type: "number", field: "a", actual: false, message: "The 'a' field must be a number." },
+				{ type: "string", field: "a", actual: false, message: "The 'a' field must be a string." },
+			]);
+		});
+
     });
 
     describe('Test multiple rules with objects', () => {
