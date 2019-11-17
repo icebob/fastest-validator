@@ -1,9 +1,10 @@
 --------------------------------------------------
-<a name="1.0.0-beta3"></a>
-# 1.0.0-beta3 (2019-11-17)
+<a name="1.0.0-beta4"></a>
+# 1.0.0-beta4 (2019-11-17)
 
 ## Changes
 - fix optional multi rule.
+- fix array rule return value issue (again). 
 
 --------------------------------------------------
 <a name="1.0.0-beta2"></a>

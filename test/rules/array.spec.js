@@ -93,6 +93,22 @@ describe("Test rule: array", () => {
 
 	describe("Test sanitization", () => {
 
+		it("should untouch the checked obj", () => {
+			let schema = {
+				roles: { type: "array" }
+			};
+			let check = v.compile(schema);
+
+			const obj = {
+				roles: ["admin", "user", "moderator"]
+			};
+
+			expect(check(obj)).toEqual(true);
+			expect(obj).toEqual({
+				roles: ["admin", "user", "moderator"]
+			});
+		});
+
 		it("should trim all items", () => {
 			let schema = {
 				roles: { type: "array", items: "string|trim" }
