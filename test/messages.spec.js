@@ -30,6 +30,7 @@ describe("Test Messages", () => {
 		expect(msg.arrayMax).toBeDefined();
 		expect(msg.arrayLength).toBeDefined();
 		expect(msg.arrayContains).toBeDefined();
+		expect(msg.arrayUnique).toBeDefined();
 		expect(msg.arrayEnum).toBeDefined();
 		expect(msg.boolean).toBeDefined();
 		expect(msg.function).toBeDefined();
