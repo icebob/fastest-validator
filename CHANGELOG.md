@@ -3,7 +3,7 @@
 # 0.6.18 (2019-12-13)
 
 ## Changes
-- add unique valudation in array rule by [@intech](https://github.com/intech).
+- add unique validation in array rule by [@intech](https://github.com/intech).
 
 --------------------------------------------------
 <a name="0.6.17"></a>
