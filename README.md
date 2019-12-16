@@ -547,6 +547,7 @@ const schema = {
 v.validate({ show: function() {} }, schema); // Valid
 v.validate({ show: Date.now }, schema); // Valid
 v.validate({ show: "function" }, schema); // Fail
+
 ```
 
 ## `luhn`
