@@ -9,21 +9,23 @@ const schema = {
 	]
 };
 
-console.log(v.validate({ multi: "John" }, schema));
+const check = v.compile(schema);
+
+console.log(check({ multi: "John" }));
 // Returns: true
 
-console.log(v.validate({ multi: true }, schema));
+console.log(check({ multi: true }));
 // Returns: true
 
-console.log(v.validate({ multi: false }, schema));
+console.log(check({ multi: false }));
 // Returns: true
 
-console.log(v.validate({ multi: "Al" }, schema));
+console.log(check({ multi: "Al" }));
 /* Returns an array with errors:
 
 */
 
-console.log(v.validate({ multi: 100 }, schema));
+console.log(check({ multi: 100 }));
 /* Returns an array with errors:
 
 */

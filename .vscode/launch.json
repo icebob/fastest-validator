@@ -8,7 +8,7 @@
 			"type": "node",
 			"request": "launch",
 			"name": "Launch dev",
-			"program": "${workspaceRoot}\\examples\\custom.js"
+			"program": "${workspaceRoot}\\examples\\next.js"
 		},
 		{
 			"type": "node",
@@ -23,6 +23,18 @@
 			"name": "Jest",
 			"program": "${workspaceRoot}\\node_modules\\jest-cli\\bin\\jest.js",
 			"args": ["--runInBand"],
+			"cwd": "${workspaceRoot}",
+			"runtimeArgs": [
+                "--nolazy"
+            ]
+		},
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "Jest single",
+			"program": "${workspaceRoot}/node_modules/jest-cli/bin/jest.js",
+			"args": ["--runInBand", "${fileBasenameNoExtension}"],
+			"console": "internalConsole",
 			"cwd": "${workspaceRoot}",
 			"runtimeArgs": [
                 "--nolazy"

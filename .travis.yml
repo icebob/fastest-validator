@@ -3,7 +3,13 @@ cache:
   directories:
   - node_modules
 node_js:
+    - "13"
+    - "12"
     - "10"
     - "8"
+
+script:
+  - npm run test:travis
+
 after_success:
   - npm run coverall

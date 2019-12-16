@@ -1,9 +1,131 @@
 --------------------------------------------------
-<a name="0.6.18"></a>
-# 0.6.18 (2019-12-13)
+<a name="1.0.0-beta4"></a>
+# 1.0.0-beta4 (2019-11-17)
 
 ## Changes
-- add unique validation in array rule by [@intech](https://github.com/intech).
+- fix optional multi rule.
+- fix array rule return value issue (again). 
+
+--------------------------------------------------
+<a name="1.0.0-beta2"></a>
+# 1.0.0-beta2 (2019-11-15)
+
+## Changes
+- fix array rule return value issue.
+
+--------------------------------------------------
+<a name="1.0.0-beta1"></a>
+# 1.0.0-beta1 (2019-11-15)
+
+The full library has been rewritten. It uses code generators in order to be much faster.
+
+## Breaking changes
+This new version contains several breaking changes.
+
+### Rule logic changed
+The rule codes have been rewritten to code generator functions. Therefore if you use custom validators, you should rewrite them after upgrading.
+
+### Convert values
+The `number`, `boolean` and `date` rules have a `convert: true` property. In the previous version it doesn't modify the value in the checked object, just converted the value to the rules. In the version 1.0 this property converts the values in the checked object, as well.
+
+## New
+
+### Sanitizations
+The sanitization function is implemented. There are several rules which contains sanitizers. **Please note, the sanitizers change the original checked object values.**
+
+| Rule | Property | Description |
+| ---- | -------- | ----------- |
+`boolean` | `convert` | Convert the value to a boolean.
+`number` | `convert` | Convert the value to a number.
+`date` | `convert` | Convert the value to a date.
+`string` | `trim` | Trim the value.
+`string` | `trimLeft` | Left trim the value.
+`string` | `trimRight` | Right trim the value.
+`string` | `lowercase` | Lowercase the value.
+`string` | `uppercase` | Uppercase the value.
+`string` | `localeLowercase` | Lowercase the value with `String.toLocaleLowerCase`.
+`string` | `localeUppercase` | Uppercase the value with `String.toLocaleUpperCase`.
+`string` | `padStart` | Left padding the value.
+`string` | `padEnd` | Right padding the value.
+`string` | `convert` | Convert the value to a string.
+`email` | `normalize` | Trim & lowercase the value.
+`forbidden` | `remove` | Remove the forbidden field.
+`object` | `strict: "remove"` | Remove additional properties in the object.
+`*` | `default` | Use this default value if the value is `null` or `undefined`.
+
+### Root element validation
+Basically the validator expects that you want to validate a Javascript object. If you want others, you can define the root level schema, as well. In this case set the `$$root: true` property.
+
+**Example to validate a `string` variable instead of `object`**
+```js
+const schema = {
+    $$root: true,
+    type: "string", 
+    min: 3, 
+    max: 6
+};
+
+v.validate("John", schema); // Valid
+v.validate("Al", schema); // Fail, too short.
+```
+
+### Enhanced shorthand types
+You can use string-based shorthand validation definitions in the schema with properties.
+
+```js
+{
+    password: "string|min:6",
+    age: "number|optional|integer|positive|min:0|max:99",
+
+    retry: ["number|integer|min:0", "boolean"] // multiple types
+}
+```
+
+## Other changes
+
+### New `equal` rule
+It checks the value equal (`==`) to a static value or another property. The `strict` property uses `===` to check values.
+
+**Example with static value**:
+```js
+const schema = {
+    agreeTerms: { type: "equal", value: true, strict: true } // strict means `===`
+}
+
+v.validate({ agreeTerms: true }, schema); // Valid
+v.validate({ agreeTerms: false }, schema); // Fail
+```
+
+**Example with other field**:
+```js
+const schema = {
+    password: { type: "string", min: 6 },
+    confirmPassword: { type: "equal", field: "password" }
+}
+
+v.validate({ password: "123456", confirmPassword: "123456" }, schema); // Valid
+v.validate({ password: "123456", confirmPassword: "pass1234" }, schema); // Fail
+```
+
+### `properties` in object rule
+You can use the `properties` property besides the `props` property in the object rule.
+
+--------------------------------------------------
+<a name="0.6.19"></a>
+# 0.6.19 (2019-10-25)
+
+## Changes
+- update typescript definitions.
+- add "actual" variable into string messages.
+
+--------------------------------------------------
+<a name="0.6.18"></a>
+# 0.6.18 (2019-09-30)
+
+## Changes
+- add `mac` and `luhn` rules by [@intech](https://github.com/intech);
+- update dev dependencies.
+- fix custom rule custom messages issue. [#83](https://github.com/icebob/fastest-validator/issues/83)
 
 --------------------------------------------------
 <a name="0.6.17"></a>
