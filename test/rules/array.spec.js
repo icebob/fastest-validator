@@ -74,9 +74,9 @@ describe("Test rule: array", () => {
 	it("check unique", () => {
 		const check = v.compile({ $$root: true, type: "array", unique: true });
 
-		expect(check(["bob","john","bob"])).toEqual({ type: "arrayUnique", expected: ["bob"] });
-		expect(check(["bob","john","bob","bob","john"])).toEqual({ type: "arrayUnique", expected: ["bob","john"] });
-		expect(check([1,2,1,false,true,false])).toEqual({ type: "arrayUnique", expected: [1,false] });
+		expect(check(["bob","john","bob"])).toEqual([{ type: "arrayUnique", expected: ["bob"], actual: ["bob", "john", "bob"], message: "The 'bob,john,bob' value in '' field does not unique the 'bob' values." }]);
+		expect(check(["bob","john","bob","bob","john"])).toEqual([{ type: "arrayUnique", expected: ["bob","john"], actual: ["bob","john","bob","bob","john"], message: "The 'bob,john,bob,bob,john' value in '' field does not unique the 'bob,john' values." }]);
+		expect(check([1,2,1,false,true,false])).toEqual([{ type: "arrayUnique", expected: [1,false], actual: [1,2,1,false,true,false], message: "The '1,2,1,false,true,false' value in '' field does not unique the '1,false' values." }]);
 		expect(check([{name:"bob"},{name:"john"},{name:"bob"}])).toEqual(true);
 		expect(check(["john", "bob"])).toEqual(true);
 	});
