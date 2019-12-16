@@ -982,7 +982,7 @@ Name                | Default text
 `arrayMax`	| The '{field}' field must contain less than or equal to {expected} items.
 `arrayLength`	| The '{field}' field must contain {expected} items.
 `arrayContains`	| The '{field}' field must contain the '{expected}' item.
-`arrayUnique` | The '{field}' field value '{expected}' does not unique!
+`arrayUnique` | The '{actual}' value in '{field}' field does not unique the '{expected}' values.
 `arrayEnum`	| The '{actual}' value in '{field}' field does not match any of the '{expected}' values.
 `boolean`	| The '{field}' field must be a boolean.
 `function`	| The '{field}' field must be a function.
