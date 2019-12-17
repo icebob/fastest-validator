@@ -355,6 +355,18 @@ v.validate({ roles: ["user", "admin"] }, schema); // Valid
 v.validate({ roles: ["guest"] }, schema); // Fail
 ```
 
+**Example for `unique`:**
+```js
+const schema = {
+    roles: { type: "array", unique: true }
+}
+
+v.validate({ roles: ["user"] }, schema); // Valid
+v.validate({ roles: [{role:"user"},{role:"admin"},{role:"user"}] }, schema); // Valid
+v.validate({ roles: ["user", "admin", "user"] }, schema); // Fail
+v.validate({ roles: [1, 2, 1] }, schema); // Fail
+```
+
 ### Properties
 Property | Default  | Description
 -------- | -------- | -----------
@@ -363,6 +375,7 @@ Property | Default  | Description
 `max`  	 | `null`   | Maximum count of elements.
 `length` | `null`   | Fix count of elements.
 `contains` | `null` | The array must contain this element too.
+`unique` | `null` | The array must be unique (array of objects is always unique).
 `enum`	 | `null`   | Every element must be an element of the `enum` array.
 `items`	 | `null`   | Schema for array items.
 
@@ -969,6 +982,7 @@ Name                | Default text
 `arrayMax`	| The '{field}' field must contain less than or equal to {expected} items.
 `arrayLength`	| The '{field}' field must contain {expected} items.
 `arrayContains`	| The '{field}' field must contain the '{expected}' item.
+`arrayUnique` | The '{actual}' value in '{field}' field does not unique the '{expected}' values.
 `arrayEnum`	| The '{actual}' value in '{field}' field does not match any of the '{expected}' values.
 `boolean`	| The '{field}' field must be a boolean.
 `function`	| The '{field}' field must be a function.
