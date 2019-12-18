@@ -1,4 +1,11 @@
 --------------------------------------------------
+<a name="1.0.0"></a>
+# 1.0.0 (2019-12-18)
+
+## Changes
+- add unique validation in array rule [#104](https://github.com/icebob/fastest-validator/pull/104)
+
+--------------------------------------------------
 <a name="1.0.0-beta4"></a>
 # 1.0.0-beta4 (2019-11-17)
 
