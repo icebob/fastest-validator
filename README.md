@@ -100,9 +100,9 @@ Call the `validate` method with the `object` and the `schema`.
 > If performance is important, you won't use this method because it's slow.
 
 ```js
-let Validator = require("fastest-validator");
+const Validator = require("fastest-validator");
 
-let v = new Validator();
+const v = new Validator();
 
 const schema = {
     id: { type: "number", positive: true, integer: true },
@@ -126,29 +126,29 @@ console.log(v.validate({ id: 5, name: "Al", status: true }, schema));
     ]
 */
 ```
-[Try it on Runkit](https://runkit.com/icebob/fastest-validator-usage-simple)
+[Try it on Repl.it](https://repl.it/@icebob/fastest-validator-simple)
 
 ### Fast method
 In this case, the first step is to compile the schema to a compiled "checker" function. After that, to validate your object, just call this "checker" function.
 > This method is the fastest.
 
 ```js
-let Validator = require("fastest-validator");
+const Validator = require("fastest-validator");
 
-let v = new Validator();
+const v = new Validator();
 
-var schema = {
+const schema = {
     id: { type: "number", positive: true, integer: true },
     name: { type: "string", min: 3, max: 255 },
     status: "boolean" // short-hand def
 };
 
-var check = v.compile(schema);
+const check = v.compile(schema);
 
-console.log(check({ id: 5, name: "John", status: true }));
+console.log("First:", check({ id: 5, name: "John", status: true }));
 // Returns: true
 
-console.log(check({ id: 2, name: "Adam" }));
+console.log("Second:", check({ id: 2, name: "Adam" }));
 /* Returns an array with errors:
     [
         {
@@ -159,7 +159,7 @@ console.log(check({ id: 2, name: "Adam" }));
     ]
 */
 ```
-[Try it on Runkit](https://runkit.com/icebob/fastest-validator-usage-quick)
+[Try it on Repl.it](https://repl.it/@icebob/fastest-validator-fast)
 
 ### Browser usage
 ```html
