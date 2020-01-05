@@ -862,7 +862,7 @@ const schema = {
         minWeight: 10,
         check(value, schema) {
             return (value < schema.minWeight)
-                ? this.makeError("weightMin", schema.minWeight, value)
+                ? [{ type: "weightMin", expected: schema.minWeight, actual: value }]
                 : true;
         }
     }
