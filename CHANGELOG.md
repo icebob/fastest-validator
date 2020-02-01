@@ -1,4 +1,11 @@
 --------------------------------------------------
+<a name="1.0.1"></a>
+# 1.0.1 (2020-02-01)
+
+## Changes
+- fix missing field property in custom rules [#109](https://github.com/icebob/fastest-validator/issues/109)
+
+--------------------------------------------------
 <a name="1.0.0"></a>
 # 1.0.0 (2019-12-18)
 
