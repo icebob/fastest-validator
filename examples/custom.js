@@ -8,11 +8,15 @@ let v = new Validator({
 });
 
 // Register a custom 'even' validator
-v.add("even", value => {
-	if (value % 2 != 0)
-		return v.makeError("evenNumber", null, value);
+v.add("even", function({ schema, messages }, path, context) {
+	return {
+		source: `
+            if (value % 2 != 0)
+                ${this.makeError({ type: "evenNumber",  actual: "value", messages })}
 
-	return true;
+            return value;
+        `
+	};
 });
 
 const schema = {
@@ -27,16 +31,16 @@ const schema = {
 		},
 		check(value, schema) {
 			return (value < schema.minWeight)
-				? this.makeError("weightMin", schema.minWeight, value)
+				? [{ type: "weightMin", expected: schema.minWeight, actual: value }]
 				: true;
 		}
 	}
 };
 
-//console.log(v.validate({ name: "John", age: 20 }, schema));
+console.log(v.validate({ name: "John", age: 20, weight: 50 }, schema));
 // Returns: true
 
-//console.log(v.validate({ name: "John", age: 19 }, schema));
+console.log(v.validate({ name: "John", age: 19, weight: 50 }, schema));
 /* Returns an array with errors:
 	[{
 		type: 'evenNumber',

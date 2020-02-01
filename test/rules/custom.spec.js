@@ -27,7 +27,7 @@ describe("Test rule: custom", () => {
 
 	it("should handle returned errors", () => {
 		const checker = jest.fn(function(value, schema, field) {
-			return [{ type: "myError", field, expected: 3, actual: 4 }];
+			return [{ type: "myError", expected: 3, actual: 4 }];
 		});
 		const schema = { weight: { type: "custom", a: 5, check: checker, messages: { myError: "My error message. Expected: {expected}, actual: {actual}, field: {field}" } } };
 		const check = v.compile(schema);
