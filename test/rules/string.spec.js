@@ -50,7 +50,8 @@ describe("Test rule: string", () => {
 
 	it("check pattern", () => {
 		const check = v.compile({ $$root: true, type: "string", pattern: /^[A-Z]+$/ });
-
+		console.log(check("John"));
+		console.log([{ type: "stringPattern", expected: "/^[A-Z]+$/", actual: "John", message: "The '' field fails to match the required pattern." }]);
 		expect(check("John")).toEqual([{ type: "stringPattern", expected: "/^[A-Z]+$/", actual: "John", message: "The '' field fails to match the required pattern." }]);
 		expect(check("JOHN")).toEqual(true);
 	});
