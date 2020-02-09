@@ -62,6 +62,13 @@ describe("Test rule: string", () => {
 		expect(check("JOHN")).toEqual(true);
 	});
 
+	it('check pattern with a quote', () => {
+		const check = v.compile({ $$root: true, type: 'string', pattern: /^[a-z0-9 .\-'?!":;\\/,_]+$/i });
+
+		expect(check('John^')).toEqual([{ field: undefined, type: 'stringPattern', expected: '/^[a-z0-9 .\-\'?!":;\\/,_]+$/i', actual: 'John^', message: 'The \'\' field fails to match the required pattern.' }]);
+		expect(check('JOHN')).toEqual(true);
+	});
+
 	it("check contains", () => {
 		const check = v.compile({ $$root: true, type: "string", contains: "bob" });
 

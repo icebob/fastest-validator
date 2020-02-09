@@ -64,7 +64,14 @@ describe('TypeScript Definitions', () => {
             expect(check('JOHN')).toEqual(true);
         });
 
-        it('check contains', () => {
+		it('check pattern with a quote', () => {
+			const check = v.compile({ $$root: true, type: 'string', pattern: /^[a-z0-9 .\-'?!":;\\/,_]+$/i } as RuleString);
+
+			expect(check('John^')).toEqual([{ field: undefined, type: 'stringPattern', expected: '/^[a-z0-9 .\-\'?!":;\\/,_]+$/i', actual: 'John^', message: 'The \'\' field fails to match the required pattern.' }]);
+			expect(check('JOHN')).toEqual(true);
+		});
+
+		it('check contains', () => {
             const check = v.compile({ $$root: true, type: 'string', contains: 'bob' });
 
             expect(check('John')).toEqual([{ type: 'stringContains', expected: 'bob', actual: 'John', message: 'The \'\' field must contain the \'bob\' text.' }]);
