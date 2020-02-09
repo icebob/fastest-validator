@@ -1,4 +1,11 @@
 --------------------------------------------------
+<a name="1.0.2"></a>
+# 1.0.2 (2020-02-09)
+
+## Changes
+- Fix string with pattern where regular expression contains a double quote [#111](https://github.com/icebob/fastest-validator/issues/111) by [@FranzZemen](https://github.com/FranzZemen)
+
+--------------------------------------------------
 <a name="1.0.1"></a>
 # 1.0.1 (2020-02-01)
 
