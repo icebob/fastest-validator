@@ -750,6 +750,11 @@ declare module 'fastest-validator' {
 		rules: { [key: string]: ValidationRuleObject };
 
 		/**
+		 * List of aliases attached to current validator
+		 */
+		aliases: { [key: string]: ValidationRule }
+
+		/**
 		 * Constructor of validation class
 		 * @param {ValidatorConstructorOptions} opts List of possible validator constructor options
 		 */
@@ -761,6 +766,13 @@ declare module 'fastest-validator' {
 		 * @param fn
 		 */
 		add(type: string, fn: any): void;
+
+		/**
+	 	* Register a custom validation rule in validation object
+	 	* @param {string} name
+	 	* @param validationRule
+	 	*/
+		 alias(name: string, validationRule: ValidationRule): void;
 
 		/**
 		 * Build error message
