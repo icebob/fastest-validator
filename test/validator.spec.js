@@ -312,5 +312,57 @@ describe("Test compile (integration test)", () => {
 			expect(res).toBe(true);
 			expect(customValidator.mock.calls[0][2]).toBe("customValue");
 		});
-	}); */
+	}); */	
 });
+
+describe("Test aliases", () => {
+	const v = new Validator();
+
+	const aliasName = "username";
+	const aliasTo = {
+		type: "string",
+		min: 4,
+		max: 10
+	};
+
+	it("should add alias", () => {
+		v.alias(aliasName, aliasTo);
+
+		expect(v.rules[aliasName]).toBeUndefined();
+		expect(v.aliases[aliasName]).toEqual(aliasTo);
+	});
+
+	it("should throw an error when alias name is the same with one of rule name", () => {
+		expect(() => v.alias("string", { type: "bar" })).toThrowError();
+		expect(v.rules.string).toBeTruthy();
+		expect(v.aliases.string).toBeUndefined();
+	});
+
+	it("should work with simple alias", () => {
+		const check = v.compile({
+			username: "username"
+		});
+
+		expect(check({ username: "abcdef" })).toEqual(true);
+		expect(check({})[0].type).toEqual("required");
+		expect(check({ username: "aef" })[0].type).toBe("stringMin");
+		expect(check({ username: "abcdabcdabcd" })[0].type).toBe("stringMax");
+	});
+
+	it("should extend the original alias", () => {
+		const check = v.compile({
+			username: {
+				type: "username",
+				optional: true,
+				min: 2
+			}
+		});
+
+		expect(check({ username: "abcdef" })).toEqual(true);
+		expect(check({})).toEqual(true);
+		expect(check({ username: "aef" })).toBe(true);
+		expect(check({ username: "a" })[0].type).toBe("stringMin");
+	});
+});
+
+
