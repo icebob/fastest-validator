@@ -448,7 +448,7 @@ declare module 'fastest-validator' {
 		 * @param {ValidationRuleObject} schema Validation schema that describes current custom validator
 		 * @return {{true} | ValidationError[]} true if result is valid or array of validation error messages
 		 */
-		custom: (value: T, schema: ValidationRuleObject, path: string, parent?: object, context?: any) => true | ValidationError[];
+		custom?: (value: unknown, schema: ValidationRuleObject, path: string, parent?: object, context?: any) => true | ValidationError[];
 
 		/**
 		 * You can define any additional options for custom validators
@@ -799,7 +799,7 @@ declare module 'fastest-validator' {
 		 * @param {ValidationSchema | ValidationSchema[]} schema Validation schema definition that should be used for validation
 		 * @return {(object: object) => (true | ValidationError[])} function that can be used next for validation of current schema
 		 */
-		compile?(schema: ValidationSchema | ValidationSchema[]): (object: any) => true | ValidationError[];
+		compile(schema: ValidationSchema | ValidationSchema[]): (object: any) => true | ValidationError[];
 
 		/**
 		 * Native validation method to validate obj
