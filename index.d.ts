@@ -443,6 +443,14 @@ declare module 'fastest-validator' {
 		default?: any;
 
 		/**
+		 *
+		 * @param {{any}} value Value that should be validated
+		 * @param {ValidationRuleObject} schema Validation schema that describes current custom validator
+		 * @return {{true} | ValidationError[]} true if result is valid or array of validation error messages
+		 */
+		custom: (value: T, schema: ValidationRuleObject, path: string, parent?: object, context?: any) => true | ValidationError[];
+
+		/**
 		 * You can define any additional options for custom validators
 		 */
 		[key: string]: any;
@@ -772,7 +780,7 @@ declare module 'fastest-validator' {
 	 	* @param {string} name
 	 	* @param validationRule
 	 	*/
-		 alias(name: string, validationRule: ValidationRule): void;
+		alias(name: string, validationRule: ValidationRule): void;
 
 		/**
 		 * Build error message
