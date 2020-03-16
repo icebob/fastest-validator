@@ -799,7 +799,7 @@ declare module 'fastest-validator' {
 		 * @param {ValidationSchema | ValidationSchema[]} schema Validation schema definition that should be used for validation
 		 * @return {(object: object) => (true | ValidationError[])} function that can be used next for validation of current schema
 		 */
-		compile(schema: ValidationSchema | ValidationSchema[]): (object: any) => true | ValidationError[];
+		compile?(schema: ValidationSchema | ValidationSchema[]): (object: any) => true | ValidationError[];
 
 		/**
 		 * Native validation method to validate obj
