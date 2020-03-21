@@ -37,6 +37,7 @@ const schema = {
 	apikey: "forbidden",
 	uuidv4: { type: "uuid", version: 4 },
 	uuid: "uuid",
+	phone: { type: "string", length: 15, custom: v => v.startsWith("+") ? true : [{ type: "wrongPhoneFormat" }] },
 	action: "function",
 	created: "date",
 	now: { type: "date", convert: true }
@@ -86,6 +87,7 @@ const obj = {
 	apikey: null,
 	uuidv4: "10ba038e-48da-487b-96e8-8d3b99b6d18a",
 	uuid:   "10ba038e-48da-487b-96e8-8d3b99b6d18a",
+	phone: "+36-70-123-4567",
 	action: () => {},
 	created: new Date(),
 	now: Date.now()
