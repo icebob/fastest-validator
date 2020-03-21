@@ -15,7 +15,7 @@
 * blazing fast! Really!
 * 15+ built-in validators
 * many sanitizations
-* custom validators
+* custom validators & aliases
 * nested objects & array handling
 * strict object validation
 * multiple validators
@@ -45,38 +45,62 @@ $ npm run bench
 ```
 
 # Table of contents
-- [Installations](#installation)
-- [Usage](#usage)
+- [fastest-validator ![NPM version](https://www.npmjs.com/package/fastest-validator) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=The%20fastest%20JS%20validator%20library%20for%20NodeJS&url=https://github.com/icebob/fastest-validator&via=Icebobcsi&hashtags=nodejs,javascript)](#fastest-validator-img-src%22httpswwwnpmjscompackagefastest-validator%22-alt%22npm-version%22-img-src%22httpsimgshieldsiotwitterurlhttpshieldsiosvgstylesocial%22-alt%22tweet%22)
+  - [Key features](#key-features)
+- [How fast?](#how-fast)
+- [Table of contents](#table-of-contents)
+  - [Installation](#installation)
+    - [NPM](#npm)
+  - [Usage](#usage)
+    - [Simple method](#simple-method)
+    - [Fast method](#fast-method)
+    - [Browser usage](#browser-usage)
 - [Optional & required fields](#optional--required-fields)
 - [Strict validation](#strict-validation)
+  - [Remove additional fields](#remove-additional-fields)
 - [Multiple validators](#multiple-validators)
 - [Root element schema](#root-element-schema)
 - [Sanitizations](#sanitizations)
+  - [Default values](#default-values)
 - [Shorthand definitions](#shorthand-definitions)
+- [Alias definition](#alias-definition)
 - [Built-in validators](#built-in-validators)
-    - [any](#any)
-    - [array](#array)
-    - [boolean](#boolean)
-    - [date](#date)
-    - [email](#email)
-    - [enum](#enum)
-    - [equal](#equal)
-    - [forbidden](#forbidden)
-    - [function](#function)
-    - [luhn](#luhn)
-    - [mac](#mac)
-    - [multi](#multi)
-    - [number](#number)
-    - [object](#object)
-    - [string](#string)
-    - [url](#url)
-    - [uuid](#uuid)
+  - [`any`](#any)
+  - [`array`](#array)
+    - [Properties](#properties)
+  - [`boolean`](#boolean)
+    - [Properties](#properties-1)
+  - [`date`](#date)
+    - [Properties](#properties-2)
+  - [`email`](#email)
+    - [Properties](#properties-3)
+  - [`enum`](#enum)
+    - [Properties](#properties-4)
+  - [`equal`](#equal)
+    - [Properties](#properties-5)
+  - [`forbidden`](#forbidden)
+    - [Properties](#properties-6)
+  - [`function`](#function)
+  - [`luhn`](#luhn)
+  - [`mac`](#mac)
+  - [`multi`](#multi)
+  - [`number`](#number)
+    - [Properties](#properties-7)
+  - [`object`](#object)
+    - [Properties](#properties-8)
+  - [`string`](#string)
+    - [Properties](#properties-9)
+  - [`url`](#url)
+  - [`uuid`](#uuid)
+    - [Properties](#properties-10)
 - [Custom validator](#custom-validator)
 - [Custom error messages (l10n)](#custom-error-messages-l10n)
 - [Personalised Messages](#personalised-messages)
 - [Message types](#message-types)
+  - [Message fields](#message-fields)
 - [Development](#development)
 - [Test](#test)
+  - [Coverage report](#coverage-report)
 - [Contribution](#contribution)
 - [License](#license)
 - [Contact](#contact)
@@ -277,6 +301,23 @@ const schema = {
     password: "string|min:6",
     age: "number|optional|integer|positive|min:0|max:99", // additional properties
     state: ["boolean", "number|min:0|max:1"] // multiple types
+}
+```
+
+# Alias definition
+You can define custom aliases.
+
+```js
+v.alias('username', {
+    type: 'string',
+    min: 4,
+    max: 30
+    // ...
+});
+
+const schema = {
+    username: "username|max:100", // Using the 'username' alias
+    password: "string|min:6",
 }
 ```
 
@@ -879,6 +920,35 @@ console.log(v.validate({ name: "John", weight: 8 }, schema));
         actual: 8,
         field: 'weight',
         message: 'The weight must be greater than 10! Actual: 8'
+    }]
+*/
+```
+
+Or you can use built-in validator with a `custom` checker function:
+```js
+let v = new Validator({
+    messages: {
+        // Register our new error message text
+        phoneNumber: "The phone number must be started with '+'!"
+    }
+});
+
+const schema = {
+    name: { type: "string", min: 3, max: 255 },
+    phone: { type: "string", length: 15, custom: v => 
+        v.startsWith("+") ? true : [{ type: "phoneNumber" }] 
+    }	
+};
+
+console.log(v.validate({ name: "John", phone: "+36-70-123-4567" }, schema));
+// Returns: true
+
+console.log(v.validate({ name: "John", phone: "36-70-123-4567" }, schema));
+/* Returns an array with errors:
+    [{
+        message: "The phone number must be started with '+'!",
+        field: 'phone',
+        type: 'phoneNumber'
     }]
 */
 ```

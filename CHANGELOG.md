@@ -1,4 +1,12 @@
 --------------------------------------------------
+<a name="1.1.0"></a>
+# 1.1.0 (2020-03-21)
+
+## Changes
+- New user-defined 'alias' feature [#118](https://github.com/icebob/fastest-validator/issues/118) by [@erfanium](https://github.com/erfanium)
+- Add custom validato function for built-in rules [#119](https://github.com/icebob/fastest-validator/issues/119) by [@erfanium](https://github.com/erfanium)
+
+--------------------------------------------------
 <a name="1.0.2"></a>
 # 1.0.2 (2020-02-09)
 
