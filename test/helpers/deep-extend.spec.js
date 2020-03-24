@@ -39,3 +39,21 @@ describe("deepExtend", () => {
 		});
 	});
 });
+
+describe("Test merge options", () => {
+	it("should consider overrideDist option", () => {
+		const result = deepExtend({
+			b: 5,
+			c: 6
+		}, {
+			b: 10,
+			e: "Hello"
+		}, { overrideDest: false });
+
+		expect(result).toEqual({
+			b: 5,
+			c: 6,
+			e: "Hello"
+		});
+	});
+});

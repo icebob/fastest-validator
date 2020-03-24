@@ -365,4 +365,66 @@ describe("Test aliases", () => {
 	});
 });
 
+describe("Test default settings", () => {
+	const v = new Validator({
+		defaults: {
+			object: {
+				strict: "remove"
+			}
+		}
+	});	
+
+	it("should consider default settings", () => {
+		const check = v.compile({
+			foo: {
+				type: "object",
+				props: {
+					a: "string"
+				}
+			}
+		});
+
+		const o = {
+			foo: {
+				a: "x",
+				b: "y"
+			}
+		};
+
+		expect(check(o)).toBe(true);
+		expect(o).toEqual({
+			foo: {
+				a: "x"
+			}
+		});
+	});
+
+	it("should override default setting", () => {
+		const check = v.compile({
+			foo: {
+				type: "object",
+				strict: false,
+				props: {
+					a: "string"
+				}
+			}
+		});
+
+		const o = {
+			foo: {
+				a: "x",
+				b: "y"
+			},
+		};
+
+		expect(check(o)).toBe(true);
+		expect(o).toEqual({
+			foo: {
+				a: "x",
+				b: "y"
+			}
+		});
+	});
+});
+
 
