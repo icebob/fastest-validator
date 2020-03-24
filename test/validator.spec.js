@@ -92,7 +92,6 @@ describe("Test add", () => {
 			source: `
 				if (value % 2 != 0)
 					${this.makeError({ type: "evenNumber",  actual: "value", messages })}
-
 				return value;
 			`
 		};
@@ -257,34 +256,27 @@ describe("Test compile (integration test)", () => {
 
 	/*
 	describe("Test check generator with custom path & parent", () => {
-
 		it("when schema is defined as an array, and custom path & parent are specified, they should be forwarded to validators", () => {
 			const v = new Validator();
 			const customValidator = jest.fn().mockReturnValue(true);	// Will be called with (value, schema, path, parent)
 			v.add("customValidator", customValidator);
-
 			const validate = v.compile([{ type: "customValidator" }]);
 			const parent = {};
 			const res = validate({ customValue: 4711 }, "customPath", parent);
-
 			expect(res).toBe(true);
 			expect(customValidator.mock.calls[0][2]).toBe("customPath");
 			expect(customValidator.mock.calls[0][3]).toBe(parent);
 		});
-
 		it("when schema is defined as an array, path & parent should be set to default values in validators", () => {
 			const v = new Validator();
 			const customValidator = jest.fn().mockReturnValue(true);	// Will be called with (value, schema, path, parent)
 			v.add("customValidator", customValidator);
-
 			const validate = v.compile([{ type: "customValidator" }]);
 			const res = validate({ customValue: 4711 });
-
 			expect(res).toBe(true);
 			expect(customValidator.mock.calls[0][2]).toBeUndefined();
 			expect(customValidator.mock.calls[0][3]).toBeNull();
 		});
-
 		it("when schema is defined as an object, and custom path is specified, it should be forwarded to validators", () => {
 			// Note: as the item we validate always must be an object, there is no use
 			// of specifying a custom parent, like for the schema-as-array above.
@@ -293,22 +285,17 @@ describe("Test compile (integration test)", () => {
 			const v = new Validator();
 			const customValidator = jest.fn().mockReturnValue(true);	// Will be called with (value, schema, path, parent)
 			v.add("customValidator", customValidator);
-
 			const validate = v.compile({ customValue: { type: "customValidator" } });
 			const res = validate({ customValue: 4711 }, "customPath");
-
 			expect(res).toBe(true);
 			expect(customValidator.mock.calls[0][2]).toBe("customPath.customValue");
 		});
-
 		it("when schema is defined as an object, path should be set to default value in validators", () => {
 			const v = new Validator();
 			const customValidator = jest.fn().mockReturnValue(true);	// Will be called with (value, schema, path, parent)
 			v.add("customValidator", customValidator);
-
 			const validate = v.compile({ customValue: { type: "customValidator" } });
 			const res = validate({ customValue: 4711 });
-
 			expect(res).toBe(true);
 			expect(customValidator.mock.calls[0][2]).toBe("customValue");
 		});
@@ -362,6 +349,46 @@ describe("Test aliases", () => {
 		expect(check({})).toEqual(true);
 		expect(check({ username: "aef" })).toBe(true);
 		expect(check({ username: "a" })[0].type).toBe("stringMin");
+	});
+});
+
+describe("Test custom validation for built-in rules", () => {
+	const v = new Validator({
+		messages: {
+			evenNumber: "The '{field}' field must be an even number! Actual: {actual}"
+		}
+	});
+
+	let check;
+	const fn = jest.fn();
+
+
+	it("should compile without error", () => {
+		
+		check = v.compile({
+			num: {
+				type: "number",
+				min: 10,
+				max: 15,
+				integer: true,
+				custom(value){
+					fn(value);
+					if (value % 2 !== 0) return [{ type: "evenNumber", actual: value }];
+				}
+			}
+		});
+
+		expect(typeof check).toBe("function");
+	});
+
+	it("should work correctly with custom validator", () => {
+		const res = check({num: 12});
+		expect(res).toBe(true);
+		expect(fn).toBeCalledWith(12);
+
+		expect(check({num: 8})[0].type).toEqual("numberMin");
+		expect(check({num: 18})[0].type).toEqual("numberMax");
+		expect(check({num: 13})[0].type).toEqual("evenNumber");
 	});
 });
 
@@ -426,5 +453,3 @@ describe("Test default settings", () => {
 		});
 	});
 });
-
-
