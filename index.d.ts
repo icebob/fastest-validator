@@ -736,6 +736,13 @@ declare module 'fastest-validator' {
 		 * List of possible error messages
 		 */
 		messages?: MessagesType,
+
+		/**
+		 * Default settings for rules 
+		 */
+		defaults?: {
+			[key in ValidationRuleName]: ValidationSchema
+		}
 	};
 
 	class Validator {
@@ -772,7 +779,7 @@ declare module 'fastest-validator' {
 	 	* @param {string} name
 	 	* @param validationRule
 	 	*/
-		 alias(name: string, validationRule: ValidationRule): void;
+		alias(name: string, validationRule: ValidationRule): void;
 
 		/**
 		 * Build error message
