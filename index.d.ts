@@ -744,6 +744,13 @@ declare module 'fastest-validator' {
 		 * List of possible error messages
 		 */
 		messages?: MessagesType,
+
+		/**
+		 * Default settings for rules 
+		 */
+		defaults?: {
+			[key in ValidationRuleName]: ValidationSchema
+		}
 	};
 
 	class Validator {

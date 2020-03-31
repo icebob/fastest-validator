@@ -39,3 +39,21 @@ describe("deepExtend", () => {
 		});
 	});
 });
+
+describe("Test merge options", () => {
+	it("should consider skipIfExist option and not overwrite the existing properties", () => {
+		const result = deepExtend({
+			b: 5,
+			c: 6
+		}, {
+			b: 10,
+			e: "Hello"
+		}, { skipIfExist: true });
+
+		expect(result).toEqual({
+			b: 5,
+			c: 6,
+			e: "Hello"
+		});
+	});
+});

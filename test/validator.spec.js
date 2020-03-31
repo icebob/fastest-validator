@@ -92,7 +92,6 @@ describe("Test add", () => {
 			source: `
 				if (value % 2 != 0)
 					${this.makeError({ type: "evenNumber",  actual: "value", messages })}
-
 				return value;
 			`
 		};
@@ -257,34 +256,27 @@ describe("Test compile (integration test)", () => {
 
 	/*
 	describe("Test check generator with custom path & parent", () => {
-
 		it("when schema is defined as an array, and custom path & parent are specified, they should be forwarded to validators", () => {
 			const v = new Validator();
 			const customValidator = jest.fn().mockReturnValue(true);	// Will be called with (value, schema, path, parent)
 			v.add("customValidator", customValidator);
-
 			const validate = v.compile([{ type: "customValidator" }]);
 			const parent = {};
 			const res = validate({ customValue: 4711 }, "customPath", parent);
-
 			expect(res).toBe(true);
 			expect(customValidator.mock.calls[0][2]).toBe("customPath");
 			expect(customValidator.mock.calls[0][3]).toBe(parent);
 		});
-
 		it("when schema is defined as an array, path & parent should be set to default values in validators", () => {
 			const v = new Validator();
 			const customValidator = jest.fn().mockReturnValue(true);	// Will be called with (value, schema, path, parent)
 			v.add("customValidator", customValidator);
-
 			const validate = v.compile([{ type: "customValidator" }]);
 			const res = validate({ customValue: 4711 });
-
 			expect(res).toBe(true);
 			expect(customValidator.mock.calls[0][2]).toBeUndefined();
 			expect(customValidator.mock.calls[0][3]).toBeNull();
 		});
-
 		it("when schema is defined as an object, and custom path is specified, it should be forwarded to validators", () => {
 			// Note: as the item we validate always must be an object, there is no use
 			// of specifying a custom parent, like for the schema-as-array above.
@@ -293,22 +285,17 @@ describe("Test compile (integration test)", () => {
 			const v = new Validator();
 			const customValidator = jest.fn().mockReturnValue(true);	// Will be called with (value, schema, path, parent)
 			v.add("customValidator", customValidator);
-
 			const validate = v.compile({ customValue: { type: "customValidator" } });
 			const res = validate({ customValue: 4711 }, "customPath");
-
 			expect(res).toBe(true);
 			expect(customValidator.mock.calls[0][2]).toBe("customPath.customValue");
 		});
-
 		it("when schema is defined as an object, path should be set to default value in validators", () => {
 			const v = new Validator();
 			const customValidator = jest.fn().mockReturnValue(true);	// Will be called with (value, schema, path, parent)
 			v.add("customValidator", customValidator);
-
 			const validate = v.compile({ customValue: { type: "customValidator" } });
 			const res = validate({ customValue: 4711 });
-
 			expect(res).toBe(true);
 			expect(customValidator.mock.calls[0][2]).toBe("customValue");
 		});
@@ -405,4 +392,64 @@ describe("Test custom validation for built-in rules", () => {
 	});
 });
 
+describe("Test default settings", () => {
+	const v = new Validator({
+		defaults: {
+			object: {
+				strict: "remove"
+			}
+		}
+	});	
 
+	it("should consider default settings", () => {
+		const check = v.compile({
+			foo: {
+				type: "object",
+				props: {
+					a: "string"
+				}
+			}
+		});
+
+		const o = {
+			foo: {
+				a: "x",
+				b: "y"
+			}
+		};
+
+		expect(check(o)).toBe(true);
+		expect(o).toEqual({
+			foo: {
+				a: "x"
+			}
+		});
+	});
+
+	it("should override default setting", () => {
+		const check = v.compile({
+			foo: {
+				type: "object",
+				strict: false,
+				props: {
+					a: "string"
+				}
+			}
+		});
+
+		const o = {
+			foo: {
+				a: "x",
+				b: "y"
+			},
+		};
+
+		expect(check(o)).toBe(true);
+		expect(o).toEqual({
+			foo: {
+				a: "x",
+				b: "y"
+			}
+		});
+	});
+});
