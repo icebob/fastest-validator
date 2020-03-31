@@ -791,7 +791,7 @@ declare module 'fastest-validator' {
 		 * @param {string} type
 		 * @param fn
 		 */
-		add(type: string, fn: any): void;
+		add(type: string, fn: CompilationFunction): void;
 
 		/**
 		 * Register a custom validation rule in validation object
