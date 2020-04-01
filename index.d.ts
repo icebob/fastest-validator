@@ -403,7 +403,7 @@ declare module 'fastest-validator' {
 	 * Validation schema definition for custom inline validator
 	 * @see https://github.com/icebob/fastest-validator#custom-validator
 	 */
-	interface RuleCustomInline extends RuleCustom {
+	interface RuleCustomInline<T = any> extends RuleCustom {
 		/**
 		 * Name of built-in validator
 		 */
@@ -411,7 +411,7 @@ declare module 'fastest-validator' {
 		/**
 		 * Custom checker function
 		 */
-		check: CheckerFunction;
+		check: CheckerFunction<T>;
 	}
 
 	/**
@@ -760,7 +760,7 @@ declare module 'fastest-validator' {
 		customs: { [ruleName: string]: { schema: RuleCustom, messages: MessagesType } }
 	}
 
-	type CheckerFunction = (value: unknown, schema: ValidationSchema, path: string, parent: object | null, context: Context) => true | ValidationError[];
+	type CheckerFunction<T = unknown> = (value: T, schema: ValidationSchema, path: string, parent: object | null, context: Context) => true | ValidationError[];
 
 	type CompilationFunction = (rule: CompilationRule, path: string, context: Context) => { sanitized?: boolean, source: string };
 
