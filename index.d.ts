@@ -409,12 +409,9 @@ declare module 'fastest-validator' {
 		 */
 		type: 'custom';
 		/**
-		 *
-		 * @param {{any}} value Value that should be validated
-		 * @param {ValidationRuleObject} schema Validation schema that describes current custom validator
-		 * @return {{true} | ValidationError[]} true if result is valid or array of validation error messages
+		 * Custom checker function
 		 */
-		check: (value: T, schema: ValidationRuleObject, path: string, parent?: object, context?: any) => true | ValidationError[];
+		check: CheckerFunction<T>;
 	}
 
 	/**
@@ -443,12 +440,9 @@ declare module 'fastest-validator' {
 		default?: any;
 
 		/**
-		 *
-		 * @param {{any}} value Value that should be validated
-		 * @param {ValidationRuleObject} schema Validation schema that describes current custom validator
-		 * @return {{true} | ValidationError[]} true if result is valid or array of validation error messages
+		 * Custom checker function
 		 */
-		custom?: (value: unknown, schema: ValidationRuleObject, path: string, parent?: object, context?: any) => true | ValidationError[];
+		custom?: CheckerFunction;
 
 		/**
 		 * You can define any additional options for custom validators
@@ -696,17 +690,22 @@ declare module 'fastest-validator' {
 	interface ValidationSchema {
 		/**
 		 * Object properties which are not specified on the schema are ignored by default.
-		 * If you set the $$strict option to true any aditional properties will result in an strictObject error.
+		 * If you set the $$strict option to true any additional properties will result in an strictObject error.
 		 * @default false
 		 */
 		$$strict?: boolean;
 
+		/**
+		 * Basically the validator expects that you want to validate a Javascript object.
+		 * If you want others, you can define the root level schema.
+		 * @default false
+		 */
 		$$root?: boolean;
 
 		/**
 		 * List of validation rules for each defined field
 		 */
-		[key: string]: ValidationRule | boolean | undefined;
+		[key: string]: ValidationRule | undefined | any;
 	}
 
 	/**
@@ -716,7 +715,7 @@ declare module 'fastest-validator' {
 		/**
 		 * Name of validation rule that generates this message
 		 */
-		type: ValidationRuleName;
+		type: keyof BuiltInMessages | string;
 		/**
 		 * Field that catch validation error
 		 */
@@ -724,7 +723,7 @@ declare module 'fastest-validator' {
 		/**
 		 * Description of current validation error
 		 */
-		message: keyof BuiltInMessages | string;
+		message?: string;
 		/**
 		 * Expected value from validation rule
 		 */
@@ -753,6 +752,25 @@ declare module 'fastest-validator' {
 		}
 	};
 
+	interface CompilationRule {
+		index: number;
+		ruleFunction: CompilationFunction
+		schema: ValidationSchema;
+		messages: MessagesType;
+		customValidation: (value?: string) => string;
+	}
+
+	interface Context {
+		index: number;
+		rules: ValidationRuleObject[];
+		fn: Function[];
+		customs: { [ruleName: string]: { schema: RuleCustom, messages: MessagesType } }
+	}
+
+	type CheckerFunction<T = unknown> = (value: T, schema: ValidationSchema, path: string, parent: object | null, context: Context) => true | ValidationError[];
+
+	type CompilationFunction = (rule: CompilationRule, path: string, context: Context) => { sanitized?: boolean, source: string };
+
 	class Validator {
 		/**
 		 * List of possible error messages
@@ -767,7 +785,7 @@ declare module 'fastest-validator' {
 		/**
 		 * List of aliases attached to current validator
 		 */
-		aliases: { [key: string]: ValidationRule }
+		aliases: { [key: string]: ValidationRule };
 
 		/**
 		 * Constructor of validation class
@@ -780,13 +798,13 @@ declare module 'fastest-validator' {
 		 * @param {string} type
 		 * @param fn
 		 */
-		add(type: string, fn: any): void;
+		add(type: string, fn: CompilationFunction): void;
 
 		/**
-	 	* Register a custom validation rule in validation object
-	 	* @param {string} name
-	 	* @param validationRule
-	 	*/
+		 * Register a custom validation rule in validation object
+		 * @param {string} name
+		 * @param validationRule
+		 */
 		alias(name: string, validationRule: ValidationRule): void;
 
 		/**
@@ -799,22 +817,22 @@ declare module 'fastest-validator' {
 		 * @param {any=} opts.actual
 		 * @param {MessagesType} opts.messages
 		 */
-		makeError(opts: { type: keyof MessagesType, field?: string, expected?: any, actual?: any, messages: MessagesType }): ValidationError;
+		makeError(opts: { type: keyof MessagesType, field?: string, expected?: any, actual?: any, messages: MessagesType }): string;
 
 		/**
-		 * Compile validator functiona that working up 100 times faster that native validation process
+		 * Compile validator functions that working up 100 times faster that native validation process
 		 * @param {ValidationSchema | ValidationSchema[]} schema Validation schema definition that should be used for validation
-		 * @return {(object: object) => (true | ValidationError[])} function that can be used next for validation of current schema
+		 * @return {(value: any) => (true | ValidationError[])} function that can be used next for validation of current schema
 		 */
-		compile(schema: ValidationSchema | ValidationSchema[]): (object: any) => true | ValidationError[];
+		compile(schema: ValidationSchema | ValidationSchema[]): (value: any) => true | ValidationError[];
 
 		/**
 		 * Native validation method to validate obj
-		 * @param {object} obj Object that should be validated
+		 * @param {any} value that should be validated
 		 * @param {ValidationSchema} schema Validation schema definition that should be used for validation
 		 * @return {{true} | ValidationError[]}
 		 */
-		validate(obj: object, schema: ValidationSchema): true | ValidationError[];
+		validate(value: any, schema: ValidationSchema): true | ValidationError[];
 
 		/**
 		 * Get defined in validator rule
@@ -829,6 +847,11 @@ declare module 'fastest-validator' {
 
 		MessagesType,
 		BuiltInMessages,
+
+		CheckerFunction,
+		Context,
+		CompilationRule,
+		CompilationFunction,
 
 		RuleAny,
 		RuleArray,
