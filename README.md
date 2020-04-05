@@ -64,6 +64,7 @@ $ npm run bench
   - [Default values](#default-values)
 - [Shorthand definitions](#shorthand-definitions)
 - [Alias definition](#alias-definition)
+- [Default options](#default-options)
 - [Built-in validators](#built-in-validators)
   - [`any`](#any)
   - [`array`](#array)
@@ -319,6 +320,19 @@ const schema = {
     username: "username|max:100", // Using the 'username' alias
     password: "string|min:6",
 }
+```
+
+# Default options
+You can set default rule options.
+
+```js
+var v = new FastestValidator({
+    defaults: {
+        object: {
+            strict: "remove"
+        }
+    }
+});
 ```
 
 # Built-in validators
