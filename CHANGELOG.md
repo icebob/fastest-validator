@@ -4,7 +4,7 @@
 
 ## Changes
 - Add default settings for built-in rules [#120](https://github.com/icebob/fastest-validator/issues/120) by [@erfanium](https://github.com/erfanium)
-- Updated typescript definitions [#122](https://github.com/icebob/fastest-validator/issues/122) by [@erfanium](https://github.com/erfanium)
+- Updated typescript definitions [#122](https://github.com/icebob/fastest-validator/issues/122) by [@FFKL](https://github.com/FFKL)
 
 --------------------------------------------------
 <a name="1.1.0"></a>
