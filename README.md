@@ -95,6 +95,7 @@ $ npm run bench
   - [`uuid`](#uuid)
     - [Properties](#properties-10)
 - [Custom validator](#custom-validator)
+  - [Custom validation for built-in rules](#custom-validation-for-built-in-rules)
 - [Custom error messages (l10n)](#custom-error-messages-l10n)
 - [Personalised Messages](#personalised-messages)
 - [Message types](#message-types)
@@ -965,6 +966,23 @@ console.log(v.validate({ name: "John", phone: "36-70-123-4567" }, schema));
         type: 'phoneNumber'
     }]
 */
+```
+
+## Custom validation for built-in rules
+You can define a `custom` function in the schema for built-in rules. With it you can extend any built-in rules.
+
+```js
+const schema = {
+    num: {
+        type: "number",
+        min: 10,
+        max: 15,
+        integer: true,
+        custom (value, schema) {
+            if (value % 2 !== 0) return [{ type: "evenNumber", actual: value }];
+        }
+    }
+}
 ```
 
 # Custom error messages (l10n)
