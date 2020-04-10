@@ -45,7 +45,9 @@ $ npm run bench
 ```
 
 # Table of contents
-- [Key features](#key-features)
+
+- [fastest-validator ![NPM version](https://www.npmjs.com/package/fastest-validator) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=The%20fastest%20JS%20validator%20library%20for%20NodeJS&url=https://github.com/icebob/fastest-validator&via=Icebobcsi&hashtags=nodejs,javascript)](#fastest-validator-img-src%22httpswwwnpmjscompackagefastest-validator%22-alt%22npm-version%22-img-src%22httpsimgshieldsiotwitterurlhttpshieldsiosvgstylesocial%22-alt%22tweet%22)
+  - [Key features](#key-features)
 - [How fast?](#how-fast)
 - [Table of contents](#table-of-contents)
   - [Installation](#installation)
@@ -70,29 +72,31 @@ $ npm run bench
     - [Properties](#properties)
   - [`boolean`](#boolean)
     - [Properties](#properties-1)
-  - [`date`](#date)
+  - [`class`](#class)
     - [Properties](#properties-2)
-  - [`email`](#email)
+  - [`date`](#date)
     - [Properties](#properties-3)
-  - [`enum`](#enum)
+  - [`email`](#email)
     - [Properties](#properties-4)
-  - [`equal`](#equal)
+  - [`enum`](#enum)
     - [Properties](#properties-5)
-  - [`forbidden`](#forbidden)
+  - [`equal`](#equal)
     - [Properties](#properties-6)
+  - [`forbidden`](#forbidden)
+    - [Properties](#properties-7)
   - [`function`](#function)
   - [`luhn`](#luhn)
   - [`mac`](#mac)
   - [`multi`](#multi)
   - [`number`](#number)
-    - [Properties](#properties-7)
-  - [`object`](#object)
     - [Properties](#properties-8)
-  - [`string`](#string)
+  - [`object`](#object)
     - [Properties](#properties-9)
+  - [`string`](#string)
+    - [Properties](#properties-10)
   - [`url`](#url)
   - [`uuid`](#uuid)
-    - [Properties](#properties-10)
+    - [Properties](#properties-11)
 - [Custom validator](#custom-validator)
   - [Custom validation for built-in rules](#custom-validation-for-built-in-rules)
 - [Custom error messages (l10n)](#custom-error-messages-l10n)
@@ -459,6 +463,24 @@ v.validate({ status: "true" }, {
     status: { type: "boolean", convert: true}
 }); // Valid
 ```
+
+## `class`
+This is a `Class` validator to check the value is an instance of a Class.
+
+```js
+const schema = {
+    rawData: { type: "class", instanceOf: Buffer }
+}
+
+v.validate({ rawData: Buffer.from([1, 2, 3]) }, schema); // Valid
+v.validate({ rawData: 100 }, schema); // Fail
+```
+
+### Properties
+Property | Default  | Description
+-------- | -------- | -----------
+`instanceOf` | `null` | Checked Class.
+
 
 ## `date`
 This is a `Date` validator.

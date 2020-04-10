@@ -12,7 +12,7 @@ describe("Test constructor", () => {
 		expect(v.validate).toBeInstanceOf(Function);
 		expect(v.add).toBeInstanceOf(Function);
 
-		expect(Object.keys(v.rules).length).toBe(18);
+		expect(Object.keys(v.rules).length).toBe(19);
 	});
 
 	it("should create instance with custom messages", () => {
@@ -299,7 +299,7 @@ describe("Test compile (integration test)", () => {
 			expect(res).toBe(true);
 			expect(customValidator.mock.calls[0][2]).toBe("customValue");
 		});
-	}); */	
+	}); */
 });
 
 describe("Test aliases", () => {
@@ -364,7 +364,7 @@ describe("Test custom validation for built-in rules", () => {
 
 
 	it("should compile without error", () => {
-		
+
 		check = v.compile({
 			num: {
 				type: "number",
@@ -399,7 +399,7 @@ describe("Test default settings", () => {
 				strict: "remove"
 			}
 		}
-	});	
+	});
 
 	it("should consider default settings", () => {
 		const check = v.compile({

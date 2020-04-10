@@ -41,6 +41,7 @@ const schema = {
 	phone: { type: "string", length: 15, custom: v => v.startsWith("+") ? true : [{ type: "phoneNumber" }] },
 	action: "function",
 	created: "date",
+	raw: { type: "class", instanceOf: Buffer },
 	now: { type: "date", convert: true }
 };
 
@@ -91,7 +92,8 @@ const obj = {
 	phone: "+36-70-123-4567",
 	action: () => {},
 	created: new Date(),
-	now: Date.now()
+	now: Date.now(),
+	raw: Buffer.from([1,2,3])
 };
 
 const res = v.validate(obj, schema);

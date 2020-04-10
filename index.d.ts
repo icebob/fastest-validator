@@ -6,6 +6,7 @@ declare module 'fastest-validator' {
 		'any'
 		| 'array'
 		| 'boolean'
+		| 'class'
 		| 'custom'
 		| 'date'
 		| 'email'
@@ -88,6 +89,21 @@ declare module 'fastest-validator' {
 		 * @default false
 		 */
 		convert?: boolean;
+	}
+
+	/**
+	 * Validation schema definition for "class" built-in validator
+	 * @see https://github.com/icebob/fastest-validator#class
+	 */
+	interface RuleClass<T = any> extends RuleCustom {
+		/**
+		 * Name of built-in validator
+		 */
+		type: 'class';
+		/**
+		 * Checked Class
+		 */
+		instanceOf?: T;
 	}
 
 	/**
@@ -662,6 +678,7 @@ declare module 'fastest-validator' {
 		RuleAny
 		| RuleArray
 		| RuleBoolean
+		| RuleClass
 		| RuleDate
 		| RuleEmail
 		| RuleEqual
@@ -745,7 +762,7 @@ declare module 'fastest-validator' {
 		messages?: MessagesType,
 
 		/**
-		 * Default settings for rules 
+		 * Default settings for rules
 		 */
 		defaults?: {
 			[key in ValidationRuleName]: ValidationSchema
@@ -856,6 +873,7 @@ declare module 'fastest-validator' {
 		RuleAny,
 		RuleArray,
 		RuleBoolean,
+		RuleClass,
 		RuleDate,
 		RuleEmail,
 		RuleEnum,
