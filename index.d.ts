@@ -710,7 +710,7 @@ declare module 'fastest-validator' {
 		 * If you set the $$strict option to true any additional properties will result in an strictObject error.
 		 * @default false
 		 */
-		$$strict?: boolean;
+		$$strict?: boolean | "remove";
 
 		/**
 		 * Basically the validator expects that you want to validate a Javascript object.
