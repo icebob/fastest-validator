@@ -786,7 +786,7 @@ declare module 'fastest-validator' {
 
 	type CheckerFunction<T = unknown> = (value: T, schema: ValidationSchema, path: string, parent: object | null, context: Context) => true | ValidationError[];
 
-	type CompilationFunction = (rule: CompilationRule, path: string, context: Context) => { sanitized?: boolean, source: string };
+	type CompilationFunction = (this: Validator, rule: CompilationRule, path: string, context: Context) => { sanitized?: boolean, source: string };
 
 	class Validator {
 		/**
