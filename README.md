@@ -818,6 +818,7 @@ Property | Default  | Description
 `numeric`   | `null`   | The value must be a numeric string.
 `alphanum`   | `null`   | The value must be an alphanumeric string.
 `alphadash`   | `null`   | The value must be an alphabetic string that contains dashes.
+`hex`   | `null`   | The value must be a hex string.
 `trim`   | `null`   | If `true`, the value will be trimmed. _It's a sanitizer, it will change the value in the original object._
 `trimLeft`   | `null`   | If `true`, the value will be left trimmed. _It's a sanitizer, it will change the value in the original object._
 `trimRight`   | `null`   | If `true`, the value will be right trimmed. _It's a sanitizer, it will change the value in the original object._
@@ -1091,6 +1092,7 @@ Name                | Default text
 `stringAlpha`	| The '{field}' field must be an alphabetic string.
 `stringAlphanum`	| The '{field}' field must be an alphanumeric string.
 `stringAlphadash`	| The '{field}' field must be an alphadash string.
+`stringHex`	| The '{field}' field must be a hex string.
 `number`	| The '{field}' field must be a number.
 `numberMin`	| The '{field}' field must be greater than or equal to {expected}.
 `numberMax`	| The '{field}' field must be less than or equal to {expected}.
