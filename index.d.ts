@@ -370,6 +370,10 @@ declare module 'fastest-validator' {
 		 */
 		alphadash?: boolean;
 		/**
+		 * The value must be an alphabetic string that contains dashes
+		 */
+		hex?: boolean;
+		/**
 		 * if true and the type is not a String, converts with String()
 		 * @default false
 		 */
