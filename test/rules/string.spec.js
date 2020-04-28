@@ -145,18 +145,11 @@ describe("Test rule: string", () => {
 		const check = v.compile({ $$root: true, type: "string", hex: true});
 		const message = "The '' field must be a hex string.";
 
-		expect(check("ABCD")).toEqual([{type: "stringHex", actual: "ABCD", message }]);
 		expect(check("abc")).toEqual([{type: "stringHex", actual: "abc", message }]);
 		expect(check("01020h")).toEqual([{type: "stringHex", actual: "01020h", message }]);
 
 		expect(check("0123456789abcdef")).toEqual(true);
-	});
-
-	it("check hex string (uppercase to lowercase mode)", () => {
-		const check = v.compile({ $$root: true, type: "string", hex: true, lowercase: true});
-
-		expect(check("ABCD")).toEqual(true);
-		expect(check("abcd")).toEqual(true);
+		expect(check("0123456789abcDEF")).toEqual(true);
 	});
 
 	it("should convert & check values", () => {
