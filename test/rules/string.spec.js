@@ -141,6 +141,17 @@ describe("Test rule: string", () => {
 
 	});
 
+	it("check hex string", () => {
+		const check = v.compile({ $$root: true, type: "string", hex: true});
+		const message = "The '' field must be a hex string.";
+
+		expect(check("abc")).toEqual([{type: "stringHex", actual: "abc", message }]);
+		expect(check("01020h")).toEqual([{type: "stringHex", actual: "01020h", message }]);
+
+		expect(check("0123456789abcdef")).toEqual(true);
+		expect(check("0123456789abcDEF")).toEqual(true);
+	});
+
 	it("should convert & check values", () => {
 		const check = v.compile({ $$root: true, type: "string", convert: true });
 		expect(check("")).toEqual(true);
