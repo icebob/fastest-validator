@@ -1,5 +1,5 @@
 /// <reference path="../../../index.d.ts" /> // here we make a reference to exists module definition
-import ValidatorType, { RuleCustom, ValidationSchema } from 'fastest-validator'; // here we importing type definition of default export
+import ValidatorType, { RuleCustom, ValidationSchema, CheckerFunction } from 'fastest-validator'; // here we importing type definition of default export
 
 const Validator: typeof ValidatorType = require('../../../index'); // here we importing real Validator Constructor
 const v: ValidatorType = new Validator();
@@ -28,10 +28,11 @@ describe('TypeScript Definitions', () => {
         });
 
         it('should handle returned errors', () => {
-            const checker = jest.fn(function (value, errors, schema, field) {
+            const fn: CheckerFunction = function (value, errors, schema, field) {
                 errors.push({ type: 'myError', field, expected: 3, actual: 4 });
                 return value
-            });
+            }
+            const checker = jest.fn(fn);
             const schema = { weight: { type: 'custom', a: 5, check: checker, messages: { myError: 'My error message. Expected: {expected}, actual: {actual}, field: {field}' } } };
             const check = v.compile(schema);
 

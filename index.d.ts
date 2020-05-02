@@ -796,16 +796,17 @@ declare module "fastest-validator" {
 		type: string;
 		expected?: unknown;
 		actual?: unknown;
+		field?: string
 	}
 
 	type CheckerFunction<T = unknown> = (
 		value: T,
-		errors: CheckerFunctionError,
+		errors: CheckerFunctionError[],
 		schema: ValidationSchema,
 		path: string,
 		parent: object | null,
 		context: Context
-	) => true | ValidationError[];
+	) => T;
 
 	type CompilationFunction = (
 		rule: CompilationRule,
