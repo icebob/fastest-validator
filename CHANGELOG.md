@@ -1,4 +1,13 @@
 --------------------------------------------------
+<a name="1.3.0"></a>
+# 1.3.0 (2020-04-29)
+
+## Changes
+- Add new `class` rule to check the instance of value [#126](https://github.com/icebob/fastest-validator/issues/126)
+- Updated typescript definitions [#127](https://github.com/icebob/fastest-validator/issues/127) [#129](https://github.com/icebob/fastest-validator/issues/129)
+- Fix deep-extend function to detect objects better. [#128](https://github.com/icebob/fastest-validator/issues/128)
+- Add `hex` check to `string` rule [#132](https://github.com/icebob/fastest-validator/issues/132)
+--------------------------------------------------
 <a name="1.2.0"></a>
 # 1.2.0 (2020-04-05)
 

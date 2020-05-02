@@ -3,6 +3,7 @@ cache:
   directories:
   - node_modules
 node_js:
+    - "14"
     - "13"
     - "12"
     - "10"
