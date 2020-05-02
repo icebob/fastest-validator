@@ -117,10 +117,10 @@ describe('TypeScript Definitions', () => {
             check = v.compile(schema);
 
             const context = {
-                customs: {},
+                customs: expect.any(Object),
                 rules: expect.any(Array),
                 fn: expect.any(Array),
-                index: 2,
+                index: 2
             };
 
             expect(validFn).toHaveBeenCalledTimes(1);

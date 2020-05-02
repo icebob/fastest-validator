@@ -114,11 +114,12 @@ describe("Test add", () => {
 		check = v.compile(schema);
 
 		const context = {
-			customs: {},
+			customs: expect.any(Object),
 			rules: expect.any(Array),
 			fn: expect.any(Array),
 			index: 2
 		};
+
 
 		expect(validFn).toHaveBeenCalledTimes(1);
 		expect(validFn).toHaveBeenCalledWith(expect.any(Object), "a", context);
@@ -371,9 +372,10 @@ describe("Test custom validation for built-in rules", () => {
 				min: 10,
 				max: 15,
 				integer: true,
-				custom(value){
-					fn(value);
-					if (value % 2 !== 0) return [{ type: "evenNumber", actual: value }];
+				custom(value, errors){
+					fn(value, errors);
+					if (value % 2 !== 0) errors.push({ type: "evenNumber", actual: value });
+					return value;
 				}
 			}
 		});
@@ -384,7 +386,7 @@ describe("Test custom validation for built-in rules", () => {
 	it("should work correctly with custom validator", () => {
 		const res = check({num: 12});
 		expect(res).toBe(true);
-		expect(fn).toBeCalledWith(12);
+		expect(fn).toBeCalledWith(12, []);
 
 		expect(check({num: 8})[0].type).toEqual("numberMin");
 		expect(check({num: 18})[0].type).toEqual("numberMax");
