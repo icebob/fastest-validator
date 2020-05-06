@@ -769,6 +769,11 @@ declare module "fastest-validator" {
 		messages?: MessagesType;
 
 		/**
+		 * using checker function v2?
+		 */
+		useNewCustomCheckerFunction?: boolean;
+
+		/**
 		 * Default settings for rules
 		 */
 		defaults?: {
@@ -799,7 +804,8 @@ declare module "fastest-validator" {
 		field?: string
 	}
 
-	type CheckerFunction<T = unknown> = (
+	type CheckerFunctionV1<T = unknown> = (value: T, schema: ValidationSchema, path: string, parent: object | null, context: Context) => true | ValidationError[];
+	type CheckerFunctionV2<T = unknown> = (
 		value: T,
 		errors: CheckerFunctionError[],
 		schema: ValidationSchema,
@@ -807,6 +813,8 @@ declare module "fastest-validator" {
 		parent: object | null,
 		context: Context
 	) => T;
+
+	type CheckerFunction<T = unknown> = CheckerFunctionV1<T> | CheckerFunctionV2<T>
 
 	type CompilationFunction = (
 		rule: CompilationRule,
