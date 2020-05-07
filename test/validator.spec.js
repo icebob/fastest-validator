@@ -114,11 +114,12 @@ describe("Test add", () => {
 		check = v.compile(schema);
 
 		const context = {
-			customs: {},
+			customs: expect.any(Object),
 			rules: expect.any(Array),
 			fn: expect.any(Array),
 			index: 2
 		};
+
 
 		expect(validFn).toHaveBeenCalledTimes(1);
 		expect(validFn).toHaveBeenCalledWith(expect.any(Object), "a", context);
@@ -352,7 +353,7 @@ describe("Test aliases", () => {
 	});
 });
 
-describe("Test custom validation for built-in rules", () => {
+describe("Test custom validation v1", () => {
 	const v = new Validator({
 		messages: {
 			evenNumber: "The '{field}' field must be an even number! Actual: {actual}"
@@ -385,6 +386,48 @@ describe("Test custom validation for built-in rules", () => {
 		const res = check({num: 12});
 		expect(res).toBe(true);
 		expect(fn).toBeCalledWith(12);
+
+		expect(check({num: 8})[0].type).toEqual("numberMin");
+		expect(check({num: 18})[0].type).toEqual("numberMax");
+		expect(check({num: 13})[0].type).toEqual("evenNumber");
+	});
+});
+
+describe("Test custom validation v2", () => {
+	const v = new Validator({
+		useNewCustomCheckerFunction: true,
+		messages: {
+			evenNumber: "The '{field}' field must be an even number! Actual: {actual}"
+		}
+	});
+
+	let check;
+	const fn = jest.fn();
+
+
+	it("should compile without error", () => {
+
+		check = v.compile({
+			num: {
+				type: "number",
+				min: 10,
+				max: 15,
+				integer: true,
+				custom(value, errors){
+					fn(value, errors);
+					if (value % 2 !== 0) errors.push({ type: "evenNumber", actual: value });
+					return value;
+				}
+			}
+		});
+
+		expect(typeof check).toBe("function");
+	});
+
+	it("should work correctly with custom validator", () => {
+		const res = check({num: 12});
+		expect(res).toBe(true);
+		expect(fn).toBeCalledWith(12, []);
 
 		expect(check({num: 8})[0].type).toEqual("numberMin");
 		expect(check({num: 18})[0].type).toEqual("numberMax");

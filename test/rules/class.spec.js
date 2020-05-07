@@ -14,4 +14,12 @@ describe("Test rule: class", () => {
 		expect(check({ rawData: Buffer.from([1, 2, 3]) })).toEqual(true);
 		expect(check({ rawData: Buffer.alloc(3) })).toEqual(true);
 	});
+
+	it("should work with custom checker function", () => {
+		const checker = jest.fn((v) => v);
+		const check = v.compile({ rawData: { type: "class", instanceOf: Buffer, custom: checker } });
+
+		expect(check({ rawData: Buffer.from([1, 2, 3]) })).toEqual(true);
+		// expect(checker).toBeCalledTimes(1);
+	});
 });

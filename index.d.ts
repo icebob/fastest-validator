@@ -1,27 +1,27 @@
-declare module 'fastest-validator' {
+declare module "fastest-validator" {
 	/**
 	 * Type of all possible Built-in validators names
 	 */
 	type ValidationRuleName =
-		'any'
-		| 'array'
-		| 'boolean'
-		| 'class'
-		| 'custom'
-		| 'date'
-		| 'email'
-		| 'enum'
-		| 'equal'
-		| 'forbidden'
-		| 'function'
-		| 'luhn'
-		| 'mac'
-		| 'multi'
-		| 'number'
-		| 'object'
-		| 'string'
-		| 'url'
-		| 'uuid'
+		| "any"
+		| "array"
+		| "boolean"
+		| "class"
+		| "custom"
+		| "date"
+		| "email"
+		| "enum"
+		| "equal"
+		| "forbidden"
+		| "function"
+		| "luhn"
+		| "mac"
+		| "multi"
+		| "number"
+		| "object"
+		| "string"
+		| "url"
+		| "uuid"
 		| string;
 
 	/**
@@ -32,7 +32,7 @@ declare module 'fastest-validator' {
 		/**
 		 * Name of built-in validator
 		 */
-		type: 'any';
+		type: "any";
 	}
 
 	/**
@@ -43,7 +43,7 @@ declare module 'fastest-validator' {
 		/**
 		 * Name of built-in validator
 		 */
-		type: 'array';
+		type: "array";
 		/**
 		 * If true, the validator accepts an empty array [].
 		 * @default true
@@ -83,7 +83,7 @@ declare module 'fastest-validator' {
 		/**
 		 * Name of built-in validator
 		 */
-		type: 'boolean';
+		type: "boolean";
 		/**
 		 * if true and the type is not Boolean, try to convert. 1, "true", "1", "on" will be true. 0, "false", "0", "off" will be false.
 		 * @default false
@@ -99,7 +99,7 @@ declare module 'fastest-validator' {
 		/**
 		 * Name of built-in validator
 		 */
-		type: 'class';
+		type: "class";
 		/**
 		 * Checked Class
 		 */
@@ -114,7 +114,7 @@ declare module 'fastest-validator' {
 		/**
 		 * Name of built-in validator
 		 */
-		type: 'date';
+		type: "date";
 		/**
 		 * if true and the type is not Date, try to convert with new Date()
 		 * @default false
@@ -130,11 +130,11 @@ declare module 'fastest-validator' {
 		/**
 		 * Name of built-in validator
 		 */
-		type: 'email';
+		type: "email";
 		/**
 		 * Checker method. Can be quick or precise
 		 */
-		mode?: 'quick' | 'precise';
+		mode?: "quick" | "precise";
 
 		normalize?: boolean;
 	}
@@ -147,7 +147,7 @@ declare module 'fastest-validator' {
 		/**
 		 * Name of built-in validator
 		 */
-		type: 'enum';
+		type: "enum";
 		/**
 		 * The valid values
 		 */
@@ -162,7 +162,7 @@ declare module 'fastest-validator' {
 		/**
 		 * Name of built-in validator
 		 */
-		type: 'equal';
+		type: "equal";
 		/**
 		 * The valid value
 		 */
@@ -190,7 +190,7 @@ declare module 'fastest-validator' {
 		/**
 		 * Name of built-in validator
 		 */
-		type: 'forbidden';
+		type: "forbidden";
 
 		/**
 		 * Removes the forbidden value.
@@ -209,7 +209,7 @@ declare module 'fastest-validator' {
 		/**
 		 * Name of built-in validator
 		 */
-		type: 'function';
+		type: "function";
 	}
 
 	/**
@@ -220,7 +220,7 @@ declare module 'fastest-validator' {
 		/**
 		 * Name of built-in validator
 		 */
-		type: 'luhn';
+		type: "luhn";
 	}
 
 	/**
@@ -231,7 +231,7 @@ declare module 'fastest-validator' {
 		/**
 		 * Name of built-in validator
 		 */
-		type: 'mac';
+		type: "mac";
 	}
 
 	/**
@@ -242,7 +242,7 @@ declare module 'fastest-validator' {
 		/**
 		 * Name of built-in validator
 		 */
-		type: 'multi';
+		type: "multi";
 
 		rules: RuleCustom[] | string[];
 	}
@@ -255,7 +255,7 @@ declare module 'fastest-validator' {
 		/**
 		 * Name of built-in validator
 		 */
-		type: 'number';
+		type: "number";
 		/**
 		 * Minimum value
 		 */
@@ -302,7 +302,7 @@ declare module 'fastest-validator' {
 		/**
 		 * Name of built-in validator
 		 */
-		type: 'object';
+		type: "object";
 		/**
 		 * if true any properties which are not defined on the schema will throw an error.
 		 * @default false
@@ -323,7 +323,7 @@ declare module 'fastest-validator' {
 		/**
 		 * Name of built-in validator
 		 */
-		type: 'string';
+		type: "string";
 		/**
 		 * If true, the validator accepts an empty string ""
 		 * @default true
@@ -401,7 +401,7 @@ declare module 'fastest-validator' {
 		/**
 		 * Name of built-in validator
 		 */
-		type: 'url';
+		type: "url";
 	}
 
 	/**
@@ -412,7 +412,7 @@ declare module 'fastest-validator' {
 		/**
 		 * Name of built-in validator
 		 */
-		type: 'uuid';
+		type: "uuid";
 		/**
 		 * UUID version in range 1-5
 		 */
@@ -427,7 +427,7 @@ declare module 'fastest-validator' {
 		/**
 		 * Name of built-in validator
 		 */
-		type: 'custom';
+		type: "custom";
 		/**
 		 * Custom checker function
 		 */
@@ -679,7 +679,7 @@ declare module 'fastest-validator' {
 	 * Union type of all possible built-in validators
 	 */
 	type ValidationRuleObject =
-		RuleAny
+		| RuleAny
 		| RuleArray
 		| RuleBoolean
 		| RuleClass
@@ -703,7 +703,10 @@ declare module 'fastest-validator' {
 	/**
 	 * Description of validation rule definition for a some property
 	 */
-	type ValidationRule = ValidationRuleObject | ValidationRuleObject[] | ValidationRuleName;
+	type ValidationRule =
+		| ValidationRuleObject
+		| ValidationRuleObject[]
+		| ValidationRuleName;
 
 	/**
 	 * Definition for validation schema based on validation rules
@@ -759,38 +762,65 @@ declare module 'fastest-validator' {
 	 * List of possible validator constructor options
 	 */
 	type ValidatorConstructorOptions = {
-		debug?: boolean,
+		debug?: boolean;
 		/**
 		 * List of possible error messages
 		 */
-		messages?: MessagesType,
+		messages?: MessagesType;
+
+		/**
+		 * using checker function v2?
+		 */
+		useNewCustomCheckerFunction?: boolean;
 
 		/**
 		 * Default settings for rules
 		 */
 		defaults?: {
-			[key in ValidationRuleName]: ValidationSchema
-		}
+			[key in ValidationRuleName]: ValidationSchema;
+		};
 	};
 
 	interface CompilationRule {
 		index: number;
-		ruleFunction: CompilationFunction
+		ruleFunction: CompilationFunction;
 		schema: ValidationSchema;
 		messages: MessagesType;
-		customValidation: (value?: string) => string;
 	}
 
 	interface Context {
 		index: number;
 		rules: ValidationRuleObject[];
 		fn: Function[];
-		customs: { [ruleName: string]: { schema: RuleCustom, messages: MessagesType } }
+		customs: {
+			[ruleName: string]: { schema: RuleCustom; messages: MessagesType };
+		};
 	}
 
-	type CheckerFunction<T = unknown> = (value: T, schema: ValidationSchema, path: string, parent: object | null, context: Context) => true | ValidationError[];
+	interface CheckerFunctionError {
+		type: string;
+		expected?: unknown;
+		actual?: unknown;
+		field?: string
+	}
 
-	type CompilationFunction = (this: Validator, rule: CompilationRule, path: string, context: Context) => { sanitized?: boolean, source: string };
+	type CheckerFunctionV1<T = unknown> = (value: T, schema: ValidationSchema, path: string, parent: object | null, context: Context) => true | ValidationError[];
+	type CheckerFunctionV2<T = unknown> = (
+		value: T,
+		errors: CheckerFunctionError[],
+		schema: ValidationSchema,
+		path: string,
+		parent: object | null,
+		context: Context
+	) => T;
+
+	type CheckerFunction<T = unknown> = CheckerFunctionV1<T> | CheckerFunctionV2<T>
+
+	type CompilationFunction = (
+		rule: CompilationRule,
+		path: string,
+		context: Context
+	) => { sanitized?: boolean; source: string };
 
 	class Validator {
 		/**
@@ -838,14 +868,22 @@ declare module 'fastest-validator' {
 		 * @param {any=} opts.actual
 		 * @param {MessagesType} opts.messages
 		 */
-		makeError(opts: { type: keyof MessagesType, field?: string, expected?: any, actual?: any, messages: MessagesType }): string;
+		makeError(opts: {
+			type: keyof MessagesType;
+			field?: string;
+			expected?: any;
+			actual?: any;
+			messages: MessagesType;
+		}): string;
 
 		/**
 		 * Compile validator functions that working up 100 times faster that native validation process
 		 * @param {ValidationSchema | ValidationSchema[]} schema Validation schema definition that should be used for validation
 		 * @return {(value: any) => (true | ValidationError[])} function that can be used next for validation of current schema
 		 */
-		compile(schema: ValidationSchema | ValidationSchema[]): (value: any) => true | ValidationError[];
+		compile(
+			schema: ValidationSchema | ValidationSchema[]
+		): (value: any) => true | ValidationError[];
 
 		/**
 		 * Native validation method to validate obj
@@ -853,27 +891,33 @@ declare module 'fastest-validator' {
 		 * @param {ValidationSchema} schema Validation schema definition that should be used for validation
 		 * @return {{true} | ValidationError[]}
 		 */
-		validate(value: any, schema: ValidationSchema): true | ValidationError[];
+		validate(
+			value: any,
+			schema: ValidationSchema
+		): true | ValidationError[];
 
 		/**
 		 * Get defined in validator rule
 		 * @param {ValidationRuleName | ValidationRuleName[]} name List or name of defined rule
 		 * @return {ValidationRule}
 		 */
-		getRuleFromSchema(name: ValidationRuleName | ValidationRuleName[]): { messages: MessagesType, schema: ValidationSchema, ruleFunction: Function }
+		getRuleFromSchema(
+			name: ValidationRuleName | ValidationRuleName[]
+		): {
+			messages: MessagesType;
+			schema: ValidationSchema;
+			ruleFunction: Function;
+		};
 	}
 
 	export {
 		ValidationRuleName,
-
 		MessagesType,
 		BuiltInMessages,
-
 		CheckerFunction,
 		Context,
 		CompilationRule,
 		CompilationFunction,
-
 		RuleAny,
 		RuleArray,
 		RuleBoolean,
@@ -894,11 +938,10 @@ declare module 'fastest-validator' {
 		RuleUUID,
 		RuleCustom,
 		RuleCustomInline,
-
 		ValidationRuleObject,
 		ValidationRule,
 		ValidationSchema,
-		ValidationError,
+		ValidationError
 	};
 
 	export default Validator;
