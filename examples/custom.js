@@ -2,6 +2,7 @@ let Validator = require("../index");
 
 let v = new Validator({
 	messages: {
+		useNewCustomCheckerFunction: true,
 		// Register our new error message text
 		evenNumber: "The '{field}' field must be an even number! Actual: {actual}",
 	}
@@ -29,10 +30,9 @@ const schema = {
 			// Register our new error message text
 			weightMin: "The weight must be greater than {expected}! Actual: {actual}"
 		},
-		check(value, schema) {
-			return (value < schema.minWeight)
-				? [{ type: "weightMin", expected: schema.minWeight, actual: value }]
-				: true;
+		check(value, errors, schema) {
+			if (value < schema.minWeight) errors.push({ type: "weightMin", expected: schema.minWeight, actual: value });
+			return value;
 		}
 	}
 };

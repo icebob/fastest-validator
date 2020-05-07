@@ -1,23 +1,24 @@
 import React from "react";
 import Validator from "../../../dist/index";
 
+const v = new Validator();
+
+const schema = {
+	multi: [
+		{ type: "string", min: 3, max: 255 },
+		{ type: "boolean" }
+	]
+};
+
+const check = v.compile(schema)
+
 class Index extends React.Component {
 	render() {
-
-		const v = new Validator();
-
-		const schema = {
-			multi: [
-				{ type: "string", min: 3, max: 255 },
-				{ type: "boolean" }
-			]
-		};
-
 		return (
 			<div>
-				Multi schema validator: {v.validate({ multi: 'john' }, schema) === true ? 'yey!' : 'nope..'}
+				Multi schema validator: {check({ multi: 'john' }) === true ? 'yey!' : 'nope..'}
 				<br />
-				Failed Multi schema validator: {JSON.stringify(v.validate({ multi: 123 }, schema))}
+				Failed Multi schema validator: {JSON.stringify(check)}
 			</div>
 		);
 	}
