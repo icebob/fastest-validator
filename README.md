@@ -927,6 +927,7 @@ console.log(v.validate({ name: "John", age: 19 }, schema));
 Or you can use the `custom` type with an inline checker function:
 ```js
 let v = new Validator({
+    useNewCustomCheckerFunction: true, // using new version
     messages: {
         // Register our new error message text
         weightMin: "The weight must be greater than {expected}! Actual: {actual}"
@@ -938,10 +939,10 @@ const schema = {
     weight: {
         type: "custom",
         minWeight: 10,
-        check(value, schema) {
-            return (value < schema.minWeight)
-                ? [{ type: "weightMin", expected: schema.minWeight, actual: value }]
-                : true;
+        check(value, errors, schema) {
+            if (value < minWeight) errors.push({ type: "weightMin", expected: schema.minWeight, actual: value });
+            if (value > 100) value = 100
+            return value
         }
     }
 };
@@ -959,6 +960,11 @@ console.log(v.validate({ name: "John", weight: 8 }, schema));
         message: 'The weight must be greater than 10! Actual: 8'
     }]
 */
+const o = { name: "John", weight: 110 }
+console.log(v.validate(o, schema));
+/* Returns: true
+   o.weight is 100
+*/
 ```
 
 Or you can use built-in validator with a `custom` checker function:
@@ -972,8 +978,10 @@ let v = new Validator({
 
 const schema = {
     name: { type: "string", min: 3, max: 255 },
-    phone: { type: "string", length: 15, custom: v => 
-        v.startsWith("+") ? true : [{ type: "phoneNumber" }] 
+    phone: { type: "string", length: 15, custom(v, errors) => {
+            if (!v.startWith("+")) errors.push({ type: "phoneNumber" })
+            return value
+        }
     }	
 };
 
@@ -994,14 +1002,19 @@ console.log(v.validate({ name: "John", phone: "36-70-123-4567" }, schema));
 You can define a `custom` function in the schema for built-in rules. With it you can extend any built-in rules.
 
 ```js
+const validator = new V({
+    useNewCustomCheckerFunction: true, // using new version
+})
+
 const schema = {
     num: {
         type: "number",
         min: 10,
         max: 15,
         integer: true,
-        custom (value, schema) {
-            if (value % 2 !== 0) return [{ type: "evenNumber", actual: value }];
+        custom (value, errors, schema) {
+            if (value % 2 !== 0) errors.push({ type: "evenNumber", actual: value });
+            return value
         }
     }
 }
