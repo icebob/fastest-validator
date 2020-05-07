@@ -2,8 +2,12 @@
 
 const Validator = require("../../lib/validator");
 
-const v = new Validator();
-
+const v = new Validator({
+	useNewCustomCheckerFunction: true,
+	messages: {
+		evenNumber: "The '' field must be an even number!"
+	}
+});
 describe("Test rule: array", () => {
 
 	it("should check type of value", () => {
@@ -74,10 +78,10 @@ describe("Test rule: array", () => {
 	it("check unique", () => {
 		const check = v.compile({ $$root: true, type: "array", unique: true });
 
-		expect(check(["bob","john","bob"])).toEqual([{ type: "arrayUnique", expected: ["bob"], actual: ["bob", "john", "bob"], message: "The 'bob,john,bob' value in '' field does not unique the 'bob' values." }]);
-		expect(check(["bob","john","bob","bob","john"])).toEqual([{ type: "arrayUnique", expected: ["bob","john"], actual: ["bob","john","bob","bob","john"], message: "The 'bob,john,bob,bob,john' value in '' field does not unique the 'bob,john' values." }]);
-		expect(check([1,2,1,false,true,false])).toEqual([{ type: "arrayUnique", expected: [1,false], actual: [1,2,1,false,true,false], message: "The '1,2,1,false,true,false' value in '' field does not unique the '1,false' values." }]);
-		expect(check([{name:"bob"},{name:"john"},{name:"bob"}])).toEqual(true);
+		expect(check(["bob", "john", "bob"])).toEqual([{ type: "arrayUnique", expected: ["bob"], actual: ["bob", "john", "bob"], message: "The 'bob,john,bob' value in '' field does not unique the 'bob' values." }]);
+		expect(check(["bob", "john", "bob", "bob", "john"])).toEqual([{ type: "arrayUnique", expected: ["bob", "john"], actual: ["bob", "john", "bob", "bob", "john"], message: "The 'bob,john,bob,bob,john' value in '' field does not unique the 'bob,john' values." }]);
+		expect(check([1, 2, 1, false, true, false])).toEqual([{ type: "arrayUnique", expected: [1, false], actual: [1, 2, 1, false, true, false], message: "The '1,2,1,false,true,false' value in '' field does not unique the '1,false' values." }]);
+		expect(check([{ name: "bob" }, { name: "john" }, { name: "bob" }])).toEqual(true);
 		expect(check(["john", "bob"])).toEqual(true);
 	});
 
@@ -96,8 +100,8 @@ describe("Test rule: array", () => {
 		expect(check([])).toEqual(true);
 		expect(check(["human"])).toEqual(true);
 		expect(check(["male", 3, "female", true])).toEqual([
-			{ type: "string", field: "[1]", actual: 3, message: "The '[1]' field must be a string."},
-			{ type: "string", field: "[3]", actual: true, message: "The '[3]' field must be a string."}
+			{ type: "string", field: "[1]", actual: 3, message: "The '[1]' field must be a string." },
+			{ type: "string", field: "[3]", actual: true, message: "The '[3]' field must be a string." }
 		]);
 	});
 
@@ -135,5 +139,30 @@ describe("Test rule: array", () => {
 			});
 		});
 
+		it("should call items custom checker function", () => {
+			const check = v.compile({
+				a: {
+					type: "array",
+					items: {
+						type: "number",
+						custom(value, errors) {
+							if (value % 2 !== 0) errors.push({ type: "evenNumber" });
+							return value * 2;
+						}
+					}
+				}
+			});
+
+			const o = {
+				a: [1, 2, 4]
+			};
+
+			const errors = check(o);
+
+			expect(Array.isArray(errors)).toBe(true);
+			expect(errors.length).toBe(1);
+			expect(errors[0].type).toBe("evenNumber");
+			expect(o.a).toEqual([2, 4, 8]);
+		});
 	});
 });
