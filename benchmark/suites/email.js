@@ -44,3 +44,25 @@ const obj = {
 
 
 bench.run();
+
+/*
+===============================
+  Fastest validator benchmark
+===============================
+
+Platform info:
+==============
+   Windows_NT 10.0.18363 x64
+   Node.JS: 12.14.1
+   V8: 7.7.299.13-node.16
+   Intel(R) Core(TM) i7-4770K CPU @ 3.50GHz × 8
+
+Suite: Email validating methods
+√ mode: 'precise'         9,479,300 rps
+√ mode: 'basic'          10,351,349 rps
+
+   mode: 'precise'        -8.42%      (9,479,300 rps)   (avg: 105ns)
+   mode: 'basic'              0%     (10,351,349 rps)   (avg: 96ns)
+-----------------------------------------------------------------------
+
+*/

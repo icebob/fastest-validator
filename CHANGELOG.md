@@ -1,4 +1,67 @@
 --------------------------------------------------
+<a name="1.4.0"></a>
+# 1.4.0 (2020-05-08)
+
+## New `custom` function signature
+Thanks for [@erfanium](https://github.com/erfanium), in this version there is a new signature of custom check functions.
+In this new function you should always return the value. It means you can change the value, thus you can also sanitize the input value.
+
+**Old custom function:**
+```js
+const v = new Validator({});
+
+const schema = {
+    weight: {
+        type: "custom",
+        minWeight: 10,
+        check(value, schema) {
+            return (value < schema.minWeight)
+                ? [{ type: "weightMin", expected: schema.minWeight, actual: value }]
+                : true;
+        }
+    }
+};
+```
+
+**New custom function:**
+```js
+const v = new Validator({
+    useNewCustomCheckerFunction: true, // using new version
+});
+
+const schema = {
+    name: { type: "string", min: 3, max: 255 },
+    weight: {
+        type: "custom",
+        minWeight: 10,
+        check(value, errors, schema) {
+            if (value < minWeight) errors.push({ type: "weightMin", expected: schema.minWeight, actual: value });
+            if (value > 100) value = 100
+            return value
+        }
+    }
+};
+```
+
+>Please note: the old version will be removed in the version 2.0.0!
+
+The signature is used in `custom` function of built-in rules.
+
+```js
+const v = new Validator({
+    useNewCustomCheckerFunction: true // using new version
+});
+
+const schema = {
+    phone: { type: "string", length: 15, custom(v, errors) => {
+        if (!v.startWith("+")) errors.push({ type: "phoneNumber" })
+        return v.replace(/[^\d+]/g, ""); // Sanitize: remove all special chars except numbers
+    } }	
+};
+```
+
+## Changes
+--------------------------------------------------
 <a name="1.3.0"></a>
 # 1.3.0 (2020-04-29)
 
