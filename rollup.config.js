@@ -1,6 +1,6 @@
 import commonjs from "rollup-plugin-commonjs";
 import buble from "rollup-plugin-buble";
-import closure from "rollup-plugin-closure-compiler-js";
+import closure from "@ampproject/rollup-plugin-closure-compiler";
 import uglify from "rollup-plugin-uglify-es";
 import pkg from "./package.json";
 import copy from "rollup-plugin-copy";
