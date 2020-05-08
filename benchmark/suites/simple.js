@@ -120,19 +120,19 @@ bench.run();
 
 Platform info:
 ==============
-   Windows_NT 6.1.7601 x64
-   Node.JS: 8.11.0
-   V8: 6.2.414.50
+   Windows_NT 10.0.18363 x64
+   Node.JS: 12.14.1
+   V8: 7.7.299.13-node.16
    Intel(R) Core(TM) i7-4770K CPU @ 3.50GHz × 8
 
 Suite: Simple object
-√ compile & validate                        1,115,239 rps
-√ validate with pre-compiled schema         3,986,017 rps
-√ validate with wrong obj                     704,992 rps
+√ validate                            8,259,364 rps
+√ validate with sanitizations         6,096,325 rps
+√ validate with wrong obj             1,466,290 rps
 
-   compile & validate (#)                       0%      (1,115,239 rps)   (avg: 896ns)
-   validate with pre-compiled schema      +257.41%      (3,986,017 rps)   (avg: 250ns)
-   validate with wrong obj                 -36.79%        (704,992 rps)   (avg: 1μs)
+   validate                               0%      (8,259,364 rps)   (avg: 121ns)
+   validate with sanitizations       -26.19%      (6,096,325 rps)   (avg: 164ns)
+   validate with wrong obj           -82.25%      (1,466,290 rps)   (avg: 681ns)
 -----------------------------------------------------------------------
 
 */
