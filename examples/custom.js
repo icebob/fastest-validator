@@ -36,19 +36,7 @@ const schema = {
 			return value;
 		}
 	},*/
-	/*distribution: {
-		type: "array",
-		min: 1,
-		custom(val, errors) {
-			//I don't get this message below
-			console.log("distribution", val);
-			return val;
-		},
-		items: {
-			type: "number", convert: true,
-			positive: true
-		}
-	},*/
+	/*
 	distribution: {
 		type: "array",
 		custom(val) {
@@ -62,10 +50,28 @@ const schema = {
 				return val;
 			}
 		}
+	}*/
+
+	/*
+	type: "object",
+	$$root: true,
+	properties: {
+		name: "string"
+	},
+	custom(val) {
+		console.log("root", val);
+		return {a : 5 };
+	},*/
+	$$root: true,
+	type: "custom",
+	a: 5,
+	check(val) {
+		console.log("root", val);
+		return val;
 	}
 };
 
-console.log(v.validate({ name: "John", age: 20, weight: 50, distribution: [1], a: "asd" }, schema));
+console.log(v.validate(5/*{ name: "John", age: 20, weight: 50, distribution: [1], a: "asd" }*/, schema));
 // Returns: true
 
 //console.log(v.validate({ name: "John", age: 19, weight: 50 }, schema));

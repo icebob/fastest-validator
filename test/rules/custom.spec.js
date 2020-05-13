@@ -52,8 +52,8 @@ describe("Test rule: custom v2", () => {
 		useNewCustomCheckerFunction: true,
 	});
 
-	it("should call custom checker", () => {
-		const checker = jest.fn(() => true);
+	it("should call custom checker on $$root level", () => {
+		const checker = jest.fn(v => v);
 		const schema = { $$root: true, type: "custom", a: 5, check: checker };
 		const check = v.compile(schema);
 
@@ -89,6 +89,23 @@ describe("Test rule: custom v2", () => {
 		}]);
 		expect(checker).toHaveBeenCalledTimes(1);
 		expect(checker).toHaveBeenCalledWith(10, expect.any(Array), schema.weight, "weight", { weight: 10 }, expect.any(Object));
+	});
+
+	it("should call custom checker on $$root level", () => {
+		const checker = jest.fn(v => v);
+		const schema = {
+			$$root: true,
+			type: "object",
+			properties: {
+				name: "string"
+			},
+			custom: checker
+		};
+		const check = v.compile(schema);
+
+		expect(check({ name: "John" })).toEqual(true);
+		expect(checker).toHaveBeenCalledTimes(1);
+		expect(checker).toHaveBeenCalledWith({ name: "John" }, [], schema, "$$root", null, expect.any(Object));
 	});
 
 });
