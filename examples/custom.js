@@ -1,8 +1,9 @@
 let Validator = require("../index");
 
 let v = new Validator({
+	debug: true,
+	useNewCustomCheckerFunction: true,
 	messages: {
-		useNewCustomCheckerFunction: true,
 		// Register our new error message text
 		evenNumber: "The '{field}' field must be an even number! Actual: {actual}",
 	}
@@ -21,7 +22,7 @@ v.add("even", function({ schema, messages }, path, context) {
 });
 
 const schema = {
-	name: { type: "string", min: 3, max: 255 },
+	/*name: { type: "string", min: 3, max: 255 },
 	age: { type: "even" },
 	weight: {
 		type: "custom",
@@ -34,13 +35,29 @@ const schema = {
 			if (value < schema.minWeight) errors.push({ type: "weightMin", expected: schema.minWeight, actual: value });
 			return value;
 		}
-	}
+	},*/
+	/*distribution: {
+		type: "array",
+		min: 1,
+		custom(val, errors) {
+			//I don't get this message below
+			console.log("distribution", val);
+			return val;
+		},
+		items: {
+			type: "number", convert: true,
+			positive: true
+		}
+	},*/
+	distribution: { type: "array", custom(val) {
+		console.log("a", val);
+	}, items: "number"}
 };
 
-console.log(v.validate({ name: "John", age: 20, weight: 50 }, schema));
+console.log(v.validate({ name: "John", age: 20, weight: 50, distribution: [1], a: "asd" }, schema));
 // Returns: true
 
-console.log(v.validate({ name: "John", age: 19, weight: 50 }, schema));
+//console.log(v.validate({ name: "John", age: 19, weight: 50 }, schema));
 /* Returns an array with errors:
 	[{
 		type: 'evenNumber',
@@ -51,10 +68,10 @@ console.log(v.validate({ name: "John", age: 19, weight: 50 }, schema));
 	}]
 */
 
-console.log(v.validate({ name: "John", age: 20, weight: 50 }, schema));
+//console.log(v.validate({ name: "John", age: 20, weight: 50 }, schema));
 // Returns: true
 
-console.log(v.validate({ name: "John", age: 20, weight: 8 }, schema));
+//console.log(v.validate({ name: "John", age: 20, weight: 8 }, schema));
 /* Returns an array with errors:
 	[{
 		type: 'weightMin',

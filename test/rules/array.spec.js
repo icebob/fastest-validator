@@ -105,6 +105,32 @@ describe("Test rule: array", () => {
 		]);
 	});
 
+	it("should call custom checker", () => {
+		const customFn = jest.fn(v => v);
+		const schema = { numbers: { type: "array", min: 1, custom: customFn, items: "number" } };
+		const check = v.compile(schema);
+
+		expect(check({ numbers: [1,2] })).toEqual(true);
+		expect(customFn).toHaveBeenCalledTimes(1);
+		expect(customFn).toHaveBeenCalledWith(10, [], schema.numbers, "numbers", { numbers: [1,2] }, expect.any(Object));
+	});
+
+	it("should call custom checker for items", () => {
+		const customFn = jest.fn(v => v);
+		const customFnItems = jest.fn(v => v);
+		const schema = { numbers: { type: "array", min: 1, custom: customFn, items: {
+			type: "number", custom: customFnItems
+		} } };
+		const check = v.compile(schema);
+
+		expect(check({ numbers: [1,2] })).toEqual(true);
+		expect(customFn).toHaveBeenCalledTimes(1);
+		expect(customFn).toHaveBeenCalledWith([1,2], [], schema.numbers, "numbers", { numbers: [1,2] }, expect.any(Object));
+
+		expect(customFnItems).toHaveBeenCalledTimes(2);
+		expect(customFnItems).toHaveBeenCalledWith(1, [], schema.numbers.items, "numbers", { numbers: [1,2] }, expect.any(Object));
+	});
+
 	describe("Test sanitization", () => {
 
 		it("should untouch the checked obj", () => {
