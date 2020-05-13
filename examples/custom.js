@@ -49,9 +49,20 @@ const schema = {
 			positive: true
 		}
 	},*/
-	distribution: { type: "array", custom(val) {
-		console.log("a", val);
-	}, items: "number"}
+	distribution: {
+		type: "array",
+		custom(val) {
+			console.log("a", val);
+			return val;
+		},
+		items: {
+			type: "number",
+			custom(val) {
+				console.log("a.items", val);
+				return val;
+			}
+		}
+	}
 };
 
 console.log(v.validate({ name: "John", age: 20, weight: 50, distribution: [1], a: "asd" }, schema));

@@ -8,7 +8,7 @@
 			"type": "node",
 			"request": "launch",
 			"name": "Launch dev",
-			"program": "${file}"
+			"program": "${workspaceRoot}\\examples\\custom.js"
 		},
 		{
 			"type": "node",
