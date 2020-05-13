@@ -1,4 +1,11 @@
 --------------------------------------------------
+<a name="1.4.1"></a>
+# 1.4.1 (2020-05-13)
+
+## Changes
+- Fix `custom` function issue in `array` rule and in root-level [#136](https://github.com/icebob/fastest-validator/issues/136), [#137](https://github.com/icebob/fastest-validator/issues/137)
+ 
+--------------------------------------------------
 <a name="1.4.0"></a>
 # 1.4.0 (2020-05-08)
 
