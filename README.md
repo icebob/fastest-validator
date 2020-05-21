@@ -7,7 +7,7 @@
 [![Size](https://badgen.net/bundlephobia/minzip/fastest-validator)](https://bundlephobia.com/result?p=fastest-validator)
 
 # fastest-validator [![NPM version](https://img.shields.io/npm/v/fastest-validator.svg)](https://www.npmjs.com/package/fastest-validator) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=The%20fastest%20JS%20validator%20library%20for%20NodeJS&url=https://github.com/icebob/fastest-validator&via=Icebobcsi&hashtags=nodejs,javascript)
-:zap: The fastest JS validator library for NodeJS.
+:zap: The fastest JS validator library for NodeJS | Browser | Deno.
 
 **If you like my work, please [donate](https://www.paypal.me/meregnorbert). Thank you!**
 
@@ -56,6 +56,7 @@ $ npm run bench
     - [Simple method](#simple-method)
     - [Fast method](#fast-method)
     - [Browser usage](#browser-usage)
+    - [Deno usage](#deno-usage)
 - [Optional & required fields](#optional--required-fields)
 - [Strict validation](#strict-validation)
   - [Remove additional fields](#remove-additional-fields)
@@ -208,6 +209,19 @@ const check = v.compile(schema);
 
 console.log(check({ id: 5, name: "John", status: true }));
 // Returns: true
+```
+
+### Deno usage
+```js
+import FastestValidator from "https://dev.jspm.io/fastest-validator";
+
+const v = new FastestValidator();
+const check = v.compile({
+	name: "string",
+	age: "number",
+});
+
+console.log(check({ name: "Erf", age: 18 })); //true
 ```
 
 # Optional & required fields
