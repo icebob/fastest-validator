@@ -46,7 +46,7 @@ $ npm run bench
 
 # Table of contents
 
-- [fastest-validator ![NPM version](https://www.npmjs.com/package/fastest-validator) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=The%20fastest%20JS%20validator%20library%20for%20NodeJS&url=https://github.com/icebob/fastest-validator&via=Icebobcsi&hashtags=nodejs,javascript)](#fastest-validator-img-src%22httpswwwnpmjscompackagefastest-validator%22-alt%22npm-version%22-img-src%22httpsimgshieldsiotwitterurlhttpshieldsiosvgstylesocial%22-alt%22tweet%22)
+- [fastest-validator ![NPM version](https://www.npmjs.com/package/fastest-validator)
   - [Key features](#key-features)
 - [How fast?](#how-fast)
 - [Table of contents](#table-of-contents)
