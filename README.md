@@ -46,9 +46,6 @@ $ npm run bench
 
 # Table of contents
 
-- [fastest-validator ![NPM version](https://www.npmjs.com/package/fastest-validator)
-  - [Key features](#key-features)
-- [How fast?](#how-fast)
 - [Table of contents](#table-of-contents)
   - [Installation](#installation)
     - [NPM](#npm)
