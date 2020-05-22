@@ -57,6 +57,82 @@ describe("Test rule: object", () => {
 			.toEqual([{ type: "required", field: "user.address.city", actual: undefined, message: "The 'user.address.city' field is required." }]);
 	});
 
+  it('should check min props', () => {
+      const check = v.compile({ $$root: true, type: 'object', props: {
+          optional_key_1: { type: 'string', optional: true },
+          optional_key_2: { type: 'number', optional: true },
+          optional_key_3: { type: 'boolean', optional: true },
+          optional_key_4: { type: 'array', optional: true },
+      }, minProps: 2 });
+
+      expect(check({})).toEqual([{ type: 'objectMinProps', actual: 0, expected: 2, message: "The object '' must contain at least 2 properties.", field: undefined }]);
+      expect(check({ optional_key_1: 'foobar', optional_key_2: 9 })).toEqual(true);
+      expect(check({ optional_key_1: 'foobar', optional_key_2: 9, optional_key_3: false })).toEqual(true);
+
+      const checkNested = v.compile({
+        key: { type: 'object',
+          props: {
+            nested: {
+              type: 'object',
+              props: {
+                optional_key_1: { type: 'string', optional: true },
+                optional_key_2: { type: 'number', optional: true },
+              },
+              minProps: 1
+            }
+          }
+        },
+      });
+
+      expect(checkNested({ key: { nested: {} } })).toEqual([{ type: 'objectMinProps', actual: 0, expected: 1, message: "The object 'key.nested' must contain at least 1 properties.", field: 'key.nested' }]);
+      expect(checkNested({ key: { nested: { optional_key_1: 'foobar' } } })).toEqual(true);
+      expect(v.validate({}, {$$root: true, type: 'object', minProps: 0})).toEqual(true);
+  });
+
+  it('should check max props', () => {
+      const check = v.compile({ $$root: true, type: 'object', props: {
+          optional_key_1: { type: 'string', optional: true },
+          optional_key_2: { type: 'number', optional: true },
+          optional_key_3: { type: 'boolean', optional: true },
+          optional_key_4: { type: 'array', optional: true },
+      }, maxProps: 2 });
+
+      expect(check({ optional_key_1: 'foobar', optional_key_2: 9, optional_key_3: true })).toEqual([{ type: 'objectMaxProps', actual: 3, expected: 2, message: "The object '' must contain 2 properties at most.", field: undefined }]);
+      expect(check({ optional_key_1: 'foobar', optional_key_2: 9 })).toEqual(true);
+      expect(check({ optional_key_2: 9 })).toEqual(true);
+      expect(check({})).toEqual(true);
+
+      const checkWithStrict = v.compile({ $$root: true, type: 'object', strict: 'remove', props: {
+          optional_key_1: { type: 'string' },
+          optional_key_2: { type: 'number' },
+      }, maxProps: 2 });
+
+      expect(checkWithStrict({ optional_key_1: 'foobar', optional_key_2: 9, optional_key_3: true })).toEqual(true);
+
+      const checkNested = v.compile({
+        key: { type: 'object',
+          props: {
+            nested: {
+              type: 'object',
+              props: {
+                optional_key_1: { type: 'string', optional: true },
+                optional_key_2: { type: 'number', optional: true },
+              },
+              maxProps: 1
+            }
+          }
+        },
+      });
+
+      expect(checkNested({ key: { nested: {} } })).toEqual(true);
+      expect(checkNested({ key: { nested: { optional_key_1: 'foobar' } } })).toEqual(true);
+      expect(checkNested({ key: { nested: { optional_key_1: 'foobar', optional_key_3: 99 } } })).toEqual([{ type: 'objectMaxProps', actual: 2, expected: 1, message: "The object 'key.nested' must contain 1 properties at most.", field: 'key.nested' }]);
+
+      expect(v.validate({}, {$$root: true, type: 'object', maxProps: 0})).toEqual(true);
+      expect(v.validate({foo:'bar'}, {$$root: true, type: 'object', maxProps: 0})).toEqual([{actual: 1, field: undefined, message: "The object '' must contain 0 properties at most.", type: 'objectMaxProps', expected: 0}]);
+      expect(v.validate({foo:'bar'}, {$$root: true, type: 'object', maxProps: 0, strict: 'remove'})).toEqual([{actual: 1, field: undefined, message: "The object '' must contain 0 properties at most.", type: 'objectMaxProps', expected: 0}]);
+  });
+
 
 	describe("Test sanitization", () => {
 
