@@ -313,6 +313,14 @@ declare module "fastest-validator" {
 		 */
 		properties?: ValidationSchema;
 		props?: ValidationSchema;
+		/**
+		 * If set to a number, will throw if the number of props is less than that number.
+		 */
+		minProps?: number;
+		/**
+		 * If set to a number, will throw if the number of props is greater than that number.
+		 */
+		maxProps?: number;
 	}
 
 	/**
@@ -801,10 +809,16 @@ declare module "fastest-validator" {
 		type: string;
 		expected?: unknown;
 		actual?: unknown;
-		field?: string
+		field?: string;
 	}
 
-	type CheckerFunctionV1<T = unknown> = (value: T, schema: ValidationSchema, path: string, parent: object | null, context: Context) => true | ValidationError[];
+	type CheckerFunctionV1<T = unknown> = (
+		value: T,
+		schema: ValidationSchema,
+		path: string,
+		parent: object | null,
+		context: Context
+	) => true | ValidationError[];
 	type CheckerFunctionV2<T = unknown> = (
 		value: T,
 		errors: CheckerFunctionError[],
@@ -814,7 +828,9 @@ declare module "fastest-validator" {
 		context: Context
 	) => T;
 
-	type CheckerFunction<T = unknown> = CheckerFunctionV1<T> | CheckerFunctionV2<T>
+	type CheckerFunction<T = unknown> =
+		| CheckerFunctionV1<T>
+		| CheckerFunctionV2<T>;
 
 	type CompilationFunction = (
 		rule: CompilationRule,

@@ -35,6 +35,8 @@ describe("Test rule: number", () => {
 		expect(check(-20)).toEqual([{ type: "numberMin", expected: 5, actual: -20, message }]);
 		expect(check(5)).toEqual(true);
 		expect(check(8)).toEqual(true);
+
+		expect(v.validate(-1, { $$root: true, type: "number", min: 0})).toEqual([{actual: -1, expected: 0, field: undefined, message: "The '' field must be greater than or equal to 0.", type: 'numberMin'}]);
 	});
 
 	it("check max", () => {

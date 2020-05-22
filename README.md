@@ -769,10 +769,12 @@ v.validate({
 ### Properties
 Property | Default  | Description
 -------- | -------- | -----------
-`strict`  | `false`| if `true` any properties which are not defined on the schema will throw an error. If `remove` all additional properties will be removed from the original object. _It's a sanitizer, it will change the original object._
+`strict`  | `false`| If `true` any properties which are not defined on the schema will throw an error. If `remove` all additional properties will be removed from the original object. _It's a sanitizer, it will change the original object._
+`minProps` | `null` | If set to a number N, will throw an error if the object has fewer than N properties.
+`maxProps` | `null` | If set to a number N, will throw an error if the object has more than N properties.
 
 ```js
-const schema = {
+let schema = {
     address: { type: "object", strict: "remove", props: {
         country: { type: "string" },
         city: "string", // short-hand
@@ -780,7 +782,7 @@ const schema = {
     } }
 }
 
-const obj = {
+let obj = {
     address: {
         country: "Italy",
         city: "Rome",
@@ -800,6 +802,46 @@ console.log(obj);
     }   
 }
 */
+
+schema = {
+  address: {
+    type: "object",
+    minProps: 2,
+    props: {
+      country: { type: "string" },
+      city: { type: "string", optional: true },
+      zip: { type: "number", optional: true }
+    }
+  }
+}
+
+obj = {
+    address: {
+        country: "Italy",
+        city: "Rome",
+        zip: 12345,
+        state: "IT"
+    }
+}
+
+v.validate(obj, schema); // Valid
+
+obj = {
+    address: {
+        country: "Italy",
+    }
+}
+
+v.validate(obj, schema); // Fail
+// [
+//   {
+//     type: 'objectMinProps',
+//     message: "The object 'address' must contain at least 2 properties.",
+//     field: 'address',
+//     expected: 2,
+//     actual: 1
+//   }
+// ]
 ```
 
 ## `string`
@@ -1130,6 +1172,8 @@ Name                | Default text
 `equalField`	| The '{field}' field value must be equal to '{expected}' field value.
 `object`	| The '{field}' must be an Object.
 `objectStrict`	| The object '{field}' contains forbidden keys: '{actual}'.
+`objectMinProps` | "The object '{field}' must contain at least {expected} properties.
+`objectMaxProps` | "The object '{field}' must contain {expected} properties at most.
 `uuid`	| The '{field}' field must be a valid UUID.
 `uuidVersion`	| The '{field}' field must be a valid UUID version provided.
 `mac`	| The '{field}' field must be a valid MAC address.
