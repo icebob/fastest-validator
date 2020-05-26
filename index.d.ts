@@ -918,7 +918,7 @@ declare module "fastest-validator" {
 		 * @return {ValidationRule}
 		 */
 		getRuleFromSchema(
-			name: ValidationRuleName | ValidationRuleName[]
+			name: ValidationRuleName | ValidationRuleName[] | { [key: string]: unknown }
 		): {
 			messages: MessagesType;
 			schema: ValidationSchema;
