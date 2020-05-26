@@ -320,6 +320,27 @@ const schema = {
 }
 ```
 
+### Nested objects
+
+```js
+const schema = {
+   dot: {
+      $$type: "object",
+      x: "number",  // object props here
+      y: "number",  // object props here
+   }, 
+   circle: {
+      $$type: "object|optional", // using other shorthands
+      o: {
+         $$type: "object",
+         x: "number",
+         y: "number",
+      },
+      r: "number"
+   }
+};
+```
+
 # Alias definition
 You can define custom aliases.
 
