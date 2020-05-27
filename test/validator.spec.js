@@ -184,7 +184,7 @@ describe("Test getRuleFromSchema method", () => {
 		}).toThrowError("Invalid 's' type in validator schema.");
 	});
 
-	describe("Test string shorthard rules", () => {
+	describe("Test string shorthand rules", () => {
 
 		it("should convert only type", () => {
 			const res = v.getRuleFromSchema("string");
@@ -201,6 +201,41 @@ describe("Test getRuleFromSchema method", () => {
 			expect(res.schema).toEqual({ type: "string", empty: false, alpha: false, trim: true, some: "1234kg" });
 		});
 
+	});
+
+	describe("Test objects shorthand rule ($$type)", () => {
+		it("should convert", () => {
+			const res = v.getRuleFromSchema({
+				$$type: "object",
+				name: { type: "string" },
+				age: { type: "number" }
+			});
+	
+			expect(res.schema).toEqual({ 
+				type: "object" ,
+				props: {
+					name: { type: "string" },
+					age: { type: "number" }
+				} 
+			});
+		});
+
+		it("should work with other shorthand rules", () => {
+			const res = v.getRuleFromSchema({
+				$$type: "object|optional",
+				name: { type: "string" },
+				age: { type: "number" }
+			});
+	
+			expect(res.schema).toEqual({ 
+				type: "object" ,
+				optional: true,
+				props: {
+					name: { type: "string" },
+					age: { type: "number" }
+				} 
+			});
+		});
 	});
 });
 
@@ -496,3 +531,47 @@ describe("Test default settings", () => {
 		});
 	});
 });
+
+describe("Test objects shorthand", () => {
+	const v = new Validator();
+
+	it("should work with nested objects", () => {
+		const check = v.compile({
+			dot: {
+				$$type: "object",
+				x: "number",
+				y: "number",
+			}, 
+			circle: {
+				$$type: "object",
+				o: {
+					$$type: "object",
+					x: "number",
+					y: "number",
+				},
+				r: "number"
+			}
+		});
+
+		expect(
+			check({ 
+				dot: { x: 10, y: 3 }, 
+				circle: {
+					o: { x: 10, y: 3 }, 
+					r: 30
+				} 
+			})
+		).toBe(true);
+
+		expect(
+			check({ 
+				dot: { x: 10, y: 3 }, 
+				circle: {
+					o: { x: 10, y: "s" }, 
+					r: 30
+				} 
+			})
+		).toEqual(expect.any(Array));
+	});
+});
+

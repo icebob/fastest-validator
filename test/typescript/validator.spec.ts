@@ -204,6 +204,24 @@ describe('TypeScript Definitions', () => {
             });
 
         });
+
+        describe("Test object shorthand rule ($$type)", () => {
+            it("should convert", () => {
+                const res = v.getRuleFromSchema({
+                    $$type: "object",
+                    name: { type: "string" },
+                    age: { type: "number" }
+                });
+        
+                expect(res.schema).toEqual({ 
+                    type: "object" ,
+                    props: {
+                        name: { type: "string" },
+                        age: { type: "number" }
+                    } 
+                });
+            });
+        });
     });
 
     describe('Test makeError', () => {
