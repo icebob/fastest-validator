@@ -715,11 +715,11 @@ declare module "fastest-validator" {
 		| ValidationRuleObject
 		| ValidationRuleObject[]
 		| ValidationRuleName;
-
+	
 	/**
 	 * Definition for validation schema based on validation rules
 	 */
-	interface ValidationSchema {
+	type ValidationSchema<T = any> = {
 		/**
 		 * Object properties which are not specified on the schema are ignored by default.
 		 * If you set the $$strict option to true any additional properties will result in an strictObject error.
@@ -733,12 +733,12 @@ declare module "fastest-validator" {
 		 * @default false
 		 */
 		$$root?: boolean;
-
+	} & {
 		/**
 		 * List of validation rules for each defined field
 		 */
-		[key: string]: ValidationRule | undefined | any;
-	}
+		[key in keyof T]: ValidationRule | undefined | any;
+	};
 
 	/**
 	 * Structure with description of validation error message
@@ -897,8 +897,8 @@ declare module "fastest-validator" {
 		 * @param {ValidationSchema | ValidationSchema[]} schema Validation schema definition that should be used for validation
 		 * @return {(value: any) => (true | ValidationError[])} function that can be used next for validation of current schema
 		 */
-		compile(
-			schema: ValidationSchema | ValidationSchema[]
+		compile<T = any>(
+		  schema: ValidationSchema<T> | ValidationSchema<T>[],
 		): (value: any) => true | ValidationError[];
 
 		/**
