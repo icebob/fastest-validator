@@ -1,4 +1,14 @@
 --------------------------------------------------
+<a name="1.4.2"></a>
+# 1.4.2 (2020-06-03)
+
+## Changes
+- added Deno example to readme.
+- added `minProps` and `maxProps` by [@alexjab](https://github.com/alexjab) [#142](https://github.com/icebob/fastest-validator/issues/142)
+- shorthand for nested objectsby [@erfanium](https://github.com/erfanium) [#143](https://github.com/icebob/fastest-validator/issues/143)
+- typescript generics for `compile` method by [@Gamote](https://github.com/Gamote) [#146](https://github.com/icebob/fastest-validator/issues/146)
+
+--------------------------------------------------
 <a name="1.4.1"></a>
 # 1.4.1 (2020-05-13)
 
