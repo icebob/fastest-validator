@@ -470,7 +470,6 @@ Property | Default  | Description
 `enum`	 | `null`   | Every element must be an element of the `enum` array.
 `items`	 | `null`   | Schema for array items.
 
-
 ## `boolean`
 This is a `Boolean` validator.
 
@@ -512,7 +511,6 @@ v.validate({ rawData: 100 }, schema); // Fail
 Property | Default  | Description
 -------- | -------- | -----------
 `instanceOf` | `null` | Checked Class.
-
 
 ## `date`
 This is a `Date` validator.
@@ -923,6 +921,41 @@ console.log(obj);
 }
 */
 ```
+
+## `tuple`
+This validator checks if a value is an `Array` of 2 elements which have the same order as the schemas described in the `items` field.
+
+**Simple example:**
+```js
+const schema = {
+    grade: { type: "tuple", items: ["string", "number"] }
+}
+
+v.validate({ grade: ["David", 85] }, schema); // Valid
+v.validate({ grade: [85, "David"] }, schema); // Fail (wrong position)
+v.validate({ grade: ["Cami"] }, schema); // Fail (require 2 elements)
+```
+
+**Example with more detailed schema:**
+```js
+const schema = {
+    location: { type: "tuple", items: [
+        "string",
+        { type: "tuple", items: [
+            { type: "number", min: 35, max: 45 },
+            { type: "number", min: -75, max: -65 }
+        ] }
+    ] }
+}
+
+v.validate({ location: ['New York', [40.7127281, -74.0060152]] }, schema); // Valid
+v.validate({ location: ['New York', [40, -74, 2]] }, schema); // Fail (only 2 elements)
+```
+
+### Properties
+Property | Default  | Description
+-------- | -------- | -----------
+`items`	 | `undefined` | Exact schemas of the expected values
 
 ## `url`
 This is an URL validator.
