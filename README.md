@@ -925,17 +925,15 @@ console.log(obj);
 ```
 
 ## `tuple`
-This validator checks if a value is an `Array` of 2 elements.
-
-If the `items` field will be defined in the schema, the validator will check if the values are in the same order described by the schema.
+This validator checks if a value is an `Array` with the elements order as described by the schema.
 
 **Simple example:**
 ```js
-const schema = { pair: "tuple" };
+const schema = { list: "tuple" };
 
-v.validate({ pair: [1, "2"] }, schema); // Valid
-v.validate({ pair: ["2", 1] }, schema); // Valid
-v.validate({ pair: [1] }, schema); // Fail (require 2 elements)
+v.validate({ list: [1, 2] }, schema); // Valid
+v.validate({ list: ["RON", 100, true] }, schema); // Valid
+v.validate({ list: [] }, schema); // Fail (empty array)
 ```
 
 **Example with items:**
@@ -949,7 +947,7 @@ v.validate({ grade: [85, "David"] }, schema); // Fail (wrong position)
 v.validate({ grade: ["Cami"] }, schema); // Fail (require 2 elements)
 ```
 
-**Example with more detailed schema:**
+**Example with a more detailed schema:**
 ```js
 const schema = {
     location: { type: "tuple", items: [
@@ -968,7 +966,7 @@ v.validate({ location: ['New York', [50.0000000, -74.0060152]] }, schema); // Fa
 ### Properties
 Property | Default  | Description
 -------- | -------- | -----------
-`items`	 | `undefined` | Exact schema for array items
+`items`	 | `undefined` | Exact schema of the value items
 
 ## `url`
 This is an URL validator.
