@@ -1224,6 +1224,9 @@ Name                | Default text
 `arrayContains`	| The '{field}' field must contain the '{expected}' item.
 `arrayUnique` | The '{actual}' value in '{field}' field does not unique the '{expected}' values.
 `arrayEnum`	| The '{actual}' value in '{field}' field does not match any of the '{expected}' values.
+`tuple`	| The '{field}' field must be an array.
+`tupleEmpty`	| The '{field}' field must not be an empty array.
+`tupleLength`	| The '{field}' field must contain {expected} items.
 `boolean`	| The '{field}' field must be a boolean.
 `function`	| The '{field}' field must be a function.
 `date`	| The '{field}' field must be a Date.
