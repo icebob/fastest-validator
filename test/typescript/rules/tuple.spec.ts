@@ -10,7 +10,7 @@ const v: ValidatorType = new Validator({
 	}
 });
 
-const tupleCompileChecker = (schema?: {}) => () =>
+const tupleCompile = (schema?: {}) => () =>
 	v.compile(Object.assign({ $$root: true, type: "tuple" }, schema) as RuleTuple);
 
 describe('TypeScript Definitions', () => {
@@ -20,28 +20,24 @@ describe('TypeScript Definitions', () => {
 			const message =
 				"Invalid 'tuple' schema. The 'items' field must be an array.";
 
-			expect(tupleCompileChecker({ items: 1 })).toThrow(message);
-			expect(tupleCompileChecker({ items: {} })).toThrow(message);
-			expect(tupleCompileChecker({ items: false })).toThrow(message);
-			expect(tupleCompileChecker({ items: true })).toThrow(message);
-			expect(tupleCompileChecker({ items: "" })).toThrow(message);
-			expect(tupleCompileChecker({ items: "test" })).toThrow(message);
+			expect(tupleCompile({ items: 1 })).toThrow(message);
+			expect(tupleCompile({ items: {} })).toThrow(message);
+			expect(tupleCompile({ items: false })).toThrow(message);
+			expect(tupleCompile({ items: true })).toThrow(message);
+			expect(tupleCompile({ items: "" })).toThrow(message);
+			expect(tupleCompile({ items: "test" })).toThrow(message);
 
-			expect(tupleCompileChecker({ items: [] })).not.toThrow(message);
+			expect(tupleCompile({ items: [] })).not.toThrow(message);
 		});
 
 		it("should check schema's 'items' field length", () => {
 			const message =
-				"Invalid 'tuple' schema. The 'items' field must contain 2 elements.";
+				"Invalid 'tuple' schema. The 'items' field must not be an empty array.";
 
-			expect(tupleCompileChecker({ items: [] })).toThrow(message);
-			expect(tupleCompileChecker({ items: ["string"] })).toThrow(message);
-			expect(
-				tupleCompileChecker({ items: ["string", "string", "string"] })
-			).toThrow(message);
+			expect(tupleCompile({ items: [] })).toThrow(message);
 
 			expect(
-				tupleCompileChecker({ items: ["string", "string"] })
+				tupleCompile({ items: ["string", "string"] })
 			).not.toThrow(message);
 		});
 
@@ -77,8 +73,16 @@ describe('TypeScript Definitions', () => {
 			]);
 		});
 
-		it("check fix length", () => {
+		it("check length (w/o defined items)", () => {
 			const check = v.compile({ $$root: true, type: "tuple" } as RuleTuple);
+
+			expect(check([1])).toEqual(true);
+			expect(check([1, 2, 3])).toEqual(true);
+			expect(check(["Diana", true])).toEqual(true);
+		});
+
+		it("check length (w/ defined items)", () => {
+			const check = v.compile({ $$root: true, type: "tuple", items: ["boolean", "string"]} as RuleTuple);
 			const message = "The '' field must contain 2 items.";
 
 			expect(check([1])).toEqual([
@@ -97,8 +101,15 @@ describe('TypeScript Definitions', () => {
 					message
 				}
 			]);
+			expect(check([true, "Diana"])).toEqual(true);
+		});
 
-			expect(check([1, 2])).toEqual(true);
+		it("check length (without defined items)", () => {
+			const check = v.compile({ $$root: true, type: "tuple" } as RuleTuple);
+
+			expect(check([1])).toEqual(true);
+			expect(check([1, 2, 3])).toEqual(true);
+			expect(check(['Diana', true])).toEqual(true);
 		});
 
 		it("check items", () => {
