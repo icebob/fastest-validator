@@ -32,6 +32,9 @@ describe("Test Messages", () => {
 		expect(msg.arrayContains).toBeDefined();
 		expect(msg.arrayUnique).toBeDefined();
 		expect(msg.arrayEnum).toBeDefined();
+		expect(msg.tuple).toBeDefined();
+		expect(msg.tupleEmpty).toBeDefined();
+		expect(msg.tupleLength).toBeDefined();
 		expect(msg.boolean).toBeDefined();
 		expect(msg.function).toBeDefined();
 		expect(msg.date).toBeDefined();
