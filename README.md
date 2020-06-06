@@ -931,9 +931,10 @@ This validator checks if a value is an `Array` with the elements order as descri
 ```js
 const schema = { list: "tuple" };
 
+v.validate({ list: [] }, schema); // Valid
 v.validate({ list: [1, 2] }, schema); // Valid
 v.validate({ list: ["RON", 100, true] }, schema); // Valid
-v.validate({ list: [] }, schema); // Fail (empty array)
+v.validate({ list: 94 }, schema); // Fail (not an array)
 ```
 
 **Example with items:**
@@ -952,7 +953,7 @@ v.validate({ grade: ["Cami"] }, schema); // Fail (require 2 elements)
 const schema = {
     location: { type: "tuple", items: [
         "string",
-        { type: "tuple", items: [
+        { type: "tuple", empty: false, items: [
             { type: "number", min: 35, max: 45 },
             { type: "number", min: -75, max: -65 }
         ] }
@@ -961,11 +962,13 @@ const schema = {
 
 v.validate({ location: ['New York', [40.7127281, -74.0060152]] }, schema); // Valid
 v.validate({ location: ['New York', [50.0000000, -74.0060152]] }, schema); // Fail
+v.validate({ location: ['New York', []] }, schema); // Fail (empty array)
 ```
 
 ### Properties
 Property | Default  | Description
 -------- | -------- | -----------
+`empty`  | `true`   | If `true`, the validator accepts an empty array `[]`.
 `items`	 | `undefined` | Exact schema of the value items
 
 ## `url`
