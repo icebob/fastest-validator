@@ -27,6 +27,23 @@ describe("Test rule: string", () => {
 		expect(check("")).toEqual([{ type: "stringEmpty", actual: "", message: "The '' field must not be empty." }]);
 	});
 
+	it("check empty values (using pattern and empty=true)", () => {
+		const check = v.compile({ $$root: true, type: "string", pattern: "^fastest" });
+
+		expect(check("fastest-validator")).toEqual(true);
+		expect(check("")).toEqual(true);
+	});
+
+	it("check empty values (using pattern and empty=false)", () => {
+		const check = v.compile({ $$root: true, type: "string", pattern: "^fastest", empty: false });
+
+		expect(check("fastest-validator")).toEqual(true);
+		expect(check("")).toEqual([
+			{ type: "stringEmpty", actual: "", message: "The '' field must not be empty." },
+			{ type: "stringPattern", actual: "", "expected": "/^fastest/", message: "The '' field fails to match the required pattern." },
+		]);
+	});
+
 	it("check min length", () => {
 		const check = v.compile({ $$root: true, type: "string", min: 5 });
 

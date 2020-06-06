@@ -23,11 +23,28 @@ describe('TypeScript Definitions', () => {
         });
 
         it('check empty values', () => {
-            const check = v.compile({ $$root: true, type: 'string', empty: false });
+            const check = v.compile({ $$root: true, type: 'string', empty: false } as RuleString);
 
             expect(check('abc')).toEqual(true);
             expect(check('')).toEqual([{ type: 'stringEmpty', actual: '', message: 'The \'\' field must not be empty.' }]);
         });
+
+		it("check empty values (using pattern and empty=true)", () => {
+			const check = v.compile({ $$root: true, type: "string", pattern: "^fastest" } as RuleString);
+
+			expect(check("fastest-validator")).toEqual(true);
+			expect(check("")).toEqual(true);
+		});
+
+		it("check empty values (using pattern and empty=false)", () => {
+			const check = v.compile({ $$root: true, type: "string", pattern: "^fastest", empty: false } as RuleString);
+
+			expect(check("fastest-validator")).toEqual(true);
+			expect(check("")).toEqual([
+				{ type: "stringEmpty", actual: "", message: "The '' field must not be empty." },
+				{ type: "stringPattern", actual: "", "expected": "/^fastest/", message: "The '' field fails to match the required pattern." },
+			]);
+		});
 
         it('check min length', () => {
             const check = v.compile({ $$root: true, type: 'string', min: 5 } as RuleString);
