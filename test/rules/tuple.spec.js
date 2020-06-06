@@ -33,9 +33,9 @@ describe("Test rule: tuple", () => {
 
 		expect(tupleCompile({ items: [] })).toThrow(message);
 
-		expect(
-			tupleCompile({ items: ["string", "string"] })
-		).not.toThrow(message);
+		expect(tupleCompile({ items: ["string", "string"] })).not.toThrow(
+			message
+		);
 	});
 
 	it("should check type of value", () => {
@@ -54,19 +54,16 @@ describe("Test rule: tuple", () => {
 			{ type: "tuple", actual: "test", message }
 		]);
 
-		expect(check([])).not.toEqual([{ type: "tuple", actual: [], message }]);
+		expect(check([])).toEqual(true);
 	});
 
 	it("check empty values", () => {
-		const check = v.compile({ $$root: true, type: "tuple" });
+		const check = v.compile({ $$root: true, type: "tuple", empty: false });
 		const message = "The '' field must not be an empty array.";
 
+		expect(check([1])).toEqual(true);
 		expect(check([])).toEqual([
 			{ type: "tupleEmpty", actual: [], message }
-		]);
-
-		expect(check([1])).not.toEqual([
-			{ type: "tupleEmpty", actual: [1], message }
 		]);
 	});
 
@@ -79,7 +76,11 @@ describe("Test rule: tuple", () => {
 	});
 
 	it("check length (w/ defined items)", () => {
-		const check = v.compile({ $$root: true, type: "tuple", items: ["boolean", "string"]});
+		const check = v.compile({
+			$$root: true,
+			type: "tuple",
+			items: ["boolean", "string"]
+		});
 		const message = "The '' field must contain 2 items.";
 
 		expect(check([1])).toEqual([
@@ -215,8 +216,7 @@ describe("Test rule: tuple", () => {
 
 		it("should call items custom checker function", () => {
 			const customFn = (value, errors) => {
-				if (value % 2 !== 0)
-					errors.push({type: "evenNumber"});
+				if (value % 2 !== 0) errors.push({ type: "evenNumber" });
 				return value * 2;
 			};
 
@@ -225,7 +225,7 @@ describe("Test rule: tuple", () => {
 					type: "tuple",
 					items: [
 						{ type: "number", custom: customFn },
-						{ type: "number", custom: customFn },
+						{ type: "number", custom: customFn }
 					]
 				}
 			});
