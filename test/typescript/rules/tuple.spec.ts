@@ -1,7 +1,7 @@
 /// <reference path="../../../index.d.ts" /> // here we make a reference to exists module definition
-import ValidatorType, {RuleTuple, ValidationError} from "fastest-validator";
+import ValidatorType, { RuleTuple, ValidationError } from "fastest-validator";
 
-const Validator: typeof ValidatorType = require('../../../index'); // here we importing real Validator Constructor
+const Validator: typeof ValidatorType = require("../../../index"); // here we importing real Validator Constructor
 
 const v: ValidatorType = new Validator({
 	useNewCustomCheckerFunction: true,
@@ -11,11 +11,12 @@ const v: ValidatorType = new Validator({
 });
 
 const tupleCompile = (schema?: {}) => () =>
-	v.compile(Object.assign({ $$root: true, type: "tuple" }, schema) as RuleTuple);
+	v.compile(
+		Object.assign({ $$root: true, type: "tuple" }, schema) as RuleTuple
+	);
 
-describe('TypeScript Definitions', () => {
+describe("TypeScript Definitions", () => {
 	describe("Test rule: tuple", () => {
-
 		it("should check schema's 'items' field type", () => {
 			const message =
 				"Invalid 'tuple' schema. The 'items' field must be an array.";
@@ -36,13 +37,16 @@ describe('TypeScript Definitions', () => {
 
 			expect(tupleCompile({ items: [] })).toThrow(message);
 
-			expect(
-				tupleCompile({ items: ["string", "string"] })
-			).not.toThrow(message);
+			expect(tupleCompile({ items: ["string", "string"] })).not.toThrow(
+				message
+			);
 		});
 
 		it("should check type of value", () => {
-			const check = v.compile({ $$root: true, type: "tuple" } as RuleTuple);
+			const check = v.compile({
+				$$root: true,
+				type: "tuple"
+			} as RuleTuple);
 			const message = "The '' field must be an array.";
 
 			expect(check(0)).toEqual([{ type: "tuple", actual: 0, message }]);
@@ -51,30 +55,36 @@ describe('TypeScript Definitions', () => {
 			expect(check(false)).toEqual([
 				{ type: "tuple", actual: false, message }
 			]);
-			expect(check(true)).toEqual([{ type: "tuple", actual: true, message }]);
+			expect(check(true)).toEqual([
+				{ type: "tuple", actual: true, message }
+			]);
 			expect(check("")).toEqual([{ type: "tuple", actual: "", message }]);
 			expect(check("test")).toEqual([
 				{ type: "tuple", actual: "test", message }
 			]);
 
-			expect(check([])).not.toEqual([{ type: "tuple", actual: [], message }]);
+			expect(check([])).toEqual(true);
 		});
 
 		it("check empty values", () => {
-			const check = v.compile({ $$root: true, type: "tuple" } as RuleTuple);
+			const check = v.compile({
+				$$root: true,
+				type: "tuple",
+				empty: false,
+			} as RuleTuple);
 			const message = "The '' field must not be an empty array.";
 
+			expect(check([1])).toEqual(true);
 			expect(check([])).toEqual([
 				{ type: "tupleEmpty", actual: [], message }
-			]);
-
-			expect(check([1])).not.toEqual([
-				{ type: "tupleEmpty", actual: [1], message }
 			]);
 		});
 
 		it("check length (w/o defined items)", () => {
-			const check = v.compile({ $$root: true, type: "tuple" } as RuleTuple);
+			const check = v.compile({
+				$$root: true,
+				type: "tuple"
+			} as RuleTuple);
 
 			expect(check([1])).toEqual(true);
 			expect(check([1, 2, 3])).toEqual(true);
@@ -82,7 +92,11 @@ describe('TypeScript Definitions', () => {
 		});
 
 		it("check length (w/ defined items)", () => {
-			const check = v.compile({ $$root: true, type: "tuple", items: ["boolean", "string"]} as RuleTuple);
+			const check = v.compile({
+				$$root: true,
+				type: "tuple",
+				items: ["boolean", "string"]
+			} as RuleTuple);
 			const message = "The '' field must contain 2 items.";
 
 			expect(check([1])).toEqual([
@@ -105,11 +119,14 @@ describe('TypeScript Definitions', () => {
 		});
 
 		it("check length (without defined items)", () => {
-			const check = v.compile({ $$root: true, type: "tuple" } as RuleTuple);
+			const check = v.compile({
+				$$root: true,
+				type: "tuple"
+			} as RuleTuple);
 
 			expect(check([1])).toEqual(true);
 			expect(check([1, 2, 3])).toEqual(true);
-			expect(check(['Diana', true])).toEqual(true);
+			expect(check(["Diana", true])).toEqual(true);
 		});
 
 		it("check items", () => {
@@ -228,8 +245,7 @@ describe('TypeScript Definitions', () => {
 
 			it("should call items custom checker function", () => {
 				const customFn = (value, errors) => {
-					if (value % 2 !== 0)
-						errors.push({type: "evenNumber"});
+					if (value % 2 !== 0) errors.push({ type: "evenNumber" });
 					return value * 2;
 				};
 
@@ -238,7 +254,7 @@ describe('TypeScript Definitions', () => {
 						type: "tuple",
 						items: [
 							{ type: "number", custom: customFn },
-							{ type: "number", custom: customFn },
+							{ type: "number", custom: customFn }
 						]
 					} as RuleTuple
 				});
