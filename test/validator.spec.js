@@ -12,7 +12,7 @@ describe("Test constructor", () => {
 		expect(v.validate).toBeInstanceOf(Function);
 		expect(v.add).toBeInstanceOf(Function);
 
-		expect(Object.keys(v.rules).length).toBe(19);
+		expect(Object.keys(v.rules).length).toBe(20);
 	});
 
 	it("should create instance with custom messages", () => {
@@ -210,13 +210,13 @@ describe("Test getRuleFromSchema method", () => {
 				name: { type: "string" },
 				age: { type: "number" }
 			});
-	
-			expect(res.schema).toEqual({ 
+
+			expect(res.schema).toEqual({
 				type: "object" ,
 				props: {
 					name: { type: "string" },
 					age: { type: "number" }
-				} 
+				}
 			});
 		});
 
@@ -226,14 +226,14 @@ describe("Test getRuleFromSchema method", () => {
 				name: { type: "string" },
 				age: { type: "number" }
 			});
-	
-			expect(res.schema).toEqual({ 
+
+			expect(res.schema).toEqual({
 				type: "object" ,
 				optional: true,
 				props: {
 					name: { type: "string" },
 					age: { type: "number" }
-				} 
+				}
 			});
 		});
 	});
@@ -541,7 +541,7 @@ describe("Test objects shorthand", () => {
 				$$type: "object",
 				x: "number",
 				y: "number",
-			}, 
+			},
 			circle: {
 				$$type: "object",
 				o: {
@@ -554,22 +554,22 @@ describe("Test objects shorthand", () => {
 		});
 
 		expect(
-			check({ 
-				dot: { x: 10, y: 3 }, 
+			check({
+				dot: { x: 10, y: 3 },
 				circle: {
-					o: { x: 10, y: 3 }, 
+					o: { x: 10, y: 3 },
 					r: 30
-				} 
+				}
 			})
 		).toBe(true);
 
 		expect(
-			check({ 
-				dot: { x: 10, y: 3 }, 
+			check({
+				dot: { x: 10, y: 3 },
 				circle: {
-					o: { x: 10, y: "s" }, 
+					o: { x: 10, y: "s" },
 					r: 30
-				} 
+				}
 			})
 		).toEqual(expect.any(Array));
 	});

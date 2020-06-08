@@ -14,7 +14,7 @@ describe('TypeScript Definitions', () => {
             expect(v.validate).toBeInstanceOf(Function);
             expect(v.add).toBeInstanceOf(Function);
 
-            expect(Object.keys(v.rules)).toHaveProperty('length', 19);
+            expect(Object.keys(v.rules)).toHaveProperty('length', 20);
         });
 
         it('should create instance with custom messages', () => {
@@ -212,13 +212,13 @@ describe('TypeScript Definitions', () => {
                     name: { type: "string" },
                     age: { type: "number" }
                 });
-        
-                expect(res.schema).toEqual({ 
+
+                expect(res.schema).toEqual({
                     type: "object" ,
                     props: {
                         name: { type: "string" },
                         age: { type: "number" }
-                    } 
+                    }
                 });
             });
         });

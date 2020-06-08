@@ -402,6 +402,21 @@ declare module "fastest-validator" {
 	}
 
 	/**
+	 * Validation schema definition for "tuple" built-in validator
+	 * @see https://github.com/icebob/fastest-validator#array
+	 */
+	interface RuleTuple<T = any> extends RuleCustom {
+		/**
+		 * Name of built-in validator
+		 */
+		type: "tuple";
+		/**
+		 * Validation rules that should be applied to the corresponding element of array
+		 */
+		items?: [ValidationRule, ValidationRule];
+	}
+
+	/**
 	 * Validation schema definition for "url" built-in validator
 	 * @see https://github.com/icebob/fastest-validator#url
 	 */
@@ -703,6 +718,7 @@ declare module "fastest-validator" {
 		| RuleNumber
 		| RuleObject
 		| RuleString
+		| RuleTuple
 		| RuleURL
 		| RuleUUID
 		| RuleCustom
@@ -715,7 +731,7 @@ declare module "fastest-validator" {
 		| ValidationRuleObject
 		| ValidationRuleObject[]
 		| ValidationRuleName;
-	
+
 	/**
 	 * Definition for validation schema based on validation rules
 	 */
@@ -950,6 +966,7 @@ declare module "fastest-validator" {
 		RuleNumber,
 		RuleObject,
 		RuleString,
+		RuleTuple,
 		RuleURL,
 		RuleUUID,
 		RuleCustom,
