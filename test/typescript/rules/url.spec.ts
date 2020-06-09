@@ -1,14 +1,20 @@
 /// <reference path="../../../index.d.ts" /> // here we make a reference to exists module definition
-import ValidatorType from 'fastest-validator'; // here we importing type definition of default export
+import ValidatorType, {RuleURL} from 'fastest-validator'; // here we importing type definition of default export
 
 const Validator: typeof ValidatorType = require('../../../index'); // here we importing real Validator Constructor
 const v: ValidatorType = new Validator();
 
 describe('TypeScript Definitions', () => {
     describe('Test rule: url', () => {
+    	it("should check empty values", () => {
+			const check = v.compile({ $$root: true, type: "url", empty: false } as RuleURL);
+
+			expect(check("https://google.com")).toEqual(true);
+			expect(check("")).toEqual([{ type: "urlEmpty", actual: "", message: "The '' field must not be empty." }]);
+		});
 
         it('should check values', () => {
-            const check = v.compile({ $$root: true, type: 'url' });
+            const check = v.compile({ $$root: true, type: 'url' } as RuleURL);
             let message = 'The \'\' field must be a string.';
 
             expect(check(0)).toEqual([{ type: 'string', actual: 0, message }]);
@@ -19,7 +25,7 @@ describe('TypeScript Definitions', () => {
             expect(check(true)).toEqual([{ type: 'string', actual: true, message }]);
 
             message = 'The \'\' field must be a valid URL.';
-            expect(check('')).toEqual([{ type: 'url', actual: '', message }]);
+            expect(check('')).toEqual(true);
             expect(check('true')).toEqual([{ type: 'url', actual: 'true', message }]);
             expect(check('abcdefg')).toEqual([{ type: 'url', actual: 'abcdefg', message }]);
             expect(check('1234.c')).toEqual([{ type: 'url', actual: '1234.c', message }]);
