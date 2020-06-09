@@ -95,8 +95,9 @@ $ npm run bench
   - [`tuple`](#tuple)
     - [Properties](#properties-11)
   - [`url`](#url)
-  - [`uuid`](#uuid)
     - [Properties](#properties-12)
+  - [`uuid`](#uuid)
+    - [Properties](#properties-13)
 - [Custom validator](#custom-validator)
   - [Custom validation for built-in rules](#custom-validation-for-built-in-rules)
 - [Custom error messages (l10n)](#custom-error-messages-l10n)
@@ -983,6 +984,11 @@ v.validate({ url: "http://google.com" }, schema); // Valid
 v.validate({ url: "https://github.com/icebob" }, schema); // Valid
 v.validate({ url: "www.facebook.com" }, schema); // Fail
 ```
+
+### Properties
+Property | Default  | Description
+-------- | -------- | -----------
+`empty`  | `true`   | If `true`, the validator accepts an empty string "".
 
 ## `uuid`
 This is an UUID validator. 
