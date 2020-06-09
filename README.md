@@ -988,7 +988,7 @@ v.validate({ url: "www.facebook.com" }, schema); // Fail
 ### Properties
 Property | Default  | Description
 -------- | -------- | -----------
-`empty`  | `true`   | If `true`, the validator accepts an empty string "".
+`empty`  | `true`   | If `true`, the validator accepts an empty string `""`.
 
 ## `uuid`
 This is an UUID validator. 
