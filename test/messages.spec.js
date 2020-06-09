@@ -42,6 +42,7 @@ describe("Test Messages", () => {
 		expect(msg.dateMax).toBeDefined();
 		expect(msg.forbidden).toBeDefined();
 		expect(msg.email).toBeDefined();
+		expect(msg.emailEmpty).toBeDefined();
 		expect(msg.url).toBeDefined();
 		expect(msg.enumValue).toBeDefined();
 		expect(msg.equalValue).toBeDefined();
