@@ -5,10 +5,10 @@ const v = new Validator();
 
 describe("Test rule: email", () => {
 	it("should check empty values", () => {
-		const check = v.compile({ $$root: true, type: "email", empty: false });
+		const check = v.compile({ $$root: true, type: "email", empty: true });
 
 		expect(check("john.doe@company.net")).toEqual(true);
-		expect(check("")).toEqual([{ type: "emailEmpty", actual: "", message: "The '' field must not be empty." }]);
+		expect(check("")).toEqual(true);
 	});
 
 	it("should check values", () => {
@@ -17,7 +17,7 @@ describe("Test rule: email", () => {
 
 		expect(check(0)).toEqual([{ type: "string", actual: 0, message }]);
 		expect(check(1)).toEqual([{ type: "string", actual: 1, message }]);
-		expect(check("")).toEqual(true);
+		expect(check("")).toEqual([{ type: "emailEmpty", actual: "", message: "The '' field must not be empty." }]);
 		expect(check("true")).toEqual([{ type: "email", actual: "true", message: "The '' field must be a valid e-mail." }]);
 		expect(check([])).toEqual([{ type: "string", actual: [], message }]);
 		expect(check({})).toEqual([{ type: "string", actual: {}, message }]);

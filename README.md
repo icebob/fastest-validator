@@ -555,7 +555,7 @@ v.validate({ email: "abc@gmail" }, schema); // Fail
 ### Properties
 Property | Default  | Description
 -------- | -------- | -----------
-`empty`  | `true`   | If `true`, the validator accepts an empty array `""`.
+`empty`  | `false`   | If `true`, the validator accepts an empty array `""`.
 `mode`   | `quick`  | Checker method. Can be `quick` or `precise`.
 `normalize`   | `false`  | Normalize the e-mail address (trim & lower-case). _It's a sanitizer, it will change the value in the original object._
 
