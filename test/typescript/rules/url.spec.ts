@@ -7,10 +7,10 @@ const v: ValidatorType = new Validator();
 describe('TypeScript Definitions', () => {
     describe('Test rule: url', () => {
     	it("should check empty values", () => {
-			const check = v.compile({ $$root: true, type: "url", empty: false } as RuleURL);
+			const check = v.compile({ $$root: true, type: "url", empty: true } as RuleURL);
 
 			expect(check("https://google.com")).toEqual(true);
-			expect(check("")).toEqual([{ type: "urlEmpty", actual: "", message: "The '' field must not be empty." }]);
+			expect(check("")).toEqual(true);
 		});
 
         it('should check values', () => {
@@ -25,7 +25,7 @@ describe('TypeScript Definitions', () => {
             expect(check(true)).toEqual([{ type: 'string', actual: true, message }]);
 
             message = 'The \'\' field must be a valid URL.';
-            expect(check('')).toEqual(true);
+            expect(check('')).toEqual([{ type: "urlEmpty", actual: "", message: "The '' field must not be empty." }]);
             expect(check('true')).toEqual([{ type: 'url', actual: 'true', message }]);
             expect(check('abcdefg')).toEqual([{ type: 'url', actual: 'abcdefg', message }]);
             expect(check('1234.c')).toEqual([{ type: 'url', actual: '1234.c', message }]);
