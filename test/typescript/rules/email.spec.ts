@@ -1,18 +1,19 @@
-"use strict";
+/// <reference path="../../../index.d.ts" /> // here we make a reference to exists module definition
+import ValidatorType, {RuleEmail, RuleURL} from 'fastest-validator'; // here we importing type definition of default export
 
-const Validator = require("../../lib/validator");
-const v = new Validator();
+const Validator: typeof ValidatorType = require('../../../index'); // here we importing real Validator Constructor
+const v: ValidatorType = new Validator();
 
 describe("Test rule: email", () => {
 	it("should check empty values", () => {
-		const check = v.compile({ $$root: true, type: "email", empty: true });
+		const check = v.compile({ $$root: true, type: "email", empty: true } as RuleEmail);
 
 		expect(check("john.doe@company.net")).toEqual(true);
 		expect(check("")).toEqual(true);
 	});
 
 	it("should check values", () => {
-		const check = v.compile({ $$root: true, type: "email" });
+		const check = v.compile({ $$root: true, type: "email" } as RuleEmail);
 		const message = "The '' field must be a string.";
 
 		expect(check(0)).toEqual([{ type: "string", actual: 0, message }]);
@@ -26,7 +27,7 @@ describe("Test rule: email", () => {
 	});
 
 	it("should check values with quick pattern", () => {
-		const check = v.compile({ $$root: true, type: "email" });
+		const check = v.compile({ $$root: true, type: "email" } as RuleEmail);
 		const message = "The '' field must be a valid e-mail.";
 
 		expect(check("abcdefg")).toEqual([{ type: "email", actual: "abcdefg", message }]);
@@ -43,7 +44,7 @@ describe("Test rule: email", () => {
 	});
 
 	it("should check values", () => {
-		const check = v.compile({ $$root: true, type: "email", mode: "precise" });
+		const check = v.compile({ $$root: true, type: "email", mode: "precise" } as RuleEmail);
 		const message = "The '' field must be a valid e-mail.";
 
 		expect(check("abcdefg")).toEqual([{ type: "email", actual: "abcdefg", message }]);
@@ -58,7 +59,7 @@ describe("Test rule: email", () => {
 	});
 
 	it("should not normalize", () => {
-		const check = v.compile({ email: { type: "email" } });
+		const check = v.compile({ email: { type: "email" } as RuleEmail });
 
 		const obj = { email: "John.Doe@Gmail.COM" };
 		expect(check(obj)).toEqual(true);
@@ -68,7 +69,7 @@ describe("Test rule: email", () => {
 	});
 
 	it("should normalize", () => {
-		const check = v.compile({ email: { type: "email", normalize: true } });
+		const check = v.compile({ email: { type: "email", normalize: true } as RuleEmail });
 
 		const obj = { email: " John.Doe@Gmail.COM   " };
 		expect(check(obj)).toEqual(true);

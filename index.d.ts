@@ -132,6 +132,11 @@ declare module "fastest-validator" {
 		 */
 		type: "email";
 		/**
+		 * If true, the validator accepts an empty string ""
+		 * @default true
+		 */
+		empty?: boolean;
+		/**
 		 * Checker method. Can be quick or precise
 		 */
 		mode?: "quick" | "precise";
