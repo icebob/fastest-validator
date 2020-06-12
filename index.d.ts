@@ -425,6 +425,11 @@ declare module "fastest-validator" {
 		 * Name of built-in validator
 		 */
 		type: "url";
+		/**
+		 * If true, the validator accepts an empty string ""
+		 * @default true
+		 */
+		empty?: boolean;
 	}
 
 	/**
