@@ -840,7 +840,7 @@ declare module "fastest-validator" {
 
 	export type CheckerFunctionV1<T = unknown> = (
 		value: T,
-		ruleSchema: ValidationRule,
+		ruleSchema: ValidationRuleObject,
 		path: string,
 		parent: object | null,
 		context: Context
@@ -848,7 +848,7 @@ declare module "fastest-validator" {
 	export type CheckerFunctionV2<T = unknown> = (
 		value: T,
 		errors: CheckerFunctionError[],
-		ruleSchema: ValidationRule,
+		ruleSchema: ValidationRuleObject,
 		path: string,
 		parent: object | null,
 		context: Context
