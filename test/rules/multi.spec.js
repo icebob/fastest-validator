@@ -2,7 +2,7 @@
 
 const Validator = require("../../lib/validator");
 const v = new Validator({
-	useNewCustomCheckerFunction: true
+	useNewCustomCheckerFunction: true,
 });
 
 describe("Test rule: multi", () => {
@@ -28,7 +28,7 @@ describe("Test rule: multi", () => {
 		expect(fn).toBeCalledWith("s", [], schema.rules[0], "$$root", null, expect.any(Object));
 	});
 
-	it("should value equals to other field", () => {
-		// TODO: move from validator.spec.js
-	});
+	// it("should value equals to other field", () => {
+	// 	// TODO: move from validator.spec.js
+	// });
 });
