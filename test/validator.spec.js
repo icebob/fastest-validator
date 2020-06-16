@@ -49,6 +49,37 @@ describe("Test constructor", () => {
 		expect(v2.messages.numberMax).toBe("The '{field}' field must be less than or equal to {expected}.");
 	});
 
+	it("should set aliases", () => {
+		const aliases = {
+			a: { type: "string" },
+			b: { type: "string" }
+		};
+
+		const v = new Validator({
+			aliases
+		});
+
+		expect(v.aliases).toBeInstanceOf(Object);
+		expect(v.aliases.a).toEqual(aliases.a);
+		expect(v.aliases.b).toEqual(aliases.b);
+
+	});
+
+	it("should set customRules", () => {
+		const customRules = {
+			a: () => "",
+			b: () => ""
+		};
+
+		const v = new Validator({
+			customRules
+		});
+
+		expect(v.rules).toBeInstanceOf(Object);
+		expect(v.rules.a).toEqual(customRules.a);
+		expect(v.rules.b).toEqual(customRules.b);
+	});
+
 });
 
 describe("Test validate", () => {
