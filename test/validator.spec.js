@@ -80,6 +80,16 @@ describe("Test constructor", () => {
 		expect(v.rules.b).toEqual(customRules.b);
 	});
 
+	it("should apply plugins", () => {
+		const plugin = jest.fn();
+		const v = new Validator({
+			plugins: [plugin]
+		});
+
+		expect(plugin).toBeCalledTimes(1);
+		expect(plugin).toBeCalledWith(v);
+	});
+
 });
 
 describe("Test validate", () => {
@@ -622,6 +632,18 @@ describe("Test objects shorthand", () => {
 				}
 			})
 		).toEqual(expect.any(Array));
+	});
+});
+
+describe("Test plugins", () => {
+	const v = new Validator();
+
+	it("should apply plugin", () => {
+		const plugin = jest.fn();
+		v.plugin(plugin);
+
+		expect(plugin).toBeCalledTimes(1);
+		expect(plugin).toBeCalledWith(v);
 	});
 });
 
