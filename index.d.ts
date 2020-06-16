@@ -820,6 +820,13 @@ declare module "fastest-validator" {
 		aliases?: {
 			[key: string]: ValidationRuleObject
 		}
+
+		/**
+	 	 * For set custom rules.
+	 	 */
+		customRules?: {
+			[key: string]: CompilationFunction
+		}
 	}
 
 	export interface CompilationRule {

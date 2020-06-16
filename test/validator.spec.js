@@ -60,7 +60,24 @@ describe("Test constructor", () => {
 		});
 
 		expect(v.aliases).toBeInstanceOf(Object);
-		expect(v.aliases).toEqual(aliases);
+		expect(v.aliases.a).toEqual(aliases.a);
+		expect(v.aliases.b).toEqual(aliases.b);
+
+	});
+
+	it("should set customRules", () => {
+		const customRules = {
+			a: () => "",
+			b: () => ""
+		};
+
+		const v = new Validator({
+			customRules
+		});
+
+		expect(v.rules).toBeInstanceOf(Object);
+		expect(v.rules.a).toEqual(customRules.a);
+		expect(v.rules.b).toEqual(customRules.b);
 	});
 
 });
