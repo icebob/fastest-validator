@@ -9,11 +9,9 @@
 # fastest-validator [![NPM version](https://img.shields.io/npm/v/fastest-validator.svg)](https://www.npmjs.com/package/fastest-validator) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=The%20fastest%20JS%20validator%20library%20for%20NodeJS&url=https://github.com/icebob/fastest-validator&via=Icebobcsi&hashtags=nodejs,javascript)
 :zap: The fastest JS validator library for NodeJS | Browser | Deno.
 
-**If you like my work, please [donate](https://www.paypal.me/meregnorbert). Thank you!**
-
 ## Key features
 * blazing fast! Really!
-* 15+ built-in validators
+* 20+ built-in validators
 * many sanitizations
 * custom validators & aliases
 * nested objects & array handling
