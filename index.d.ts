@@ -813,6 +813,13 @@ declare module "fastest-validator" {
 		defaults?: {
 			[key in ValidationRuleName]: ValidationSchema;
 		};
+
+		/**
+	 	 * For set aliases
+	 	 */
+		aliases?: {
+			[key: string]: ValidationRuleObject
+		}
 	}
 
 	export interface CompilationRule {
@@ -894,11 +901,11 @@ declare module "fastest-validator" {
 		add(type: string, fn: CompilationFunction): void;
 
 		/**
-		 * Register a custom validation rule in validation object
+		 * Register an alias in validation object
 		 * @param {string} name
-		 * @param validationRule
+		 * @param {ValidationRuleObject} validationRule
 		 */
-		alias(name: string, validationRule: ValidationRule): void;
+		alias(name: string, validationRule: ValidationRuleObject): void;
 
 		/**
 		 * Build error message
