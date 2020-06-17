@@ -827,6 +827,11 @@ declare module "fastest-validator" {
 		customRules?: {
 			[key: string]: CompilationFunction
 		}
+
+		/**
+	 	 * For set plugins.
+	 	 */
+		plugins?: PluginFn<any>[]
 	}
 
 	export interface CompilationRule {
@@ -878,6 +883,8 @@ declare module "fastest-validator" {
 		context: Context
 	) => { sanitized?: boolean; source: string };
 
+	export type PluginFn<T = void> = (validator: Validator) => T
+
 	export default class Validator {
 		/**
 		 * List of possible error messages
@@ -913,6 +920,13 @@ declare module "fastest-validator" {
 		 * @param {ValidationRuleObject} validationRule
 		 */
 		alias(name: string, validationRule: ValidationRuleObject): void;
+
+		/**
+	 	 * Add a plugin
+	 	 *
+		 * @param {Function} fn
+	 	*/
+		plugin<T = void>(fn: PluginFn<T>): T
 
 		/**
 		 * Build error message

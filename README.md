@@ -102,6 +102,7 @@ $ npm run bench
 - [Personalised Messages](#personalised-messages)
 - [Message types](#message-types)
   - [Message fields](#message-fields)
+- [Plugins](#plugins)
 - [Development](#development)
 - [Test](#test)
   - [Coverage report](#coverage-report)
@@ -1199,6 +1200,21 @@ v.validate({ firstname: "John", lastname: 23 }, schema );
 ]
 */
 ```
+# Plugins
+You can apply plugins:
+```js
+// Plugin Side
+function myPlugin(validator){
+    // you can modify validator here
+    // e.g.: validator.add(...)
+}
+
+// Validator Side
+const v = new Validator();
+v.plugin(myPlugin)
+
+```
+
 # Message types
 Name                | Default text
 ------------------- | -------------
