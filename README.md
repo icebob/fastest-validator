@@ -9,11 +9,9 @@
 # fastest-validator [![NPM version](https://img.shields.io/npm/v/fastest-validator.svg)](https://www.npmjs.com/package/fastest-validator) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=The%20fastest%20JS%20validator%20library%20for%20NodeJS&url=https://github.com/icebob/fastest-validator&via=Icebobcsi&hashtags=nodejs,javascript)
 :zap: The fastest JS validator library for NodeJS | Browser | Deno.
 
-**If you like my work, please [donate](https://www.paypal.me/meregnorbert). Thank you!**
-
 ## Key features
 * blazing fast! Really!
-* 15+ built-in validators
+* 20+ built-in validators
 * many sanitizations
 * custom validators & aliases
 * nested objects & array handling
@@ -104,6 +102,7 @@ $ npm run bench
 - [Personalised Messages](#personalised-messages)
 - [Message types](#message-types)
   - [Message fields](#message-fields)
+- [Plugins](#plugins)
 - [Development](#development)
 - [Test](#test)
   - [Coverage report](#coverage-report)
@@ -1201,6 +1200,21 @@ v.validate({ firstname: "John", lastname: 23 }, schema );
 ]
 */
 ```
+# Plugins
+You can apply plugins:
+```js
+// Plugin Side
+function myPlugin(validator){
+    // you can modify validator here
+    // e.g.: validator.add(...)
+}
+
+// Validator Side
+const v = new Validator();
+v.plugin(myPlugin)
+
+```
+
 # Message types
 Name                | Default text
 ------------------- | -------------

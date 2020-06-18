@@ -49,6 +49,47 @@ describe("Test constructor", () => {
 		expect(v2.messages.numberMax).toBe("The '{field}' field must be less than or equal to {expected}.");
 	});
 
+	it("should set aliases", () => {
+		const aliases = {
+			a: { type: "string" },
+			b: { type: "string" }
+		};
+
+		const v = new Validator({
+			aliases
+		});
+
+		expect(v.aliases).toBeInstanceOf(Object);
+		expect(v.aliases.a).toEqual(aliases.a);
+		expect(v.aliases.b).toEqual(aliases.b);
+
+	});
+
+	it("should set customRules", () => {
+		const customRules = {
+			a: () => "",
+			b: () => ""
+		};
+
+		const v = new Validator({
+			customRules
+		});
+
+		expect(v.rules).toBeInstanceOf(Object);
+		expect(v.rules.a).toEqual(customRules.a);
+		expect(v.rules.b).toEqual(customRules.b);
+	});
+
+	it("should apply plugins", () => {
+		const plugin = jest.fn();
+		const v = new Validator({
+			plugins: [plugin]
+		});
+
+		expect(plugin).toBeCalledTimes(1);
+		expect(plugin).toBeCalledWith(v);
+	});
+
 });
 
 describe("Test validate", () => {
@@ -428,7 +469,7 @@ describe("Test custom validation v1", () => {
 	});
 });
 
-describe("Test custom validation v2", () => {
+describe("Test custom validation", () => {
 	const v = new Validator({
 		useNewCustomCheckerFunction: true,
 		messages: {
@@ -467,6 +508,25 @@ describe("Test custom validation v2", () => {
 		expect(check({num: 8})[0].type).toEqual("numberMin");
 		expect(check({num: 18})[0].type).toEqual("numberMax");
 		expect(check({num: 13})[0].type).toEqual("evenNumber");
+	});
+
+	it("should call checker function after build-in rule", () => {
+		// depended to number rule
+		const checkerFn = jest.fn((v) => v);
+
+		const schema = {
+			a: {
+				type: "number",
+				convert: true,
+				custom: checkerFn
+			}
+		};
+		const check = v.compile(schema);
+		const o = { a: "123" };
+
+		expect(check(o)).toBe(true);
+		expect(checkerFn).toBeCalledTimes(1);
+		expect(checkerFn.mock.calls[0][0]).toBe(123);
 	});
 });
 
@@ -572,6 +632,18 @@ describe("Test objects shorthand", () => {
 				}
 			})
 		).toEqual(expect.any(Array));
+	});
+});
+
+describe("Test plugins", () => {
+	const v = new Validator();
+
+	it("should apply plugin", () => {
+		const plugin = jest.fn();
+		v.plugin(plugin);
+
+		expect(plugin).toBeCalledTimes(1);
+		expect(plugin).toBeCalledWith(v);
 	});
 });
 
