@@ -1,3 +1,9 @@
+<a name="1.5.1"></a>
+# 1.5.1 (2020-06-19)
+
+## Changes
+- Fixing issue with pattern & empty handling in `string` rule [#165](https://github.com/icebob/fastest-validator/issues/165)
+ 
 --------------------------------------------------
 <a name="1.5.0"></a>
 # 1.5.0 (2020-06-18)
