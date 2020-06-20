@@ -1,4 +1,84 @@
+<a name="1.5.1"></a>
+# 1.5.1 (2020-06-19)
+
+## Changes
+- Fixing issue with pattern & empty handling in `string` rule [#165](https://github.com/icebob/fastest-validator/issues/165)
+ 
 --------------------------------------------------
+<a name="1.5.0"></a>
+# 1.5.0 (2020-06-18)
+
+## New `tuple` validation rule
+Thanks for [@Gamote](https://github.com/Gamote), in this version there is a new `tuple`. This rule checks if a value is an `Array` with the elements order as described by the schema.
+
+**Example**
+```js
+const schema = {
+    grade: { type: "tuple", items: ["string", "number", "string"] }
+};
+```
+
+```js
+const schema = {
+    location: { type: "tuple", empty: false, items: [
+        { type: "number", min: 35, max: 45 },
+        { type: "number", min: -75, max: -65 }
+    ] }
+}
+```
+
+## Define aliases & custom rules in constructor options [#162](https://github.com/icebob/fastest-validator/issues/162)
+You can define aliases & custom rules in constructor options instead of using `v.alias` and `v.add`.
+
+**Example**
+
+```js
+const v = new Validator({
+    aliases: {
+        username: {
+            type: 'string',
+            min: 4,
+            max: 30
+        }
+    },
+    customRules: {
+        even: function({ schema, messages }, path, context) {
+            return {
+                source: `
+                    if (value % 2 != 0)
+                        ${this.makeError({ type: "evenNumber",  actual: "value", messages })}
+
+                    return value;
+                `
+            };
+        })
+    }
+});
+```
+
+## Support plugins
+Thanks for [@erfanium](https://github.com/erfanium), you can create plugin for `fastest-validator`.
+
+**Example**
+```js
+// Plugin Side
+function myPlugin(validator){
+    // you can modify validator here
+    // e.g.: validator.add(...)
+    // or  : validator.alias(...)
+}
+// Validator Side
+const v = new Validator();
+v.plugin(myPlugin)
+```
+
+## Changes
+- Allow `empty` property in  `string` rule with pattern [#149](https://github.com/icebob/fastest-validator/issues/149)
+- Add `empty` property to `url` and `email` rule [#150](https://github.com/icebob/fastest-validator/issues/150)
+- Fix custom rule issue when multiple rules [#155](https://github.com/icebob/fastest-validator/issues/155)
+- Update type definition [#156](https://github.com/icebob/fastest-validator/issues/156)
+ 
+ --------------------------------------------------
 <a name="1.4.2"></a>
 # 1.4.2 (2020-06-03)
 

@@ -27,8 +27,17 @@ describe("Test rule: string", () => {
 		expect(check("")).toEqual([{ type: "stringEmpty", actual: "", message: "The '' field must not be empty." }]);
 	});
 
-	it("check empty values (using pattern and empty=true)", () => {
+	it("check empty values (using pattern without defining empty value)", () => {
 		const check = v.compile({ $$root: true, type: "string", pattern: "^fastest" });
+
+		expect(check("fastest-validator")).toEqual(true);
+		expect(check("")).toEqual([
+			{ type: "stringPattern", actual: "", "expected": "/^fastest/", message: "The '' field fails to match the required pattern." },
+		]);
+	});
+
+	it("check empty values (using pattern and empty=true)", () => {
+		const check = v.compile({ $$root: true, type: "string", pattern: "^fastest", empty: true });
 
 		expect(check("fastest-validator")).toEqual(true);
 		expect(check("")).toEqual(true);
@@ -79,11 +88,11 @@ describe("Test rule: string", () => {
 		expect(check("JOHN")).toEqual(true);
 	});
 
-	it('check pattern with a quote', () => {
-		const check = v.compile({ $$root: true, type: 'string', pattern: /^[a-z0-9 .\-'?!":;\\/,_]+$/i });
+	it("check pattern with a quote", () => {
+		const check = v.compile({ $$root: true, type: "string", pattern: /^[a-z0-9 .\-'?!":;\\/,_]+$/i });
 
-		expect(check('John^')).toEqual([{ field: undefined, type: 'stringPattern', expected: '/^[a-z0-9 .\-\'?!":;\\/,_]+$/i', actual: 'John^', message: 'The \'\' field fails to match the required pattern.' }]);
-		expect(check('JOHN')).toEqual(true);
+		expect(check("John^")).toEqual([{ field: undefined, type: "stringPattern", expected: "/^[a-z0-9 .\-'?!\":;\\/,_]+$/i", actual: "John^", message: "The '' field fails to match the required pattern." }]);
+		expect(check("JOHN")).toEqual(true);
 	});
 
 	it("check contains", () => {
