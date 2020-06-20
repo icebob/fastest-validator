@@ -647,3 +647,9 @@ describe("Test plugins", () => {
 	});
 });
 
+describe("Test addMessage" , () => {
+	const v = new Validator();
+	v.addMessage("string", "C");
+	expect(v.messages.string).toBe("C");
+});
+
