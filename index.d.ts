@@ -915,6 +915,14 @@ declare module "fastest-validator" {
 		add(type: string, fn: CompilationFunction): void;
 
 		/**
+	 	 * Add a message
+	 	 *
+	 	 * @param {String} name
+	 	 * @param {String} message
+	 	 */
+		addMessage(name: string, message: string): void
+
+		/**
 		 * Register an alias in validation object
 		 * @param {string} name
 		 * @param {ValidationRuleObject} validationRule
