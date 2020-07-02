@@ -60,4 +60,24 @@ describe("Test rule: uuid", () => {
 		expect(check5("fdda765f-fc57-5604-a269-52a7df8164ec")).toEqual(true);
 
 	});
+
+	it("should not be case insensitive", () => {
+		const check1 = v.compile({ $$root: true, type: "uuid", version: 1 });
+		const check2 = v.compile({ $$root: true, type: "uuid", version: 2 });
+		const check3 = v.compile({ $$root: true, type: "uuid", version: 3 });
+		const check4 = v.compile({ $$root: true, type: "uuid", version: 4 });
+		const check5 = v.compile({ $$root: true, type: "uuid", version: 5 });
+
+		expect(check1("45745c60-7b1a-11e8-9c9c-2d42b21b1a3e")).toEqual(true);
+		expect(check2("9a7b330a-a736-21e5-af7f-feaf819cdc9f")).toEqual(true);
+		expect(check3("9125a8dc-52ee-365b-a5aa-81b0b3681cf6")).toEqual(true);
+		expect(check4("10ba038e-48da-487b-96e8-8d3b99b6d18a")).toEqual(true);
+		expect(check5("fdda765f-fc57-5604-a269-52a7df8164ec")).toEqual(true);
+		
+		expect(check1("45745C60-7B1A-11E8-9C9C-2D42B21B1A3E")).toEqual(true);
+		expect(check2("9A7B330A-A736-21E5-AF7F-FEAF819CDC9F")).toEqual(true);
+		expect(check3("9125A8DC-52EE-365B-A5AA-81B0B3681CF6")).toEqual(true);
+		expect(check4("10BA038E-48DA-487B-96E8-8D3B99B6D18A")).toEqual(true);
+		expect(check5("FDDA765F-FC57-5604-A269-52A7DF8164EC")).toEqual(true);
+	});
 });
