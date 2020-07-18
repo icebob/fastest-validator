@@ -96,6 +96,8 @@ $ npm run bench
     - [Properties](#properties-12)
   - [`uuid`](#uuid)
     - [Properties](#properties-13)
+  - [`objectID`](#objectID)
+    - [Properties](#properties-14)
 - [Custom validator](#custom-validator)
   - [Custom validation for built-in rules](#custom-validation-for-built-in-rules)
 - [Custom error messages (l10n)](#custom-error-messages-l10n)
@@ -1006,6 +1008,47 @@ v.validate({ uuid: "10ba038e-48da-487b-96e8-8d3b99b6d18a", version: 5 }, schema)
 Property | Default  | Description
 -------- | -------- | -----------
 `version`  | `4`   | UUID version in range 1-5.
+
+## `objectID`
+You can validate BSON/MongoDB ObjectID's
+```js
+const  { ObjectID } = require("mongodb") // or anywhere else 
+
+const schema = {
+    id: {
+        type: "objectID",
+        ObjectID // passing the ObjectID class
+    }  
+}
+
+const check = v.compile(schema);
+check({ id: "5f082780b00cc7401fb8e8fc" }) // ok
+check({ id: new ObjectID() }) // ok
+check({ id: "5f082780b00cc7401fb8e8" }) // Error
+```
+
+**Pro tip:**  By using defaults props for objectID rule, No longer needed to pass `ObjectID` class in validation schema:
+
+```js
+const  { ObjectID } = require("mongodb") // or anywhere else 
+
+const v = new Validator({
+    defaults: {
+        objectID: {
+            ObjectID
+        }
+    }
+})
+
+const schema = {
+    id: "objectID" 
+}
+```
+
+### Properties
+Property | Default  | Description
+-------- | -------- | -----------
+`convert`  | `false`   | If `true`, the validator converts ObjectID HexString representation to ObjectID insurance
 
 
 # Custom validator
