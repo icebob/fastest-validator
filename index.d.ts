@@ -328,6 +328,24 @@ declare module "fastest-validator" {
 		maxProps?: number;
 	}
 
+	export interface RuleObjectID extends RuleCustom {
+		/**
+		 * Name of built-in validator
+		 */
+		type: "objectID";
+		/**
+		 * To inject ObjectID dependency
+		 */
+		ObjectID?: {
+			new (id?: string | number | ObjectIdAbstract): ObjectIdAbstract;
+			isValid(o: any): boolean;
+		};
+		/**
+		 * Convert HexStringObjectID to ObjectID
+		 */
+		convert?: boolean;
+	}
+
 	/**
 	 * Validation schema definition for "string" built-in validator
 	 * @see https://github.com/icebob/fastest-validator#string
@@ -727,6 +745,7 @@ declare module "fastest-validator" {
 		| RuleMulti
 		| RuleNumber
 		| RuleObject
+		| RuleObjectID
 		| RuleString
 		| RuleTuple
 		| RuleURL
@@ -815,23 +834,23 @@ declare module "fastest-validator" {
 		};
 
 		/**
-	 	 * For set aliases
-	 	 */
+		 * For set aliases
+		 */
 		aliases?: {
-			[key: string]: ValidationRuleObject
-		}
+			[key: string]: ValidationRuleObject;
+		};
 
 		/**
-	 	 * For set custom rules.
-	 	 */
+		 * For set custom rules.
+		 */
 		customRules?: {
-			[key: string]: CompilationFunction
-		}
+			[key: string]: CompilationFunction;
+		};
 
 		/**
-	 	 * For set plugins.
-	 	 */
-		plugins?: PluginFn<any>[]
+		 * For set plugins.
+		 */
+		plugins?: PluginFn<any>[];
 	}
 
 	export interface CompilationRule {
@@ -883,7 +902,13 @@ declare module "fastest-validator" {
 		context: Context
 	) => { sanitized?: boolean; source: string };
 
-	export type PluginFn<T = void> = (validator: Validator) => T
+	export type PluginFn<T = void> = (validator: Validator) => T;
+
+	export class ObjectIdAbstract {
+		static isValid(o: any): boolean;
+		constructor(id?: string | number | ObjectIdAbstract);
+		toHexString(): string;
+	}
 
 	export default class Validator {
 		/**
@@ -915,12 +940,12 @@ declare module "fastest-validator" {
 		add(type: string, fn: CompilationFunction): void;
 
 		/**
-	 	 * Add a message
-	 	 *
-	 	 * @param {String} name
-	 	 * @param {String} message
-	 	 */
-		addMessage(name: string, message: string): void
+		 * Add a message
+		 *
+		 * @param {String} name
+		 * @param {String} message
+		 */
+		addMessage(name: string, message: string): void;
 
 		/**
 		 * Register an alias in validation object
@@ -930,11 +955,11 @@ declare module "fastest-validator" {
 		alias(name: string, validationRule: ValidationRuleObject): void;
 
 		/**
-	 	 * Add a plugin
-	 	 *
+		 * Add a plugin
+		 *
 		 * @param {Function} fn
-	 	*/
-		plugin<T = void>(fn: PluginFn<T>): T
+		 */
+		plugin<T = void>(fn: PluginFn<T>): T;
 
 		/**
 		 * Build error message
@@ -960,7 +985,7 @@ declare module "fastest-validator" {
 		 * @return {(value: any) => (true | ValidationError[])} function that can be used next for validation of current schema
 		 */
 		compile<T = any>(
-		  schema: ValidationSchema<T> | ValidationSchema<T>[],
+			schema: ValidationSchema<T> | ValidationSchema<T>[]
 		): (value: any) => true | ValidationError[];
 
 		/**

@@ -12,7 +12,7 @@ describe("Test constructor", () => {
 		expect(v.validate).toBeInstanceOf(Function);
 		expect(v.add).toBeInstanceOf(Function);
 
-		expect(Object.keys(v.rules).length).toBe(20);
+		expect(Object.keys(v.rules).length).toBe(21);
 	});
 
 	it("should create instance with custom messages", () => {
