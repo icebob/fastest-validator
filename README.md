@@ -292,7 +292,7 @@ The library contains several sanitizaters. **Please note, the sanitizers change 
 ## Default values
 The most common sanitizer is the `default` property. With it, you can define a default value for all properties. If the property value is `null` or `undefined`, the validator set the defined default value into the property.
 
-**Default value example**:
+**Static Default value example**:
 ```js
 const schema = {
     roles: { type: "array", items: "string", default: ["user"] },
@@ -307,6 +307,27 @@ console.log(obj);
 {
     roles: ["user"],
     status: true
+}
+*/
+``` 
+**Dynamic Default value**:
+Also you can use dynamic default value by defining a function that returns a value. For example, in the following code, if `createdAt` field not defined in object`, the validator sets the current time into the property:
+
+```js
+const schema = {
+    createdAt: {
+        type: "date",
+        default: () => new Date()
+    }
+};
+
+const obj = {}
+
+v.validate(obj, schema); // Valid
+console.log(obj);
+/*
+{
+    createdAt: Date(2020-07-25T13:17:41.052Z)
 }
 */
 ```
