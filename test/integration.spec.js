@@ -987,22 +987,21 @@ describe("Test strict schema restriction on sub-level", () => {
 describe("Test default value sanitizer", () => {
 	const v = new Validator();
 
-	let schema = {
-		id: { type: "number", default: 5 },
-		name: { type: "string", default: "John" },
-		age: { type: "number", optional: true, default: 33 },
-		roles: { type: "array", items: "string", default: ["user"] },
-		status: { type: "boolean", default: true }
-	};
-	let check = v.compile(schema);
-
-	it("should fill not defined properties", () => {
-		let obj = {
+	it("should fill not defined properties with static value", () => {
+		const schema = {
+			id: { type: "number", default: 5 },
+			name: { type: "string", default: "John" },
+			age: { type: "number", optional: true, default: 33 },
+			roles: { type: "array", items: "string", default: ["user"] },
+			status: { type: "boolean", default: true }
+		};
+		const check = v.compile(schema);
+		const obj = {
 			name: null,
 			status: false
 		};
 
-		let res = check(obj);
+		const res = check(obj);
 
 		expect(res).toBe(true);
 		expect(obj).toEqual({
@@ -1012,6 +1011,24 @@ describe("Test default value sanitizer", () => {
 			roles: ["user"],
 			status: false
 		});
+	});
+
+	it("should fill not defined properties with dynamic value", () => {
+		let number = { value: 0 };
+		const check = v.compile({
+			a: {
+				type: "number",
+				default: () => number.value++
+			}
+		});
+
+		const o = {};
+
+		expect(check(o)).toBe(true);
+		expect(o.a).toBe(0);
+		delete o.a;
+		check(o);
+		expect(o.a).toBe(1);
 	});
 });
 
