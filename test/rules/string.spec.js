@@ -178,6 +178,18 @@ describe("Test rule: string", () => {
 		expect(check("0123456789abcDEF")).toEqual(true);
 	});
 
+	it("check singleLine string", () => {
+		const check = v.compile({ $$root: true, type: "string", singleLine: true});
+		const message = "The '' field must be a single line string.";
+
+		expect(check("abc")).toEqual(true);
+		expect(check("abc\n")).toEqual([{type: "stringSingleLine", message }]);
+		expect(check(`
+			abc
+			def
+		`)).toEqual([{type: "stringSingleLine", message }]);
+	});
+
 	it("should convert & check values", () => {
 		const check = v.compile({ $$root: true, type: "string", convert: true });
 		expect(check("")).toEqual(true);

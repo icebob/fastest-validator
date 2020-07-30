@@ -401,9 +401,15 @@ declare module "fastest-validator" {
 		 */
 		alphadash?: boolean;
 		/**
-		 * The value must be a hex string that contains dashes
+		 * The value must be a hex string
+		 * @default false
 		 */
 		hex?: boolean;
+		/**
+		 * The value must be a singleLine string
+		 * @default false
+		 */
+		singleLine?: boolean;
 		/**
 		 * if true and the type is not a String, converts with String()
 		 * @default false
