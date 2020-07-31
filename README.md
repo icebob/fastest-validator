@@ -1028,7 +1028,7 @@ v.validate({ uuid: "10ba038e-48da-487b-96e8-8d3b99b6d18a", version: 5 }, schema)
 ### Properties
 Property | Default  | Description
 -------- | -------- | -----------
-`version`  | `4`   | UUID version in range 1-5.
+`version`  | `4`   | UUID version in range 1-6.
 
 ## `objectID`
 You can validate BSON/MongoDB ObjectID's
