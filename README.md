@@ -916,8 +916,8 @@ Property | Default  | Description
 `numeric`   | `null`   | The value must be a numeric string.
 `alphanum`   | `null`   | The value must be an alphanumeric string.
 `alphadash`   | `null`   | The value must be an alphabetic string that contains dashes.
-`hex`   | `null`   | The value must be a single line string.
-`singleLine`   | `null`   | The value must be a hex string.
+`hex`   | `null`   | The value must be a hex string.
+`singleLine`   | `null`   | The value must be a single line string.
 `trim`   | `null`   | If `true`, the value will be trimmed. _It's a sanitizer, it will change the value in the original object._
 `trimLeft`   | `null`   | If `true`, the value will be left trimmed. _It's a sanitizer, it will change the value in the original object._
 `trimRight`   | `null`   | If `true`, the value will be right trimmed. _It's a sanitizer, it will change the value in the original object._
