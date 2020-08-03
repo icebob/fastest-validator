@@ -181,6 +181,19 @@ describe('TypeScript Definitions', () => {
             expect(check(new Date())).toEqual(true);
         });
 
+        it("check singleLine string", () => {
+            const schema: RuleString = { $$root: true, type: "string", singleLine: true }
+            const check = v.compile(schema);
+            const message = "The '' field must be a single line string.";
+    
+            expect(check("abc")).toEqual(true);
+            expect(check("abc\n")).toEqual([{type: "stringSingleLine", message }]);
+            expect(check(`
+                abc
+                def
+            `)).toEqual([{type: "stringSingleLine", message }]);
+        });
+
         describe('Test sanitization', () => {
 
             it('should convert & check values', () => {
