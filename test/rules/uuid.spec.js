@@ -61,7 +61,7 @@ describe("Test rule: uuid", () => {
 		expect(check3("9125a8dc-52ee-365b-a5aa-81b0b3681cf6")).toEqual(true);
 		expect(check4("10ba038e-48da-487b-96e8-8d3b99b6d18a")).toEqual(true);
 		expect(check5("fdda765f-fc57-5604-a269-52a7df8164ec")).toEqual(true);
-		expect(check5("a9030619-8514-6970-e0f9-81b9ceb08a5f")).toEqual(true);
+		expect(check6("a9030619-8514-6970-e0f9-81b9ceb08a5f")).toEqual(true);
 
 	});
 
