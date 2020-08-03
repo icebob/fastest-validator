@@ -1297,7 +1297,7 @@ Name                | Default text
 `stringAlphanum`	| The '{field}' field must be an alphanumeric string.
 `stringAlphadash`	| The '{field}' field must be an alphadash string.
 `stringHex`	| The '{field}' field must be a hex string.
-`stringSingleLIne`	| The '{field}' field must be a single line string.
+`stringSingleLine`	| The '{field}' field must be a single line string.
 `number`	| The '{field}' field must be a number.
 `numberMin`	| The '{field}' field must be greater than or equal to {expected}.
 `numberMax`	| The '{field}' field must be less than or equal to {expected}.
