@@ -1,3 +1,57 @@
+--------------------------------------------------
+<a name="1.6.0"></a>
+# 1.6.0 (2020-08-06)
+
+## New `objectID` rule
+You can validate BSON/MongoDB ObjectID's
+
+**Example**
+```js
+const  { ObjectID } = require("mongodb") // or anywhere else 
+const schema = {
+    id: {
+        type: "objectID",
+        ObjectID // passing the ObjectID class
+    }  
+}
+const check = v.compile(schema);
+check({ id: "5f082780b00cc7401fb8e8fc" }) // ok
+check({ id: new ObjectID() }) // ok
+check({ id: "5f082780b00cc7401fb8e8" }) // Error
+```
+
+## Dynamic default value
+You can use dynamic default value by defining a function that returns a value.
+
+**Example**
+In the following code, if `createdAt` field not defined in object`, the validator sets the current time into the property:
+```js
+const schema = {
+    createdAt: {
+        type: "date",
+        default: () => new Date()
+    }
+};
+const obj = {}
+v.validate(obj, schema); // Valid
+console.log(obj);
+/*
+{
+    createdAt: Date(2020-07-25T13:17:41.052Z)
+}
+*/
+```
+
+## Changes
+- Add support for uuid v6. [#181](https://github.com/icebob/fastest-validator/issues/181)
+- Add `addMessage` method for using in plugins [#166](https://github.com/icebob/fastest-validator/issues/166)
+- Fix uppercase uuid issue. [#176](https://github.com/icebob/fastest-validator/issues/176)
+- Add `singleLine` property to `string` rule. [#180](https://github.com/icebob/fastest-validator/issues/180)
+
+## Credits
+Many thanks to @intech and @erfanium for contributing.
+
+--------------------------------------------------
 <a name="1.5.1"></a>
 # 1.5.1 (2020-06-19)
 
