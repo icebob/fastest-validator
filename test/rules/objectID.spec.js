@@ -27,4 +27,13 @@ describe("Test rule: objectID", () => {
 		expect(o.id).toBeInstanceOf(ObjectID);
 		expect(o.id).toEqual(oid);
 	});
+
+	it("should catch hexString problems when convert: true", () => {
+		const message = "The 'id' field must be an valid ObjectID";
+		const check = v.compile({ id: { type: "objectID", ObjectID, convert: true } });
+
+		const badID = "5f082780b00cc7401fb8";
+		const o = { id: badID };
+		expect(check(o)).toEqual([{ type: "objectID", field: "id", actual: badID, message }]);
+	});
 });
