@@ -561,6 +561,9 @@ Property | Default  | Description
 -------- | -------- | -----------
 `currencySymbol` | `null` | The currency symbol expected in string (as prefix).
 `symbolOptional` | `false` | Toggle to make the symbol optional in string, although, if present it would only allow the currencySymbol.
+`thousandSeparator` | `,` | Thousand place separator character.
+`decimalSeparator` | `.` | Decimal place character.
+`customRegex` | `null` | Custom regular expression, to validate currency strings (For eg:  /[0-9]*/g).
 
 ## `date`
 This is a `Date` validator.
