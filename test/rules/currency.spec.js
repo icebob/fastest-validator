@@ -13,7 +13,7 @@ describe("Test rule: currency", () => {
 		expect(check("$1.22.00")).toEqual([{"actual": "$1.22.00", "field": undefined, "message": "The '' must be a valid currency format", "type": "currency"}]);
 	});
 
-	it("should check comma placement is correct", () => {
+	it("should check thousand separator placement is correct", () => {
 		const check = v.compile({$$root: true, type: "currency", 'currencySymbol': '$', 'symbolOptional': true});
 		expect(check("$12.2")).toEqual(true);
 		expect(check("$12,222.2")).toEqual(true);
@@ -40,5 +40,26 @@ describe("Test rule: currency", () => {
 		expect(check("12.2")).toEqual(true);
 		expect(check("#12.2")).toEqual([{"actual": "#12.2", "field": undefined, "message": "The '' must be a valid currency format", "type": "currency"}]
 		);
+	});
+
+	it("should allow negative currencies", () => {
+		let check = v.compile({$$root: true, type: "currency", 'currencySymbol': '$', 'symbolOptional': true});
+		expect(check("-12.2")).toEqual(true);
+		expect(check("$-12.2")).toEqual(true);
+		expect(check("-$12.2")).toEqual(true);
+		expect(check("-$-12.2")).toEqual([{"actual": "-$-12.2", "field": undefined, "message": "The '' must be a valid currency format", "type": "currency"}]);
+	});
+
+	it("should work correctly with supplied thousand and decimal separator", () => {
+		let check = v.compile({$$root: true, type: "currency", 'currencySymbol': '$', 'symbolOptional': true, 'thousandSeparator':'.', 'decimalSeparator':','});
+		expect(check("$12,2")).toEqual(true);
+		expect(check("$12.222")).toEqual(true);
+		expect(check("$12.222,2")).toEqual(true);
+		expect(check("$12,222.2")).toEqual([{"actual": "$12,222.2", "field": undefined, "message": "The '' must be a valid currency format", "type": "currency"}]);
+	});
+	it("should work correctly with supplied regex pattern", () => {
+		let check = v.compile({$$root: true, type: "currency", 'customRegex': /123/g});
+		expect(check("123")).toEqual(true);
+		expect(check("134")).toEqual([{"actual": "134", "field": undefined, "message": "The '' must be a valid currency format", "type": "currency"}]);
 	});
 });
