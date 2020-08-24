@@ -2,6 +2,7 @@
 
 const Validator = require("../../lib/validator");
 const v = new Validator();
+const anyRule = require("../../lib/rules/any");
 
 describe("Test rule: any", () => {
 
@@ -31,5 +32,9 @@ describe("Test rule: any", () => {
 		expect(check("false")).toEqual(true);
 		expect(check([])).toEqual(true);
 		expect(check({})).toEqual(true);
+	});
+
+	it("should have source code", () => {
+		expect(anyRule().source).toBeTruthy();
 	});
 });
