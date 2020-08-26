@@ -70,33 +70,34 @@ $ npm run bench
     - [Properties](#properties-1)
   - [`class`](#class)
     - [Properties](#properties-2)
-  - [`date`](#date)
+  - [`currency`](#currency)
     - [Properties](#properties-3)
-  - [`email`](#email)
+  - [`date`](#date)
     - [Properties](#properties-4)
-  - [`enum`](#enum)
+  - [`email`](#email)
     - [Properties](#properties-5)
-  - [`equal`](#equal)
+  - [`enum`](#enum)
     - [Properties](#properties-6)
-  - [`forbidden`](#forbidden)
+  - [`equal`](#equal)
     - [Properties](#properties-7)
+  - [`forbidden`](#forbidden)
+    - [Properties](#properties-8)
   - [`function`](#function)
   - [`luhn`](#luhn)
   - [`mac`](#mac)
   - [`multi`](#multi)
   - [`number`](#number)
-    - [Properties](#properties-8)
-  - [`object`](#object)
     - [Properties](#properties-9)
-  - [`string`](#string)
+  - [`object`](#object)
     - [Properties](#properties-10)
-  - [`tuple`](#tuple)
+  - [`string`](#string)
     - [Properties](#properties-11)
-  - [`url`](#url)
+  - [`tuple`](#tuple)
     - [Properties](#properties-12)
-  - [`uuid`](#uuid)
+  - [`url`](#url)
     - [Properties](#properties-13)
   - [`objectID`](#objectID)
+  - [`uuid`](#uuid)
     - [Properties](#properties-14)
 - [Custom validator](#custom-validator)
   - [Custom validation for built-in rules](#custom-validation-for-built-in-rules)
@@ -536,6 +537,33 @@ v.validate({ rawData: 100 }, schema); // Fail
 Property | Default  | Description
 -------- | -------- | -----------
 `instanceOf` | `null` | Checked Class.
+
+## `currency`
+This is a `Currency` validator to check if the value is a valid currency string.
+
+```js
+const schema = {
+    money_amount: { type: "currency", currencySymbol: '$' }
+}
+
+v.validate({ money_amount: '$12.99'}, schema); // Valid
+v.validate({ money_amount: '$0.99'}, schema); // Valid
+v.validate({ money_amount: '$12,345.99'}, schema); // Valid
+v.validate({ money_amount: '$123,456.99'}, schema); // Valid
+
+v.validate({ money_amount: '$1234,567.99'}, schema); // Fail
+v.validate({ money_amount: '$1,23,456.99'}, schema); // Fail
+v.validate({ money_amount: '$12,34.5.99' }, schema); // Fail
+```
+
+### Properties
+Property | Default  | Description
+-------- | -------- | -----------
+`currencySymbol` | `null` | The currency symbol expected in string (as prefix).
+`symbolOptional` | `false` | Toggle to make the symbol optional in string, although, if present it would only allow the currencySymbol.
+`thousandSeparator` | `,` | Thousand place separator character.
+`decimalSeparator` | `.` | Decimal place character.
+`customRegex` | `null` | Custom regular expression, to validate currency strings (For eg:  /[0-9]*/g).
 
 ## `date`
 This is a `Date` validator.
