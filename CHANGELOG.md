@@ -1,11 +1,12 @@
 --------------------------------------------------
 <a name="1.7.0"></a>
-# 1.7.0 (2020-xx-xx)
+# 1.7.0 (2020-08-30)
 
 ## Changes
 - New `currency` rule by [@ishan-srivastava](https://github.com/ishan-srivastava) in [#178](https://github.com/icebob/fastest-validator/pull/178)
 - fix issue in `any` rule [#185](https://github.com/icebob/fastest-validator/pull/185)
 - update dev deps
+
 --------------------------------------------------
 <a name="1.6.1"></a>
 # 1.6.1 (2020-08-11)
