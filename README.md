@@ -241,7 +241,7 @@ v.validate({ age: 42 }, schema); // Fail because name is required
 ```
 
 # Strict validation
-Object properties which are not specified on the schema are ignored by default. If you set the `$$strict` option to `true` any aditional properties will result in an `strictObject` error.
+Object properties which are not specified on the schema are ignored by default. If you set the `$$strict` option to `true` any additional properties will result in an `strictObject` error.
 
 ```js
 const schema = {
@@ -290,7 +290,7 @@ v.validate("Al", schema); // Fail, too short.
 ```
 
 # Sanitizations
-The library contains several sanitizaters. **Please note, the sanitizers change the original checked object.**
+The library contains several sanitizers. **Please note, the sanitizers change the original checked object.**
 
 ## Default values
 The most common sanitizer is the `default` property. With it, you can define a default value for all properties. If the property value is `null` or `undefined`, the validator set the defined default value into the property.
@@ -951,7 +951,7 @@ Property | Default  | Description
 `trimRight`   | `null`   | If `true`, the value will be right trimmed. _It's a sanitizer, it will change the value in the original object._
 `padStart`   | `null`   | If it's a number, the value will be left padded. _It's a sanitizer, it will change the value in the original object._
 `padEnd`   | `null`   | If it's a number, the value will be right padded. _It's a sanitizer, it will change the value in the original object._
-`padChar`   | `" "`   | The padding characther for the `padStart` and `padEnd`.
+`padChar`   | `" "`   | The padding character for the `padStart` and `padEnd`.
 `lowercase`   | `null`   | If `true`, the value will be lower-cased. _It's a sanitizer, it will change the value in the original object._
 `uppercase`   | `null`   | If `true`, the value will be upper-cased. _It's a sanitizer, it will change the value in the original object._
 `localeLowercase`   | `null`   | If `true`, the value will be locale lower-cased. _It's a sanitizer, it will change the value in the original object._
@@ -1250,7 +1250,7 @@ v.validate({ name: "John" }, { name: { type: "string", min: 6 }});
 */
 ```
 # Personalised Messages
-Sometimes the standard messages are too generic. You can customise messages per validation type per field:
+Sometimes the standard messages are too generic. You can customize messages per validation type per field:
 
 ```js
 const Validator = require("fastest-validator");
