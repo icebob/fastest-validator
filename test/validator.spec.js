@@ -242,6 +242,11 @@ describe("Test getRuleFromSchema method", () => {
 			expect(res.schema).toEqual({ type: "string", empty: false, alpha: false, trim: true, some: "1234kg" });
 		});
 
+		it("should convert arrayOf syntax", () => {
+			const res = v.getRuleFromSchema("string[]");
+			expect(res.schema).toEqual({ type: "array", items: "string" });
+		});
+
 	});
 
 	describe("Test objects shorthand rule ($$type)", () => {

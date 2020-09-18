@@ -331,6 +331,15 @@ const schema = {
 }
 ```
 
+### Array of X 
+```js
+const schema = {
+    foo: "string[]" // means array of string
+}
+
+check({ foo: ["bar"] }) // true
+```
+
 ### Nested objects
 
 ```js
