@@ -245,6 +245,9 @@ describe("Test getRuleFromSchema method", () => {
 		it("should convert arrayOf syntax", () => {
 			const res = v.getRuleFromSchema("string[]");
 			expect(res.schema).toEqual({ type: "array", items: "string" });
+
+			const res2 = v.getRuleFromSchema("string[]|optional|min:1");
+			expect(res2.schema).toEqual({ type: "array", optional: true, items: "string", min: 1 });
 		});
 
 	});
