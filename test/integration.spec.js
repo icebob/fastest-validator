@@ -1032,3 +1032,86 @@ describe("Test default value sanitizer", () => {
 	});
 });
 
+describe("Test optional option", () => {
+	const v = new Validator();
+	const schema = { foo: { type: "number", optional: true } };
+	const check = v.compile(schema);
+
+	it("should not throw error if value is undefined", () => {
+		expect(check({})).toBe(true);
+		expect(check({ foo: undefined })).toBe(true);
+	});
+
+	it("should not throw error if value is null", () => {
+		const o = { foo: null };
+		expect(check(o)).toBe(true);
+		expect(o.foo).toBe(null);
+	});
+
+	it("should not throw error if value exist", () => {
+		expect(check({ foo: 2 })).toBe(true);
+	});
+});
+
+describe("Test nullable option", () => {
+	const v = new Validator();
+	const schema = { foo: { type: "number", nullable: true } };
+	const check = v.compile(schema);
+
+	it("should throw error if value is undefined", () => {
+		expect(check({})).toBeInstanceOf(Array);
+		expect(check({ foo: undefined })).toBeInstanceOf(Array);
+	});
+
+	it("should not throw error if value is null", () => {
+		const o = { foo: null };
+		expect(check(o)).toBe(true);
+		expect(o.foo).toBe(null);
+	});
+
+	it("should not throw error if value exist", () => {
+		expect(check({ foo: 2 })).toBe(true);
+	});
+});
+
+describe("Test optional option", () => {
+	const v = new Validator();
+	const schema = { foo: { type: "number", optional: true } };
+	const check = v.compile(schema);
+
+	it("should not throw error if value is undefined", () => {
+		expect(check({})).toBe(true);
+		expect(check({ foo: undefined })).toBe(true);
+	});
+
+	it("should not throw error if value is null", () => {
+		const o = { foo: null };
+		expect(check(o)).toBe(true);
+		expect(o.foo).toBe(null);
+	});
+
+	it("should not throw error if value exist", () => {
+		expect(check({ foo: 2 })).toBe(true);
+	});
+});
+
+describe("Test nullable option", () => {
+	const v = new Validator();
+	const schema = { foo: { type: "number", nullable: true } };
+	const check = v.compile(schema);
+
+	it("should throw error if value is undefined", () => {
+		expect(check({})).toBeInstanceOf(Array);
+		expect(check({ foo: undefined })).toBeInstanceOf(Array);
+	});
+
+	it("should not throw error if value is null", () => {
+		const o = { foo: null };
+		expect(check(o)).toBe(true);
+		expect(o.foo).toBe(null);
+	});
+
+	it("should not throw error if value exist", () => {
+		expect(check({ foo: 2 })).toBe(true);
+	});
+});
