@@ -56,7 +56,7 @@ $ npm run bench
   * [Optional](#optional)
   * [Nullable](#nullable)
 - [Strict validation](#strict-validation)
-- [Remove additional fields](#remove-additional-fields)
+  - [Remove additional fields](#remove-additional-fields)
 - [Multiple validators](#multiple-validators)
 - [Root element schema](#root-element-schema)
 - [Sanitizations](#sanitizations)
