@@ -1032,3 +1032,116 @@ describe("Test default value sanitizer", () => {
 	});
 });
 
+describe("Test optional option", () => {
+	const v = new Validator();
+
+	it("should not throw error if value is undefined", () => {
+		const schema = { foo: { type: "number", optional: true } };
+		const check = v.compile(schema);
+
+		expect(check({})).toBe(true);
+		expect(check({ foo: undefined })).toBe(true);
+	});
+
+	it("should not throw error if value is null", () => {
+		const schema = { foo: { type: "number", optional: true } };
+		const check = v.compile(schema);
+
+		const o = { foo: null };
+		expect(check(o)).toBe(true);
+		expect(o.foo).toBe(null);
+	});
+
+	it("should not throw error if value exist", () => {
+		const schema = { foo: { type: "number", optional: true } };
+		const check = v.compile(schema);
+
+		expect(check({ foo: 2 })).toBe(true);
+	});
+
+	it("should set default value if there is a default", () => {
+		const schema = { foo: { type: "number", optional: true, default: 5 } };
+		const check = v.compile(schema);
+
+		const o1 = { foo: 2 };
+		expect(check(o1)).toBe(true);
+		expect(o1.foo).toBe(2);
+
+		const o2 = {};
+		expect(check(o2)).toBe(true);
+		expect(o2.foo).toBe(5);
+	});
+});
+
+describe("Test nullable option", () => {
+	const v = new Validator();
+
+	it("should throw error if value is undefined", () => {
+		const schema = { foo: { type: "number", nullable: true } };
+		const check = v.compile(schema);
+
+		expect(check(check)).toBeInstanceOf(Array);
+		expect(check({ foo: undefined })).toBeInstanceOf(Array);
+	});
+
+	it("should not throw error if value is null", () => {
+		const schema = { foo: { type: "number", nullable: true } };
+		const check = v.compile(schema);
+
+		const o = { foo: null };
+		expect(check(o)).toBe(true);
+		expect(o.foo).toBe(null);
+	});
+
+	it("should not throw error if value exist", () => {
+		const schema = { foo: { type: "number", nullable: true } };
+		const check = v.compile(schema);
+		expect(check({ foo: 2 })).toBe(true);
+	});
+
+	it("should set default value if there is a default", () => {
+		const schema = { foo: { type: "number", nullable: true, default: 5 } };
+		const check = v.compile(schema);
+
+		const o1 = { foo: 2 };
+		expect(check(o1)).toBe(true);
+		expect(o1.foo).toBe(2);
+
+		const o2 = {};
+		expect(check(o2)).toBe(true);
+		expect(o2.foo).toBe(5);
+	});
+
+	it("should not set default value if current value is null", () => {
+		const schema = { foo: { type: "number", nullable: true, default: 5 } };
+		const check = v.compile(schema);
+
+		const o = { foo: null };
+		expect(check(o)).toBe(true);
+		expect(o.foo).toBe(null);
+	});
+
+	it("should work with optional", () => {
+		const schema = { foo: { type: "number", nullable: true, optional: true } };
+		const check = v.compile(schema);
+
+		expect(check({ foo: 3 })).toBe(true);
+		expect(check({ foo: null })).toBe(true);
+		expect(check({})).toBe(true);
+	});
+
+	it("should work with optional and default", () => {
+		const schema = { foo: { type: "number", nullable: true, optional: true, default: 5 } };
+		const check = v.compile(schema);
+
+		expect(check({ foo: 3 })).toBe(true);
+
+		const o1 = { foo: null };
+		expect(check(o1)).toBe(true);
+		expect(o1.foo).toBe(null);
+
+		const o2 = {};
+		expect(check(o2)).toBe(true);
+		expect(o2.foo).toBe(5);
+	});
+});

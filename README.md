@@ -52,7 +52,9 @@ $ npm run bench
     - [Fast method](#fast-method)
     - [Browser usage](#browser-usage)
     - [Deno usage](#deno-usage)
-- [Optional & required fields](#optional--required-fields)
+- [Optional, Required & Nullable fields](#optional--required---nullable-fields)
+  * [Optional](#optional)
+  * [Nullable](#nullable)
 - [Strict validation](#strict-validation)
   - [Remove additional fields](#remove-additional-fields)
 - [Multiple validators](#multiple-validators)
@@ -211,7 +213,8 @@ const check = v.compile({
 console.log(check({ name: "Erf", age: 18 })); //true
 ```
 
-# Optional & required fields
+# Optional, Required & Nullable fields
+## Optional
 Every field in the schema will be required by default. If you'd like to define optional fields, set `optional: true`.
 
 ```js
@@ -223,6 +226,19 @@ const schema = {
 v.validate({ name: "John", age: 42 }, schema); // Valid
 v.validate({ name: "John" }, schema); // Valid
 v.validate({ age: 42 }, schema); // Fail because name is required
+```
+
+## Nullable
+If you want disallow `undefined` value but allow `null` value, use `nullable` instead of `optional`.
+```js
+const schema = {
+    age: { type: "number", nullable: true }
+}
+
+v.validate({ age: 42 }, schema); // Valid
+v.validate({ age: null }, schema); // Valid
+v.validate({ age: undefined }, schema); // Fail because undefined is disallowed
+v.validate({}, schema); // Fail because undefined is disallowed
 ```
 
 # Strict validation

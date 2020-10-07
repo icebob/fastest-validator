@@ -505,6 +505,13 @@ declare module "fastest-validator" {
 		 * @default false
 		 */
 		optional?: boolean;
+
+		/**
+		 * If you want disallow `undefined` value but allow `null` value, use `nullable` instead of `optional`.
+		 * @default false
+		 */
+		nullable?: boolean;
+
 		/**
 		 * You can set your custom messages in the validator constructor
 		 * Sometimes the standard messages are too generic. You can customise messages per validation type per field
