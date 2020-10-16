@@ -343,7 +343,7 @@ declare module "fastest-validator" {
 		/**
 		 * Convert HexStringObjectID to ObjectID
 		 */
-		convert?: boolean;
+		convert?: boolean | "hexString";
 	}
 
 	/**
