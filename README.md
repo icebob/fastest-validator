@@ -1108,8 +1108,7 @@ const schema = {
 ### Properties
 Property | Default  | Description
 -------- | -------- | -----------
-`convert`  | `false`   | If `true`, the validator converts ObjectID HexString representation to ObjectID `instance`, otherwise validator return HexString
-
+`convert`  | `false`   | If `true`, the validator converts ObjectID HexString representation to ObjectID `instance`, if `hexString` the validator converts to HexString
 
 # Custom validator
 You can also create your custom validator.
