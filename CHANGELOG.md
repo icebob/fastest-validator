@@ -1,3 +1,22 @@
+<a name="1.8.0"></a>
+# 1.8.0 (2020-10-18)
+
+## New `nullable` rule attribute in [#185](https://github.com/icebob/fastest-validator/pull/185)
+
+```js
+const schema = {
+    age: { type: "number", nullable: true }
+}
+v.validate({ age: 42 }, schema); // Valid
+v.validate({ age: null }, schema); // Valid
+v.validate({ age: undefined }, schema); // Fail because undefined is disallowed
+v.validate({}, schema); // Fail because undefined is disallowed
+```
+
+## Changes
+- Shorthand for array `foo: "string[]" // means array of string` in [#190](https://github.com/icebob/fastest-validator/pull/190)
+- allow converting `objectID` to `string` in in [#196](https://github.com/icebob/fastest-validator/pull/196)
+- 
 --------------------------------------------------
 <a name="1.7.0"></a>
 # 1.7.0 (2020-08-30)
