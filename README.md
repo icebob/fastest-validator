@@ -52,6 +52,7 @@ $ npm run bench
     - [Fast method](#fast-method)
     - [Browser usage](#browser-usage)
     - [Deno usage](#deno-usage)
+    - [Supported frameworks](#supported-frameworks)
 - [Optional, Required & Nullable fields](#optional--required---nullable-fields)
   * [Optional](#optional)
   * [Nullable](#nullable)
@@ -212,6 +213,11 @@ const check = v.compile({
 
 console.log(check({ name: "Erf", age: 18 })); //true
 ```
+
+### Supported frameworks
+- *Moleculer*: Natively supported
+- *Fastify*: By using [fastify-fv](https://github.com/erfanium/fastify-fv) 
+
 
 # Optional, Required & Nullable fields
 ## Optional
