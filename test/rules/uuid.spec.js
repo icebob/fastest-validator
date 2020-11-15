@@ -19,7 +19,6 @@ describe("Test rule: uuid", () => {
 		message = "The '' field must be a valid UUID.";
 		expect(check("")).toEqual([{ type: "uuid", actual: "", message }]);
 		expect(check("true")).toEqual([{ type: "uuid", actual: "true", message }]);
-		expect(check("00000000-0000-0000-0000-000000000000")).toEqual([{ type: "uuid", actual: "00000000-0000-0000-0000-000000000000", message }]);
 		expect(check("1234567-1234-1234-1234-1234567890ab")).toEqual([{ type: "uuid", actual: "1234567-1234-1234-1234-1234567890ab", message }]);
 		expect(check("12345678-1234-1234-1234-1234567890ab")).toEqual(true);
 	});
@@ -31,6 +30,7 @@ describe("Test rule: uuid", () => {
 		expect(check("00000000-0000-7000-0000-000000000000")).toEqual([{ type: "uuid", actual: "00000000-0000-7000-0000-000000000000", message }]);
 		expect(check("fdda765f-fc57-5604-c269-52a7df8164ec")).toEqual([{ type: "uuid", actual: "fdda765f-fc57-5604-c269-52a7df8164ec", message }]);
 
+		const check0 = v.compile({ $$root: true, type: "uuid", version: 0 });
 		const check1 = v.compile({ $$root: true, type: "uuid", version: 1 });
 		const check2 = v.compile({ $$root: true, type: "uuid", version: 2 });
 		const check3 = v.compile({ $$root: true, type: "uuid", version: 3 });
@@ -39,6 +39,7 @@ describe("Test rule: uuid", () => {
 		const check6 = v.compile({ $$root: true, type: "uuid", version: 6 });
 		message = "The '' field must be a valid UUID version provided.";
 
+		expect(check0("00000000-0000-1000-0000-000000000000")).toEqual([{"actual": 1, "expected": 0, "type": "uuidVersion", message}]);
 		expect(check1("9a7b330a-a736-51e5-af7f-feaf819cdc9f")).toEqual([{"actual": 5, "expected": 1, "type": "uuidVersion", message}]);
 		expect(check1("9a7b330a-a736-61e5-af7f-feaf819cdc9f")).toEqual([{"actual": 6, "expected": 1, "type": "uuidVersion", message}]);
 		expect(check1("9a7b330a-a736-51e5-af7f-feaf819cdc9f")).toEqual([{"actual": 5, "expected": 1, "type": "uuidVersion", message}]);
@@ -49,6 +50,7 @@ describe("Test rule: uuid", () => {
 	});
 
 	it("check valid version", () => {
+		const check0 = v.compile({ $$root: true, type: "uuid", version: 0 });
 		const check1 = v.compile({ $$root: true, type: "uuid", version: 1 });
 		const check2 = v.compile({ $$root: true, type: "uuid", version: 2 });
 		const check3 = v.compile({ $$root: true, type: "uuid", version: 3 });
@@ -56,13 +58,13 @@ describe("Test rule: uuid", () => {
 		const check5 = v.compile({ $$root: true, type: "uuid", version: 5 });
 		const check6 = v.compile({ $$root: true, type: "uuid", version: 6 });
 
+		expect(check0("00000000-0000-0000-0000-000000000000")).toEqual(true);
 		expect(check1("45745c60-7b1a-11e8-9c9c-2d42b21b1a3e")).toEqual(true);
 		expect(check2("9a7b330a-a736-21e5-af7f-feaf819cdc9f")).toEqual(true);
 		expect(check3("9125a8dc-52ee-365b-a5aa-81b0b3681cf6")).toEqual(true);
 		expect(check4("10ba038e-48da-487b-96e8-8d3b99b6d18a")).toEqual(true);
 		expect(check5("fdda765f-fc57-5604-a269-52a7df8164ec")).toEqual(true);
 		expect(check6("a9030619-8514-6970-e0f9-81b9ceb08a5f")).toEqual(true);
-
 	});
 
 	it("should not be case insensitive", () => {
