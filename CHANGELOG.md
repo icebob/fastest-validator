@@ -1,3 +1,10 @@
+<a name="1.9.0"></a>
+# 1.9.0 (2020-11-16)
+
+## Changes
+- `uuid` rule supports version 0 in [#201](https://github.com/icebob/fastest-validator/pull/201) by [@intech](https://github.com/intech)
+
+--------------------------------------------------
 <a name="1.8.0"></a>
 # 1.8.0 (2020-10-18)
 
@@ -16,7 +23,7 @@ v.validate({}, schema); // Fail because undefined is disallowed
 ## Changes
 - Shorthand for array `foo: "string[]" // means array of string` in [#190](https://github.com/icebob/fastest-validator/pull/190)
 - allow converting `objectID` to `string` in in [#196](https://github.com/icebob/fastest-validator/pull/196)
-- 
+ 
 --------------------------------------------------
 <a name="1.7.0"></a>
 # 1.7.0 (2020-08-30)
