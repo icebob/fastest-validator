@@ -471,9 +471,9 @@ declare module "fastest-validator" {
 		 */
 		type: "uuid";
 		/**
-		 * UUID version in range 1-5
+		 * UUID version in range 0-6
 		 */
-		version?: 1 | 2 | 3 | 4 | 5;
+		version?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
 	}
 
 	/**
