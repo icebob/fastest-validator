@@ -19,6 +19,7 @@ describe("Test rule: uuid", () => {
 		message = "The '' field must be a valid UUID.";
 		expect(check("")).toEqual([{ type: "uuid", actual: "", message }]);
 		expect(check("true")).toEqual([{ type: "uuid", actual: "true", message }]);
+		expect(check("10000000-0000-0000-0000-000000000000")).toEqual([{ type: "uuid", actual: "10000000-0000-0000-0000-000000000000", message }]);
 		expect(check("1234567-1234-1234-1234-1234567890ab")).toEqual([{ type: "uuid", actual: "1234567-1234-1234-1234-1234567890ab", message }]);
 		expect(check("12345678-1234-1234-1234-1234567890ab")).toEqual(true);
 	});
