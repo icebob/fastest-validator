@@ -37,7 +37,6 @@ describe("Test rule: uuid", () => {
 		const check3 = v.compile({ $$root: true, type: "uuid", version: 3 });
 		const check4 = v.compile({ $$root: true, type: "uuid", version: 4 });
 		const check5 = v.compile({ $$root: true, type: "uuid", version: 5 });
-		const check6 = v.compile({ $$root: true, type: "uuid", version: 6 });
 		message = "The '' field must be a valid UUID version provided.";
 
 		expect(check0("00000000-0000-1000-0000-000000000000")).toEqual([{"actual": 1, "expected": 0, "type": "uuidVersion", message}]);
@@ -82,7 +81,7 @@ describe("Test rule: uuid", () => {
 		expect(check4("10ba038e-48da-487b-96e8-8d3b99b6d18a")).toEqual(true);
 		expect(check5("fdda765f-fc57-5604-a269-52a7df8164ec")).toEqual(true);
 		expect(check6("a9030619-8514-6970-e0f9-81b9ceb08a5f")).toEqual(true);
-		
+
 		expect(check1("45745C60-7B1A-11E8-9C9C-2D42B21B1A3E")).toEqual(true);
 		expect(check2("9A7B330A-A736-21E5-AF7F-FEAF819CDC9F")).toEqual(true);
 		expect(check3("9125A8DC-52EE-365B-A5AA-81B0B3681CF6")).toEqual(true);
