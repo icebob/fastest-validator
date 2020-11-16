@@ -1066,6 +1066,7 @@ const schema = {
     uuid: { type: "uuid" }
 }
 
+v.validate({ uuid: "00000000-0000-0000-0000-000000000000" }, schema); // Valid Nil UUID
 v.validate({ uuid: "10ba038e-48da-487b-96e8-8d3b99b6d18a" }, schema); // Valid UUIDv4
 v.validate({ uuid: "9a7b330a-a736-51e5-af7f-feaf819cdc9f" }, schema); // Valid UUIDv5
 v.validate({ uuid: "10ba038e-48da-487b-96e8-8d3b99b6d18a", version: 5 }, schema); // Fail
@@ -1073,7 +1074,7 @@ v.validate({ uuid: "10ba038e-48da-487b-96e8-8d3b99b6d18a", version: 5 }, schema)
 ### Properties
 Property | Default  | Description
 -------- | -------- | -----------
-`version`  | `4`   | UUID version in range 1-6.
+`version`  | `4`   | UUID version in range 0-6.
 
 ## `objectID`
 You can validate BSON/MongoDB ObjectID's
