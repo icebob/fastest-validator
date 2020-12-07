@@ -48,8 +48,7 @@ $ npm run bench
   - [Installation](#installation)
     - [NPM](#npm)
   - [Usage](#usage)
-    - [Simple method](#simple-method)
-    - [Fast method](#fast-method)
+    - [Validate](#validate)
     - [Browser usage](#browser-usage)
     - [Deno usage](#deno-usage)
     - [Supported frameworks](#supported-frameworks)
@@ -115,41 +114,8 @@ $ yarn add fastest-validator
 
 ## Usage
 
-### Simple method
-Call the `validate` method with the `object` and the `schema`.
-> If performance is important, you won't use this method because it's slow.
-
-```js
-const Validator = require("fastest-validator");
-
-const v = new Validator();
-
-const schema = {
-    id: { type: "number", positive: true, integer: true },
-    name: { type: "string", min: 3, max: 255 },
-    status: "boolean" // short-hand def
-};
-
-console.log(v.validate({ id: 5, name: "John", status: true }, schema));
-// Returns: true
-
-console.log(v.validate({ id: 5, name: "Al", status: true }, schema));
-/* Returns an array with errors:
-    [
-        {
-            type: 'stringMin',
-            expected: 3,
-            actual: 2,
-            field: 'name',
-            message: 'The \'name\' field length must be greater than or equal to 3 characters long!'
-        }
-    ]
-*/
-```
-[Try it on Repl.it](https://repl.it/@icebob/fastest-validator-simple)
-
-### Fast method
-In this case, the first step is to compile the schema to a compiled "checker" function. After that, to validate your object, just call this "checker" function.
+### Validate
+The first step is to compile the schema to a compiled "checker" function. After that, to validate your object, just call this "checker" function.
 > This method is the fastest.
 
 ```js
