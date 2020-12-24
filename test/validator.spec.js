@@ -158,7 +158,8 @@ describe("Test add", () => {
 			customs: expect.any(Object),
 			rules: expect.any(Array),
 			fn: expect.any(Array),
-			index: 2
+			index: 2,
+			validator: expect.any(Validator)
 		};
 
 
@@ -496,7 +497,7 @@ describe("Test custom validation v1", () => {
 					fn(value);
 					if (value % 2 !== 0) return [{ type: "evenNumber", actual: value }];
 				}
-			}, 
+			},
 			b: {
 				type: "number",
 				custom(value){
@@ -694,5 +695,131 @@ describe("Test addMessage" , () => {
 	const v = new Validator();
 	v.addMessage("string", "C");
 	expect(v.messages.string).toBe("C");
+});
+
+describe("Test clone (simple)" , () => {
+	const v = new Validator();
+	it("should matches expected array", () => {
+		const actual = [
+			[
+				1, 2, {
+					a: 3,
+					b:"4",
+					c: [
+						{
+							d: 5,
+							e: "6",
+							f: false
+						}
+					]
+				}
+			]
+		];
+		const expected = [
+			[
+				1, 2, {
+					a: 3,
+					b:"4",
+					c: [
+						{
+							d: 5,
+							e: "6",
+							f: false
+						}
+					]
+				}
+			]
+		];
+		expect(v.clone(actual)).toMatchObject(expected);
+	});
+	it("should matches expected object", () => {
+		const actual = {
+			a: "1",
+			b: 2,
+			c: true,
+			d: [
+				{
+					e: "3",
+					f: 4,
+					g: {
+						h: "5",
+						i: false,
+						j: [
+							{
+								k: "7",
+								l: 8
+							}
+						]
+					}
+				}
+			]
+		};
+		const expected = {
+			a: "1",
+			b: 2,
+			c: true,
+			d: [
+				{
+					e: "3",
+					f: 4,
+					g: {
+						h: "5",
+						i: false,
+						j: [
+							{
+								k: "7",
+								l: 8
+							}
+						]
+					}
+				}
+			]
+		};
+		expect(v.clone(actual)).toMatchObject(expected);
+	});
+});
+
+describe("Test replaceAndMerge" , () => {
+	const v = new Validator();
+	it("should work on array", () => {
+		const target = [1,2,3,4];
+		const ref = target; // keep reference
+		const vals = [
+			[
+				1, 2, {
+					a: 3,
+					b:"4",
+					c: [
+						{
+							d: 5,
+							e: "6",
+							f: false
+						}
+					]
+				}
+			]
+		];
+		v.removeChildrenAndMerge(target, vals);
+		expect(ref).toBe(target);
+		expect(target).toMatchObject(vals);
+	});
+	it("should work on object", () => {
+		const target = {a: "1"};
+		const ref = target; // keep reference
+		const vals = {
+			a: 3,
+			b:"4",
+			c: [
+				{
+					d: 5,
+					e: "6",
+					f: false
+				}
+			]
+		};
+		v.removeChildrenAndMerge(target, vals);
+		expect(ref).toBe(target);
+		expect(target).toMatchObject(vals);
+	});
 });
 
