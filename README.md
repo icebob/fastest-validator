@@ -591,6 +591,8 @@ Property | Default  | Description
 `empty`  | `false`   | If `true`, the validator accepts an empty array `""`.
 `mode`   | `quick`  | Checker method. Can be `quick` or `precise`.
 `normalize`   | `false`  | Normalize the e-mail address (trim & lower-case). _It's a sanitizer, it will change the value in the original object._
+`min`  	 | `null`   | Minimum value length.
+`max`  	 | `null`   | Maximum value length.
 
 ## `enum`
 This is an enum validator.
@@ -1333,7 +1335,10 @@ Name                | Default text
 `dateMin`	| The '{field}' field must be greater than or equal to {expected}.
 `dateMax`	| The '{field}' field must be less than or equal to {expected}.
 `forbidden`	| The '{field}' field is forbidden.
-`email`	| The '{field}' field must be a valid e-mail.
+‍‍`email` | The '{field}' field must be a valid e-mail.
+`emailEmpty` | The '{field}' field must not be empty.
+`emailMin` | The '{field}' field length must be greater than or equal to {expected} characters long.
+`emailMax` | The '{field}' field length must be less than or equal to {expected} characters long.
 `url`	| The '{field}' field must be a valid URL.
 `enumValue`	| The '{field}' field value '{expected}' does not match any of the allowed values.
 `equalValue`	| The '{field}' field value must be equal to '{expected}'.

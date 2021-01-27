@@ -140,6 +140,14 @@ declare module "fastest-validator" {
 		 * Checker method. Can be quick or precise
 		 */
 		mode?: "quick" | "precise";
+		/**
+		 * Minimum value length
+		 */
+		min?: number;
+		/**
+		 * Maximum value length
+		 */
+		max?: number;
 
 		normalize?: boolean;
 	}

@@ -77,4 +77,18 @@ describe("Test rule: email", () => {
 		});
 	});
 
+	it("check min length", () => {
+		const check = v.compile({ $$root: true, type: "email", min: 10 });
+
+		expect(check("a@a.com")).toEqual([{ type: "emailMin", expected: 10, actual: 7, message: "The '' field length must be greater than or equal to 10 characters long." }]);
+		expect(check("sssa@a.com")).toEqual(true);
+	});
+
+	it("check max length", () => {
+		const check = v.compile({ $$root: true, type: "email", max: 20 });
+
+		expect(check("sssa@a.com")).toEqual(true);
+		expect(check("veryLongEmailAddress@veryLongProviderName.com")).toEqual([{ type: "emailMax", expected: 20, actual: 45, message: "The '' field length must be less than or equal to 20 characters long." }]);
+	});
+
 });
