@@ -419,6 +419,11 @@ declare module "fastest-validator" {
 		 */
 		singleLine?: boolean;
 		/**
+		 * The value must be a base64 string
+		 * @default false
+		 */
+		base64?: boolean;
+		/**
 		 * if true and the type is not a String, converts with String()
 		 * @default false
 		 */
