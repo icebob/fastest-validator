@@ -203,6 +203,17 @@ describe("Test rule: string", () => {
 		expect(check(new Date())).toEqual(true);
 	});
 
+	it("should validate base64", () => {
+		const check = v.compile({ $$root: true, type: "string", base64: true });
+		expect(check("")).toEqual(true);
+		expect(check("uuLMhh==")).toEqual(true);
+		expect(check("1342234")).toEqual([{"actual": "1342234", "field": undefined, "message": "The '' field must be a base64 string.", "type": "stringBase64"}]);
+		expect(check("dfasdfr342")).toEqual(expect.any(Array));
+		expect(check("afQ$%rfew")).toEqual(expect.any(Array));
+		expect(check("uuLMhh")).toEqual(expect.any(Array));
+		expect(check("uucLMhh==")).toEqual(expect.any(Array));
+	});
+
 	describe("Test sanitization", () => {
 
 		it("should convert & check values", () => {

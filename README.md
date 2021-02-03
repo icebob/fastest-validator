@@ -44,6 +44,9 @@ $ npm run bench
 
 # Table of contents
 
+- [fastest-validator ![NPM version](https://www.npmjs.com/package/fastest-validator) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=The%20fastest%20JS%20validator%20library%20for%20NodeJS&url=https://github.com/icebob/fastest-validator&via=Icebobcsi&hashtags=nodejs,javascript)](#fastest-validator--)
+  - [Key features](#key-features)
+- [How fast?](#how-fast)
 - [Table of contents](#table-of-contents)
   - [Installation](#installation)
     - [NPM](#npm)
@@ -52,9 +55,9 @@ $ npm run bench
     - [Browser usage](#browser-usage)
     - [Deno usage](#deno-usage)
     - [Supported frameworks](#supported-frameworks)
-- [Optional, Required & Nullable fields](#optional--required---nullable-fields)
-  * [Optional](#optional)
-  * [Nullable](#nullable)
+- [Optional, Required & Nullable fields](#optional-required--nullable-fields)
+  - [Optional](#optional)
+  - [Nullable](#nullable)
 - [Strict validation](#strict-validation)
   - [Remove additional fields](#remove-additional-fields)
 - [Multiple validators](#multiple-validators)
@@ -62,37 +65,55 @@ $ npm run bench
 - [Sanitizations](#sanitizations)
   - [Default values](#default-values)
 - [Shorthand definitions](#shorthand-definitions)
+    - [Array of X](#array-of-x)
+    - [Nested objects](#nested-objects)
 - [Alias definition](#alias-definition)
 - [Default options](#default-options)
 - [Built-in validators](#built-in-validators)
   - [`any`](#any)
   - [`array`](#array)
+    - [Properties](#properties)
   - [`boolean`](#boolean)
+    - [Properties](#properties-1)
   - [`class`](#class)
+    - [Properties](#properties-2)
   - [`currency`](#currency)
+    - [Properties](#properties-3)
   - [`date`](#date)
+    - [Properties](#properties-4)
   - [`email`](#email)
+    - [Properties](#properties-5)
   - [`enum`](#enum)
+    - [Properties](#properties-6)
   - [`equal`](#equal)
+    - [Properties](#properties-7)
   - [`forbidden`](#forbidden)
+    - [Properties](#properties-8)
   - [`function`](#function)
   - [`luhn`](#luhn)
   - [`mac`](#mac)
   - [`multi`](#multi)
   - [`number`](#number)
+    - [Properties](#properties-9)
   - [`object`](#object)
+    - [Properties](#properties-10)
   - [`string`](#string)
+    - [Properties](#properties-11)
   - [`tuple`](#tuple)
+    - [Properties](#properties-12)
   - [`url`](#url)
-  - [`objectID`](#objectID)
+    - [Properties](#properties-13)
   - [`uuid`](#uuid)
+    - [Properties](#properties-14)
+  - [`objectID`](#objectid)
+    - [Properties](#properties-15)
 - [Custom validator](#custom-validator)
   - [Custom validation for built-in rules](#custom-validation-for-built-in-rules)
 - [Custom error messages (l10n)](#custom-error-messages-l10n)
 - [Personalised Messages](#personalised-messages)
+- [Plugins](#plugins)
 - [Message types](#message-types)
   - [Message fields](#message-fields)
-- [Plugins](#plugins)
 - [Development](#development)
 - [Test](#test)
   - [Coverage report](#coverage-report)
@@ -930,6 +951,7 @@ Property | Default  | Description
 `alphadash`   | `null`   | The value must be an alphabetic string that contains dashes.
 `hex`   | `null`   | The value must be a hex string.
 `singleLine`   | `null`   | The value must be a single line string.
+`base64`   | `null`   | The value must be a base64 string.
 `trim`   | `null`   | If `true`, the value will be trimmed. _It's a sanitizer, it will change the value in the original object._
 `trimLeft`   | `null`   | If `true`, the value will be left trimmed. _It's a sanitizer, it will change the value in the original object._
 `trimRight`   | `null`   | If `true`, the value will be right trimmed. _It's a sanitizer, it will change the value in the original object._
@@ -1310,6 +1332,7 @@ Name                | Default text
 `stringAlphadash`	| The '{field}' field must be an alphadash string.
 `stringHex`	| The '{field}' field must be a hex string.
 `stringSingleLine`	| The '{field}' field must be a single line string.
+`stringBase64`	| The '{field}' field must be a base64 string.
 `number`	| The '{field}' field must be a number.
 `numberMin`	| The '{field}' field must be greater than or equal to {expected}.
 `numberMax`	| The '{field}' field must be less than or equal to {expected}.
