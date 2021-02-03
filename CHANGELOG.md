@@ -1,3 +1,12 @@
+<a name="1.10.0"></a>
+# 1.10.0 (2021-02-03)
+
+## Changes
+- fix issue in multiple custom validator [#203](https://github.com/icebob/fastest-validator/pull/203)
+- Add `min`, `max` property to `email` rule [#213](https://github.com/icebob/fastest-validator/pull/213)
+- Add `base64` property to `string` rule [#214](https://github.com/icebob/fastest-validator/pull/214)
+
+--------------------------------------------------
 <a name="1.9.0"></a>
 # 1.9.0 (2020-11-16)
 
