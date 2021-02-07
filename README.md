@@ -192,7 +192,7 @@ console.log(check({ id: 5, name: "John", status: true }));
 With `esm.sh`, now Typescript is supported
 
 ```js
-import FastestValidator from 'https://esm.sh/fastest-validator'
+import FastestValidator from "https://esm.sh/fastest-validator@1"
 
 const v = new FastestValidator();
 const check = v.compile({
