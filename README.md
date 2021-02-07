@@ -189,8 +189,10 @@ console.log(check({ id: 5, name: "John", status: true }));
 ```
 
 ### Deno usage
+With `esm.sh`, now Typescript is supported
+
 ```js
-import FastestValidator from "https://dev.jspm.io/fastest-validator";
+import FastestValidator from 'https://esm.sh/fastest-validator'
 
 const v = new FastestValidator();
 const check = v.compile({
