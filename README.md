@@ -1210,7 +1210,7 @@ const v = new Validator({
 
 const schema = {
     name: { type: "string", min: 3, max: 255 },
-    phone: { type: "string", length: 15, custom(v, errors) => {
+    phone: { type: "string", length: 15, custom: (v, errors) => {
             if (!v.startWith("+")) errors.push({ type: "phoneNumber" })
             return v.replace(/[^\d+]/g, ""); // Sanitize: remove all special chars except numbers
         }
