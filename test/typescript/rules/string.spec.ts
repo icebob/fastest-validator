@@ -97,6 +97,13 @@ describe('TypeScript Definitions', () => {
 			expect(check('JOHN')).toEqual(true);
 		});
 
+		it("check escape pattern", () => {
+			const pattern = /^(([^<>()[]\.,;:\s@"]+(.[^<>()[]\.,;:\s@"]+)*)|(".+"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z-0-9]+.)+[a-zA-Z]{2,}))$/;
+			const check = v.compile({ $$root: true, type: "string", pattern });
+			expect(check("test@test.com")).toEqual([{ field: undefined, type: "stringPattern", expected: "/^(([^<>()[]\.,;:\s@\"]+(.[^<>()[]\.,;:\s@\"]+)*)|(\".+\"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z-0-9]+.)+[a-zA-Z]{2,}))$/", actual: "test@test.com", message: "The '' field fails to match the required pattern." }]);
+			expect(check("test@test.com")).toEqual(true);
+		});
+
 		it('check contains', () => {
             const check = v.compile({ $$root: true, type: 'string', contains: 'bob' });
 
