@@ -1,3 +1,11 @@
+<a name="1.10.1"></a>
+# 1.10.1 (2021-03-22)
+
+## Changes
+- fix issue with regex `pattern` in `string` rule [#221](https://github.com/icebob/fastest-validator/pull/221)
+- fix returned value issue in `email` rule in case of `empty: false` [#224](https://github.com/icebob/fastest-validator/pull/224)
+
+--------------------------------------------------
 <a name="1.10.0"></a>
 # 1.10.0 (2021-02-03)
 
