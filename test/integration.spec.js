@@ -993,12 +993,16 @@ describe("Test default value sanitizer", () => {
 			name: { type: "string", default: "John" },
 			age: { type: "number", optional: true, default: 33 },
 			roles: { type: "array", items: "string", default: ["user"] },
-			status: { type: "boolean", default: true }
+			status: { type: "boolean", default: true },
+			tuple: { type: 'tuple', items: [{type: 'number', default: 666}, {type: 'string', default: 'lucifer'}] },
+			array: { type: 'array', items: {type: 'string', default: 'bar'}},
 		};
 		const check = v.compile(schema);
 		const obj = {
 			name: null,
-			status: false
+			status: false,
+			tuple: [undefined, undefined],
+			array: ['foo', undefined, 'baz']
 		};
 
 		const res = check(obj);
@@ -1009,7 +1013,9 @@ describe("Test default value sanitizer", () => {
 			name: "John",
 			age: 33,
 			roles: ["user"],
-			status: false
+			status: false,
+			tuple: [666, 'lucifer'],
+			array: ['foo', 'bar', 'baz']
 		});
 	});
 
@@ -1036,18 +1042,32 @@ describe("Test optional option", () => {
 	const v = new Validator();
 
 	it("should not throw error if value is undefined", () => {
-		const schema = { foo: { type: "number", optional: true } };
+		const schema = {
+			foo: { type: "number", optional: true },
+			array: { type: "array", optional: true, items: {type: "string", optional: true} },
+			tuple: {
+				type: "tuple",
+				optional: true,
+				items: [
+					{ type: "number", optional: true },
+				],
+			},
+		};
 		const check = v.compile(schema);
 
 		expect(check({})).toBe(true);
-		expect(check({ foo: undefined })).toBe(true);
+		expect(check({
+			foo: undefined,
+			array: [undefined],
+			tuple: [undefined]
+		})).toBe(true);
 	});
 
 	it("should not throw error if value is null", () => {
 		const schema = { foo: { type: "number", optional: true } };
 		const check = v.compile(schema);
 
-		const o = { foo: null };
+		const o = { foo: null, array: [null], tuple: [null] };
 		expect(check(o)).toBe(true);
 		expect(o.foo).toBe(null);
 	});
@@ -1060,16 +1080,31 @@ describe("Test optional option", () => {
 	});
 
 	it("should set default value if there is a default", () => {
-		const schema = { foo: { type: "number", optional: true, default: 5 } };
+		const schema = {
+			foo: { type: "number", optional: true, default: 5 },
+			array: { type: "array", optional: true, items: {type: "string", optional: true, default: "foo"} },
+			tuple: {
+				type: "tuple",
+				optional: true,
+				items: [
+					{ type: "number", optional: true, default: 666 },
+				],
+			},
+
+		};
 		const check = v.compile(schema);
 
-		const o1 = { foo: 2 };
+		const o1 = { foo: 2, array: [], tuple: [6] };
 		expect(check(o1)).toBe(true);
 		expect(o1.foo).toBe(2);
+		expect(o1.array).toStrictEqual([]);
+		expect(o1.tuple).toStrictEqual([6]);
 
-		const o2 = {};
+		const o2 = {array: [undefined], tuple: [undefined]};
 		expect(check(o2)).toBe(true);
 		expect(o2.foo).toBe(5);
+		expect(o2.array).toStrictEqual(["foo"]);
+		expect(o2.tuple).toStrictEqual([666]);
 	});
 });
 
