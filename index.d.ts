@@ -877,6 +877,11 @@ declare module "fastest-validator" {
 		 * For set plugins.
 		 */
 		plugins?: PluginFn<any>[];
+
+		/**
+		 * Create async validator. In this case the `validator` and `compile` methods returns `Promise<>`
+		 */
+		async?: boolean;
 	}
 
 	export interface CompilationRule {
@@ -1012,7 +1017,16 @@ declare module "fastest-validator" {
 		 */
 		compile<T = any>(
 			schema: ValidationSchema<T> | ValidationSchema<T>[]
-		): (value: any) => true | ValidationError[];
+		): (value: any) => true | ValidationError[] | Promise<true | ValidationError[]>;
+
+		/**
+		 * Compile async validator functions that working up 100 times faster that native validation process
+		 * @param {ValidationSchema | ValidationSchema[]} schema Validation schema definition that should be used for validation
+		 * @return {(value: any) => Promise<true | ValidationError[]>} function that can be used next for validation of current schema
+		 */
+		compileAsync<T = any>(
+			schema: ValidationSchema<T> | ValidationSchema<T>[]
+		): (value: any) => Promise<true | ValidationError[]>;
 
 		/**
 		 * Native validation method to validate obj
@@ -1023,7 +1037,18 @@ declare module "fastest-validator" {
 		validate(
 			value: any,
 			schema: ValidationSchema
-		): true | ValidationError[];
+		): true | ValidationError[] | Promise<true | ValidationError[]>;
+
+		/**
+		 * Native validation method to validate obj asynchronously
+		 * @param {any} value that should be validated
+		 * @param {ValidationSchema} schema Validation schema definition that should be used for validation
+		 * @return {Promise<true|ValidationError[]>}
+		 */
+		validateAsync(
+			value: any,
+			schema: ValidationSchema
+		): Promise<true | ValidationError[]>;
 
 		/**
 		 * Get defined in validator rule

@@ -158,7 +158,8 @@ describe("Test add", () => {
 			customs: expect.any(Object),
 			rules: expect.any(Array),
 			fn: expect.any(Array),
-			index: 2
+			index: 2,
+			async: false
 		};
 
 
@@ -496,7 +497,7 @@ describe("Test custom validation v1", () => {
 					fn(value);
 					if (value % 2 !== 0) return [{ type: "evenNumber", actual: value }];
 				}
-			}, 
+			},
 			b: {
 				type: "number",
 				custom(value){
