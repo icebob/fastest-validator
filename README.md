@@ -95,7 +95,7 @@ console.log("Second:", check({ id: 2, name: "Adam" }));
 ```
 
 ```js
-var v = new FastestValidator();
+const v = new FastestValidator();
 
 const schema = {
     id: { type: "number", positive: true, integer: true },
@@ -314,7 +314,7 @@ const schema = {
 You can set default rule options.
 
 ```js
-var v = new FastestValidator({
+const v = new FastestValidator({
     defaults: {
         object: {
             strict: "remove"
@@ -1152,6 +1152,53 @@ console.log(v.validate({ name: "John", phone: "36-70-123-4567" }, schema));
 ```
 
 >Please note: the custom function must return the `value`. It means you can also sanitize it.
+
+## Asynchronous custom validations
+You can also use async custom validators. This can be useful if you need to check something in a database or in a remote location.
+In this case you should use `async/await` keywords, or return a `Promise` in the custom validator functions.
+
+To enable async mode, you should set `$$async: true` in the root of your schema.
+
+**Example with custom checker function**
+```js
+const v = new Validator({
+    useNewCustomCheckerFunction: true, // using new version
+    messages: {
+        // Register our new error message text
+        unique: "The username is already exist"
+    }
+});
+
+const schema = {
+	$$async: true,
+	name: { type: "string" },
+	username: {
+		type: "string",
+        min: 2,
+		custom: async (v, errors) => {
+			// E.g. checking in the DB that the value is unique.
+			const res = await DB.checkUsername(v);
+            if (!res) 
+                errors.push({ type: "unique", actual: value });
+
+            return v;
+		}
+	}
+    // ...
+};
+
+const check = v.compile(schema);
+
+const res = await check(user);
+console.log("Result:", res);
+```
+
+
+The compiled `check` function contains an `async` property, so  you can check if it returns a `Promise` or not.
+```js
+const check = v.compile(schema);
+console.log("Is async?", check.async);
+```
 
 # Custom error messages (l10n)
 You can set your custom messages in the validator constructor.
