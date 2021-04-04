@@ -942,6 +942,17 @@ declare module "fastest-validator" {
 		toHexString(): string;
 	}
 
+
+	export interface SyncCheckFunction {
+		(value: any): true | ValidationError[]
+		async: false
+	 }
+
+	 export interface AsyncCheckFunction {
+		(value: any): Promise<true | ValidationError[]>
+		async: true
+	 }
+
 	export default class Validator {
 		/**
 		 * List of possible error messages
@@ -1018,7 +1029,7 @@ declare module "fastest-validator" {
 		 */
 		compile<T = any>(
 			schema: ValidationSchema<T> | ValidationSchema<T>[]
-		): (value: any) => true | ValidationError[] | Promise<true | ValidationError[]>;
+		): SyncCheckFunction | AsyncCheckFunction;
 
 		/**
 		 * Native validation method to validate obj

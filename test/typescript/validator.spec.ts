@@ -71,7 +71,7 @@ describe('TypeScript Definitions', () => {
             let res = v.validate(obj, schema);
             expect(res).toBe(true);
             expect(v.compile).toHaveBeenCalledTimes(1);
-            expect(v.compile).toHaveBeenCalledWith(schema, undefined);
+            expect(v.compile).toHaveBeenCalledWith(schema);
 
             expect(compiledFn).toHaveBeenCalledTimes(1);
             expect(compiledFn).toHaveBeenCalledWith(obj);
