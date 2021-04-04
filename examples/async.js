@@ -47,6 +47,7 @@ const schema = {
 };
 
 const check = v.compile(schema);
+console.log("Is async?", check.async);
 
 (async function() {
 	const data = {
