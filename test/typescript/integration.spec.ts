@@ -1204,3 +1204,84 @@ describe('TypeScript Definitions', () => {
     });
 })
 
+describe("Test async mode", () => {
+	const v = new Validator({ useNewCustomCheckerFunction: true });
+
+	// Async mode 1
+	const custom1 = jest.fn(async value => {
+		await new Promise(resolve => setTimeout(resolve, 100));
+		return value.toUpperCase();
+	});
+
+	// Async mode 2
+	const custom2 = jest.fn(async (value) => {
+		await new Promise(resolve => setTimeout(resolve, 100));
+		return value.trim();
+	});
+
+	// Async mode 3
+	v.add("even", function(this: ValidatorType, { messages }) {
+		return {
+			source: `
+				if (value % 2 != 0)
+					${this.makeError({ type: "evenNumber",  actual: "value", messages })}
+
+				await new Promise(resolve => setTimeout(resolve, 100));
+
+				return value;
+			`
+		};
+	});
+	v.addMessage("evenNumber", "The '{field}' field must be an even number! Actual: {actual}");
+
+	const schema = {
+		$$async: true,
+		id: { type: "number", positive: true },
+		name: { type: "string", custom: custom1 },
+		username: {	type: "custom",	custom: custom2	},
+		age: { type: "even" }
+	};
+	const check = v.compile(schema);
+
+	it("should be async", () => {
+		expect(check.async).toBe(true);
+	});
+
+	it("should call custom async validators", async () => {
+		let obj = {
+			id: 3,
+			name: "John",
+			username: "   john.doe  ",
+			age: 30
+		};
+
+		const res = await check(obj);
+		expect(res).toBe(true);
+
+		expect(custom1).toBeCalledTimes(1);
+		expect(custom1).toBeCalledWith("John", [], schema.name, "name", null, expect.anything());
+
+		expect(custom2).toBeCalledTimes(1);
+		expect(custom2).toBeCalledWith("   john.doe  ", [], schema.username, "username", null, expect.anything());
+	});
+
+	it("should give errors", async () => {
+		const obj = {
+			id: 3,
+			name: "John",
+			username: "   john.doe  ",
+			age: 31
+		};
+
+		const res = await check(obj);
+
+		expect(res).toEqual([{
+			type: "evenNumber",
+			field: "age",
+			actual: 31,
+			expected: undefined,
+			message: "The 'age' field must be an even number! Actual: 31",
+		}]);
+	});
+
+});

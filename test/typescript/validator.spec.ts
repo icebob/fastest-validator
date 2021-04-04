@@ -120,7 +120,8 @@ describe('TypeScript Definitions', () => {
                 customs: expect.any(Object),
                 rules: expect.any(Array),
                 fn: expect.any(Array),
-                index: 2
+                index: 2,
+				async: false
             };
 
             expect(validFn).toHaveBeenCalledTimes(1);
