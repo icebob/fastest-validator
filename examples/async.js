@@ -2,8 +2,7 @@ const Validator = require("../index");
 
 const v = new Validator({
 	debug: true,
-	useNewCustomCheckerFunction: true,
-	async: true
+	useNewCustomCheckerFunction: true
 });
 
 // Register a custom 'even' validator
@@ -22,6 +21,7 @@ v.add("even", function({ messages }) {
 v.addMessage("evenNumber", "The '{field}' field must be an even number! Actual: {actual}");
 
 const schema = {
+	$$async: true,
 	name: {
 		type: "string",
 		min: 4,

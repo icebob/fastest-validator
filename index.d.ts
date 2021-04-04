@@ -799,6 +799,12 @@ declare module "fastest-validator" {
 		$$strict?: boolean | "remove";
 
 		/**
+		 * Enable asynchronous functionality. In this case the `validate` and `compile` methods return a `Promise`.
+		 * @default false
+		 */
+		$$async?: boolean;
+
+		/**
 		 * Basically the validator expects that you want to validate a Javascript object.
 		 * If you want others, you can define the root level schema.
 		 * @default false
@@ -877,18 +883,6 @@ declare module "fastest-validator" {
 		 * For set plugins.
 		 */
 		plugins?: PluginFn<any>[];
-
-		/**
-		 * Create async validator. In this case the `validator` and `compile` methods returns `Promise<>`
-		 */
-		async?: boolean;
-	}
-
-	export interface ValidateCompileOptions {
-		/**
-		 * Create async validator. In this case the `validator` and `compile` methods returns `Promise<>`
-		 */
-		 async?: boolean;
 	}
 
 	export interface CompilationRule {
@@ -1023,8 +1017,7 @@ declare module "fastest-validator" {
 		 * @return {(value: any) => (true | ValidationError[])} function that can be used next for validation of current schema
 		 */
 		compile<T = any>(
-			schema: ValidationSchema<T> | ValidationSchema<T>[],
-			opts?: ValidateCompileOptions
+			schema: ValidationSchema<T> | ValidationSchema<T>[]
 		): (value: any) => true | ValidationError[] | Promise<true | ValidationError[]>;
 
 		/**
@@ -1035,8 +1028,7 @@ declare module "fastest-validator" {
 		 */
 		validate(
 			value: any,
-			schema: ValidationSchema,
-			opts?: ValidateCompileOptions
+			schema: ValidationSchema
 		): true | ValidationError[] | Promise<true | ValidationError[]>;
 
 		/**
