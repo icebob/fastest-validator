@@ -1225,7 +1225,7 @@ describe("Test async mode", () => {
 	});
 
 	it("should call custom async validators", async () => {
-		let obj = {
+		const obj = {
 			id: 3,
 			name: "John",
 			username: "   john.doe  ",
@@ -1259,4 +1259,29 @@ describe("Test async mode", () => {
 		expect(res[0].expected).toBe(undefined);
 	});
 
+});
+
+describe("Test context meta", () => {
+	const v = new Validator({ useNewCustomCheckerFunction: true });
+
+	const schema = {
+		name: { type: "string", custom: (value, errors, schema, name, parent, context) => {
+			expect(context.meta).toEqual({ a: "from-meta" });
+			return context.meta.a;
+		} },
+	};
+	const check = v.compile(schema);
+
+	it("should call custom async validators", () => {
+		const obj = {
+			name: "John"
+		};
+
+		const res = check(obj, {
+			meta: { a: "from-meta" }
+		});
+
+		expect(res).toBe(true);
+		expect(obj).toEqual({ name: "from-meta" });
+	});
 });

@@ -894,11 +894,13 @@ declare module "fastest-validator" {
 
 	export interface Context {
 		index: number;
+		async: boolean;
 		rules: ValidationRuleObject[];
 		fn: Function[];
 		customs: {
 			[ruleName: string]: { schema: RuleCustom; messages: MessagesType };
 		};
+		meta?: object;
 	}
 
 	export interface CheckerFunctionError {
@@ -942,14 +944,17 @@ declare module "fastest-validator" {
 		toHexString(): string;
 	}
 
+	export interface CheckFunctionOptions {
+		meta?: object | null;
+	}
 
 	export interface SyncCheckFunction {
-		(value: any): true | ValidationError[]
+		(value: any, opts?: CheckFunctionOptions): true | ValidationError[]
 		async: false
 	 }
 
 	 export interface AsyncCheckFunction {
-		(value: any): Promise<true | ValidationError[]>
+		(value: any, opts?: CheckFunctionOptions): Promise<true | ValidationError[]>
 		async: true
 	 }
 
