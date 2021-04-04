@@ -1157,6 +1157,13 @@ console.log(v.validate({ name: "John", phone: "36-70-123-4567" }, schema));
 You can also use async custom validators. This can be useful if you need to check something in a database or in a remote location.
 In this case you should use `async/await` keywords, or return a `Promise` in the custom validator functions.
 
+>This implementation uses `async/await` keywords. So this feature works only on environments which [supports async/await](https://caniuse.com/async-functions):
+>
+> - Chrome > 55
+> - Firefox > 52
+> - Edge > 15
+> - NodeJS > 8.x (or 7.6 with harmony)
+
 To enable async mode, you should set `$$async: true` in the root of your schema.
 
 **Example with custom checker function**
