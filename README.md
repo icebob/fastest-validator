@@ -117,8 +117,8 @@ import FastestValidator from "https://esm.sh/fastest-validator@1"
 
 const v = new FastestValidator();
 const check = v.compile({
-	name: "string",
-	age: "number",
+    name: "string",
+    age: "number",
 });
 
 console.log(check({ name: "Erf", age: 18 })); //true
@@ -1177,20 +1177,20 @@ const v = new Validator({
 });
 
 const schema = {
-	$$async: true,
-	name: { type: "string" },
-	username: {
-		type: "string",
+    $$async: true,
+    name: { type: "string" },
+    username: {
+        type: "string",
         min: 2,
-		custom: async (v, errors) => {
-			// E.g. checking in the DB that the value is unique.
-			const res = await DB.checkUsername(v);
+        custom: async (v, errors) => {
+            // E.g. checking in the DB that the value is unique.
+            const res = await DB.checkUsername(v);
             if (!res) 
                 errors.push({ type: "unique", actual: value });
 
             return v;
-		}
-	}
+        }
+    }
     // ...
 };
 
@@ -1205,6 +1205,24 @@ The compiled `check` function contains an `async` property, so  you can check if
 ```js
 const check = v.compile(schema);
 console.log("Is async?", check.async);
+```
+
+## Meta information for custom validators
+You can pass any extra meta information for the custom validators which is available via `context.meta`.
+
+```js
+const schema = {
+    name: { type: "string", custom: (value, errors, schema, name, parent, context) => {
+        // Access to the meta
+        return context.meta.a;
+    } },
+};
+const check = v.compile(schema);
+
+const res = check(obj, {
+    // Passes meta information
+    meta: { a: "from-meta" }
+});
 ```
 
 # Custom error messages (l10n)

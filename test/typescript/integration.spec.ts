@@ -1283,5 +1283,29 @@ describe("Test async mode", () => {
 			message: "The 'age' field must be an even number! Actual: 31",
 		}]);
 	});
+});
 
+describe("Test context meta", () => {
+	const v = new Validator({ useNewCustomCheckerFunction: true });
+
+	const schema = {
+		name: { type: "string", custom: (value, errors, schema, name, parent, context) => {
+			expect(context.meta).toEqual({ a: "from-meta" });
+			return context.meta.a;
+		} },
+	};
+	const check = v.compile(schema);
+
+	it("should call custom async validators", () => {
+		const obj = {
+			name: "John"
+		};
+
+		const res = check(obj, {
+			meta: { a: "from-meta" }
+		});
+
+		expect(res).toBe(true);
+		expect(obj).toEqual({ name: "from-meta" });
+	});
 });

@@ -26,9 +26,9 @@ const schema = {
 		type: "string",
 		min: 4,
 		max: 25,
-		custom: async (v) => {
+		custom: async (v, errors, schema, name, parent, context) => {
 			await new Promise(resolve => setTimeout(resolve, 1000));
-			return v.toUpperCase();
+			return context.meta.name;
 		}
 	},
 
@@ -55,5 +55,5 @@ console.log("Is async?", check.async);
 		username: "johndoe   ",
 		age: 21
 	};
-	console.log(await check(data), data);
+	console.log(await check(data, { meta: { name: "Jane Doe" }}), data);
 })();
