@@ -446,7 +446,6 @@ describe("Test custom validation v1", () => {
 	});
 
 	it("should compile without error", () => {
-		const fn = jest.fn();
 		const check = v.compile({
 			num: {
 				type: "number",
@@ -454,7 +453,6 @@ describe("Test custom validation v1", () => {
 				max: 15,
 				integer: true,
 				custom(value){
-					fn(value);
 					if (value % 2 !== 0) return [{ type: "evenNumber", actual: value }];
 				}
 			}
@@ -472,7 +470,7 @@ describe("Test custom validation v1", () => {
 				max: 15,
 				integer: true,
 				custom(value){
-					fn(value);
+					fn(this, value);
 					if (value % 2 !== 0) return [{ type: "evenNumber", actual: value }];
 				}
 			}
@@ -480,7 +478,7 @@ describe("Test custom validation v1", () => {
 
 		const res = check({num: 12});
 		expect(res).toBe(true);
-		expect(fn).toBeCalledWith(12);
+		expect(fn).toBeCalledWith(v, 12);
 
 		expect(check({num: 8})[0].type).toEqual("numberMin");
 		expect(check({num: 18})[0].type).toEqual("numberMax");
@@ -534,7 +532,7 @@ describe("Test custom validation", () => {
 				max: 15,
 				integer: true,
 				custom(value, errors){
-					fn(value, errors);
+					fn(this ,value, errors);
 					if (value % 2 !== 0) errors.push({ type: "evenNumber", actual: value });
 					return value;
 				}
@@ -547,7 +545,7 @@ describe("Test custom validation", () => {
 	it("should work correctly with custom validator", () => {
 		const res = check({num: 12});
 		expect(res).toBe(true);
-		expect(fn).toBeCalledWith(12, []);
+		expect(fn).toBeCalledWith(v, 12, []);
 
 		expect(check({num: 8})[0].type).toEqual("numberMin");
 		expect(check({num: 18})[0].type).toEqual("numberMax");
