@@ -1163,6 +1163,7 @@ In this case you should use `async/await` keywords, or return a `Promise` in the
 > - Firefox > 52
 > - Edge > 15
 > - NodeJS > 8.x (or 7.6 with harmony)
+> - Deno (all versions)
 
 To enable async mode, you should set `$$async: true` in the root of your schema.
 
