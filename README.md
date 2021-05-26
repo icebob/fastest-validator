@@ -127,6 +127,7 @@ console.log(check({ name: "Erf", age: 18 })); //true
 ### Supported frameworks
 - *Moleculer*: Natively supported
 - *Fastify*: By using [fastify-fv](https://github.com/erfanium/fastify-fv) 
+- *Express*: By using [fastest-express-validator](https://github.com/muturgan/fastest-express-validator) 
 
 
 # Optional, Required & Nullable fields
