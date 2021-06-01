@@ -8,7 +8,7 @@ describe("Test flat schema", () => {
 	let schema = {
 		id: { type: "number", positive: true },
 		name: { type: "string" },
-		age: { type: "number", min: 18, max: 99 }
+		age: { type: "number", min: 18, max: 99 },
 	};
 	let check = v.compile(schema);
 
@@ -16,7 +16,7 @@ describe("Test flat schema", () => {
 		let obj = {
 			id: 3,
 			name: "John",
-			age: 32
+			age: 32,
 		};
 
 		let res = check(obj);
@@ -25,24 +25,51 @@ describe("Test flat schema", () => {
 	});
 
 	it("should give errors", () => {
-		expect(check({
-			id: 3,
-			name: "John"
-		})).toEqual([{ "type": "required", field: "age", actual: undefined, message: "The 'age' field is required."}]);
+		expect(
+			check({
+				id: 3,
+				name: "John",
+			})
+		).toEqual([
+			{
+				type: "required",
+				field: "age",
+				actual: undefined,
+				message: "The 'age' field is required.",
+			},
+		]);
 
-		expect(check({
-			id: 3,
-			name: "John",
-			age: "32"
-		})).toEqual([{ "type": "number", field: "age", actual: "32", message: "The 'age' field must be a number."}]);
+		expect(
+			check({
+				id: 3,
+				name: "John",
+				age: "32",
+			})
+		).toEqual([
+			{
+				type: "number",
+				field: "age",
+				actual: "32",
+				message: "The 'age' field must be a number.",
+			},
+		]);
 
-		expect(check({
-			id: 3,
-			name: "John",
-			age: 8
-		})).toEqual([{ "type": "numberMin", field: "age", actual: 8, expected: 18, message: "The 'age' field must be greater than or equal to 18."}]);
+		expect(
+			check({
+				id: 3,
+				name: "John",
+				age: 8,
+			})
+		).toEqual([
+			{
+				type: "numberMin",
+				field: "age",
+				actual: 8,
+				expected: 18,
+				message: "The 'age' field must be greater than or equal to 18.",
+			},
+		]);
 	});
-
 });
 
 describe("Test nested schema", () => {
@@ -51,11 +78,14 @@ describe("Test nested schema", () => {
 	let schema = {
 		id: { type: "number", positive: true },
 		name: { type: "string" },
-		address: { type: "object", properties: {
-			country: { type: "string" },
-			city: { type: "string" },
-			zip: { type: "number", min: 100, max: 99999}
-		}}
+		address: {
+			type: "object",
+			properties: {
+				country: { type: "string" },
+				city: { type: "string" },
+				zip: { type: "number", min: 100, max: 99999 },
+			},
+		},
 	};
 	let check = v.compile(schema);
 
@@ -66,8 +96,8 @@ describe("Test nested schema", () => {
 			address: {
 				country: "Germany",
 				city: "Munchen",
-				zip: 4455
-			}
+				zip: 4455,
+			},
 		};
 
 		let res = check(obj);
@@ -81,8 +111,8 @@ describe("Test nested schema", () => {
 			name: "John",
 			address: {
 				city: "Munchen",
-				zip: 55
-			}
+				zip: 55,
+			},
 		};
 
 		let res = check(obj);
@@ -97,18 +127,23 @@ describe("Test nested schema", () => {
 		expect(res[2].type).toBe("numberMin");
 		expect(res[2].field).toBe("address.zip");
 	});
-
 });
 
 describe("Test 3 level nested schema", () => {
 	const v = new Validator();
 
 	let schema = {
-		a: { type: "object", properties: {
-			b: { type: "object", properties: {
-				c: { type: "string", min: 5}
-			}}
-		}}
+		a: {
+			type: "object",
+			properties: {
+				b: {
+					type: "object",
+					properties: {
+						c: { type: "string", min: 5 },
+					},
+				},
+			},
+		},
 	};
 	let check = v.compile(schema);
 
@@ -116,9 +151,9 @@ describe("Test 3 level nested schema", () => {
 		let obj = {
 			a: {
 				b: {
-					c: "John Doe"
-				}
-			}
+					c: "John Doe",
+				},
+			},
 		};
 
 		let res = check(obj);
@@ -129,9 +164,9 @@ describe("Test 3 level nested schema", () => {
 		let obj = {
 			a: {
 				b: {
-					c: "John"
-				}
-			}
+					c: "John",
+				},
+			},
 		};
 
 		let res = check(obj);
@@ -139,35 +174,35 @@ describe("Test 3 level nested schema", () => {
 		expect(res.length).toBe(1);
 		expect(res[0].type).toBe("stringMin");
 		expect(res[0].field).toBe("a.b.c");
-		expect(res[0].message).toBe("The 'a.b.c' field length must be greater than or equal to 5 characters long.");
+		expect(res[0].message).toBe(
+			"The 'a.b.c' field length must be greater than or equal to 5 characters long."
+		);
 	});
-
 });
 
 describe("Test nested array", () => {
 	const v = new Validator();
 
 	let schema = {
-		arr1: { type: "array", items: {
-			type: "array", empty: false, items: {
-				type: "number"
-			}
-		}}
+		arr1: {
+			type: "array",
+			items: {
+				type: "array",
+				empty: false,
+				items: {
+					type: "number",
+				},
+			},
+		},
 	};
 	let check = v.compile(schema);
 
 	it("should give true if obj is valid", () => {
 		let obj = {
 			arr1: [
-				[
-					5,
-					10
-				],
-				[
-					1,
-					2
-				]
-			]
+				[5, 10],
+				[1, 2],
+			],
 		};
 
 		let res = check(obj);
@@ -178,15 +213,9 @@ describe("Test nested array", () => {
 	it("should give error 'not a number'", () => {
 		let obj = {
 			arr1: [
-				[
-					5,
-					10
-				],
-				[
-					"1",
-					2
-				]
-			]
+				[5, 10],
+				["1", 2],
+			],
 		};
 
 		let res = check(obj);
@@ -198,14 +227,7 @@ describe("Test nested array", () => {
 
 	it("should give error 'empty array'", () => {
 		let obj = {
-			arr1: [
-				[
-				],
-				[
-					1,
-					2
-				]
-			]
+			arr1: [[], [1, 2]],
 		};
 
 		let res = check(obj);
@@ -214,18 +236,22 @@ describe("Test nested array", () => {
 		expect(res[0].type).toBe("arrayEmpty");
 		expect(res[0].field).toBe("arr1[0]");
 	});
-
 });
 
 describe("Test 3-level array", () => {
 	const v = new Validator();
 
 	let schema = {
-		arr1: { type: "array", items: {
-			type: "array", items: {
-				type: "array", items: "string"
-			}
-		}}
+		arr1: {
+			type: "array",
+			items: {
+				type: "array",
+				items: {
+					type: "array",
+					items: "string",
+				},
+			},
+		},
 	};
 	let check = v.compile(schema);
 
@@ -233,13 +259,11 @@ describe("Test 3-level array", () => {
 		let obj = {
 			arr1: [
 				[
-					[ "apple", "peach" ],
-					[ "pineapple", "plum" ]
+					["apple", "peach"],
+					["pineapple", "plum"],
 				],
-				[
-					[ "orange", "lemon", "lime"]
-				]
-			]
+				[["orange", "lemon", "lime"]],
+			],
 		};
 
 		let res = check(obj);
@@ -251,13 +275,11 @@ describe("Test 3-level array", () => {
 		let obj = {
 			arr1: [
 				[
-					[ "apple", "peach" ],
-					[ "pineapple", "plum" ]
+					["apple", "peach"],
+					["pineapple", "plum"],
 				],
-				[
-					[ "orange", {}, "lime"]
-				]
-			]
+				[["orange", {}, "lime"]],
+			],
 		};
 
 		let res = check(obj);
@@ -266,17 +288,13 @@ describe("Test 3-level array", () => {
 		expect(res[0].type).toBe("string");
 		expect(res[0].field).toBe("arr1[1][0][1]");
 	});
-
 });
 
 describe("Test multiple rules", () => {
 	const v = new Validator();
 
 	let schema = {
-		value: [
-			{ type: "string", min: 3, max: 255 },
-			{ type: "boolean" }
-		]
+		value: [{ type: "string", min: 3, max: 255 }, { type: "boolean" }],
 	};
 
 	let check = v.compile(schema);
@@ -322,16 +340,15 @@ describe("Test multiple rules", () => {
 
 		expect(res[1].type).toBe("boolean");
 		expect(res[1].field).toBe("value");
-
 	});
 
 	it("should work with optional", () => {
-
 		let schemaOptional = {
-			a: { type: "multi", optional: true, rules: [
-				{ type: "number" },
-				{ type: "string" },
-			]}
+			a: {
+				type: "multi",
+				optional: true,
+				rules: [{ type: "number" }, { type: "string" }],
+			},
 		};
 
 		let checkOptional = v.compile(schemaOptional);
@@ -341,12 +358,11 @@ describe("Test multiple rules", () => {
 	});
 
 	it("should work with optional (legacy)", () => {
-
 		let schemaOptional = {
 			a: [
 				{ type: "number", optional: true },
 				{ type: "string", optional: true },
-			]
+			],
 		};
 
 		let checkOptional = v.compile(schemaOptional);
@@ -355,11 +371,20 @@ describe("Test multiple rules", () => {
 		expect(checkOptional({ a: 5 })).toBe(true);
 		expect(checkOptional({ a: "five" })).toBe(true);
 		expect(checkOptional({ a: false })).toEqual([
-			{ type: "number", field: "a", actual: false, message: "The 'a' field must be a number." },
-			{ type: "string", field: "a", actual: false, message: "The 'a' field must be a string." },
+			{
+				type: "number",
+				field: "a",
+				actual: false,
+				message: "The 'a' field must be a number.",
+			},
+			{
+				type: "string",
+				field: "a",
+				actual: false,
+				message: "The 'a' field must be a string.",
+			},
 		]);
 	});
-
 });
 
 describe("Test multiple rules with objects", () => {
@@ -370,27 +395,29 @@ describe("Test multiple rules with objects", () => {
 			{
 				type: "object",
 				props: {
-					name: {type: "string"},
-					age: {type: "number"},
-				}
+					name: { type: "string" },
+					age: { type: "number" },
+				},
 			},
 			{
 				type: "object",
 				props: {
-					country: {type: "string"},
-					code: {type: "string"},
-				}
-			}
-		]
+					country: { type: "string" },
+					code: { type: "string" },
+				},
+			},
+		],
 	};
 
 	let check = v.compile(schema);
 
 	it("should give true if first object is given", () => {
-		let obj = { list: {
-			name: "Joe",
-			age: 34
-		} };
+		let obj = {
+			list: {
+				name: "Joe",
+				age: 34,
+			},
+		};
 
 		let res = check(obj);
 
@@ -398,10 +425,12 @@ describe("Test multiple rules with objects", () => {
 	});
 
 	it("should give true if second object is given", () => {
-		let obj = { list: {
-			country: "germany",
-			code: "de"
-		}};
+		let obj = {
+			list: {
+				country: "germany",
+				code: "de",
+			},
+		};
 
 		let res = check(obj);
 
@@ -409,10 +438,12 @@ describe("Test multiple rules with objects", () => {
 	});
 
 	it("should give error if the object is broken", () => {
-		let obj = { list: {
-			name: "Average",
-			age: "Joe"
-		} };
+		let obj = {
+			list: {
+				name: "Average",
+				age: "Joe",
+			},
+		};
 
 		let res = check(obj);
 
@@ -436,9 +467,7 @@ describe("Test multiple rules with objects", () => {
 
 		expect(res[1].type).toBe("required");
 		expect(res[1].field).toBe("list.age");
-
 	});
-
 });
 
 describe("Test multiple rules with objects within array", () => {
@@ -451,76 +480,84 @@ describe("Test multiple rules with objects within array", () => {
 				{
 					type: "object",
 					properties: {
-						name: {type: "string"},
-						age: {type: "number"},
-					}
+						name: { type: "string" },
+						age: { type: "number" },
+					},
 				},
 				{
 					type: "object",
 					properties: {
-						country: {type: "string"},
-						code: {type: "string"},
-					}
-				}
-			]
-		}
+						country: { type: "string" },
+						code: { type: "string" },
+					},
+				},
+			],
+		},
 	};
 
 	let check = v.compile(schema);
 
 	it("should give true if one valid object is given", () => {
-		let obj = { list: [
-			{
-				name: "Joe",
-				age: 34
-			}
-		]};
+		let obj = {
+			list: [
+				{
+					name: "Joe",
+					age: 34,
+				},
+			],
+		};
 		let res = check(obj);
 		expect(res).toBe(true);
 
-		let obj2 = { list: [
-			{
-				country: "germany",
-				code: "de"
-			}
-		]};
+		let obj2 = {
+			list: [
+				{
+					country: "germany",
+					code: "de",
+				},
+			],
+		};
 		let res2 = check(obj2);
 		expect(res2).toBe(true);
 	});
 
 	it("should give true if three valid objects given", () => {
-		let obj = { list: [
-			{
-				name: "Joe",
-				age: 34
-			},
-			{
-				country: "germany",
-				code: "de"
-			},
-			{
-				country: "hungary",
-				code: "hu"
-			}
-		]};
+		let obj = {
+			list: [
+				{
+					name: "Joe",
+					age: 34,
+				},
+				{
+					country: "germany",
+					code: "de",
+				},
+				{
+					country: "hungary",
+					code: "hu",
+				},
+			],
+		};
 		let res = check(obj);
 		expect(res).toBe(true);
 	});
 
 	it("should give error if one object is broken", () => {
-		let obj = { list: [
-			{
-				name: "Joe",
-				age: 34
-			},
-			{
-				country: "germany",
-			},
-			{
-				country: "hungary",
-				code: "hu"
-			}
-		]};
+		let obj = {
+			list: [
+				{
+					name: "Joe",
+					age: 34,
+				},
+				{
+					country: "germany",
+				},
+				{
+					country: "hungary",
+					code: "hu",
+				},
+			],
+		};
 
 		let res = check(obj);
 
@@ -534,18 +571,19 @@ describe("Test multiple rules with objects within array", () => {
 	});
 
 	it("should give error if one object is empty", () => {
-		let obj = { list: [
-			{
-				name: "Joe",
-				age: 34
-			},
-			{
-				country: "hungary",
-				code: "hu"
-			},
-			{
-			}
-		]};
+		let obj = {
+			list: [
+				{
+					name: "Joe",
+					age: 34,
+				},
+				{
+					country: "hungary",
+					code: "hu",
+				},
+				{},
+			],
+		};
 
 		let res = check(obj);
 
@@ -556,19 +594,14 @@ describe("Test multiple rules with objects within array", () => {
 
 		expect(res[1].type).toBe("required");
 		expect(res[1].field).toBe("list[2].age");
-
 	});
-
 });
 
 describe("Test multiple rules with mixed types", () => {
 	const v = new Validator();
 
 	let schema = {
-		value: [
-			{ type: "string", min: 3, max: 255 },
-			{ type: "boolean" }
-		]
+		value: [{ type: "string", min: 3, max: 255 }, { type: "boolean" }],
 	};
 
 	let check = v.compile(schema);
@@ -600,7 +633,6 @@ describe("Test multiple rules with mixed types", () => {
 		expect(res[0].type).toBe("required");
 		expect(res[0].field).toBe("value");
 	});
-
 });
 
 describe("Test multiple rules with arrays", () => {
@@ -610,13 +642,13 @@ describe("Test multiple rules with arrays", () => {
 		list: [
 			{
 				type: "array",
-				items: "string"
+				items: "string",
 			},
 			{
 				type: "array",
-				items: "number"
-			}
-		]
+				items: "number",
+			},
+		],
 	};
 
 	let check = v.compile(schema);
@@ -662,9 +694,7 @@ describe("Test multiple rules with arrays", () => {
 
 		expect(res[1].type).toBe("string");
 		expect(res[1].field).toBe("list[1]");
-
 	});
-
 });
 
 describe("Test multiple array in root", () => {
@@ -673,12 +703,12 @@ describe("Test multiple array in root", () => {
 	let schema = [
 		{
 			type: "array",
-			items: "string"
+			items: "string",
 		},
 		{
 			type: "array",
-			items: "number"
-		}
+			items: "number",
+		},
 	];
 
 	let check = v.compile(schema);
@@ -724,9 +754,7 @@ describe("Test multiple array in root", () => {
 
 		expect(res[1].type).toBe("string");
 		expect(res[1].field).toBe("[1]");
-
 	});
-
 });
 
 describe("Test object without props", () => {
@@ -734,7 +762,7 @@ describe("Test object without props", () => {
 
 	it("should compile and validate", () => {
 		const schema = {
-			valid: { type: "object" }
+			valid: { type: "object" },
 		};
 
 		const check = v.compile(schema);
@@ -750,7 +778,7 @@ describe("Test array without items", () => {
 
 	it("should compile and validate", () => {
 		const schema = {
-			valid: { type: "array" }
+			valid: { type: "array" },
 		};
 
 		const check = v.compile(schema);
@@ -771,8 +799,8 @@ describe("Test recursive/cyclic schema", () => {
 		subcategories: {
 			type: "array",
 			optional: true,
-			items: { type: "object", properties: schema}
-		}
+			items: { type: "object", properties: schema },
+		},
 	});
 
 	it("should compile and validate", () => {
@@ -782,13 +810,13 @@ describe("Test recursive/cyclic schema", () => {
 			subcategories: [
 				{
 					name: "sub1",
-					parent: category
+					parent: category,
 				},
 				{
 					name: "sub2",
-					parent: category
-				}
-			]
+					parent: category,
+				},
+			],
 		});
 
 		const res = v.validate(category, schema);
@@ -801,13 +829,13 @@ describe("Test recursive/cyclic schema", () => {
 			name: "top",
 			subcategories: [
 				{
-					name: "sub1"
+					name: "sub1",
 				},
 				{
 					name: "sub2",
-					subcategories: [ {} ]
-				}
-			]
+					subcategories: [{}],
+				},
+			],
 		};
 
 		const res = v.validate(category, schema);
@@ -826,9 +854,12 @@ describe("Test irregular object property names", () => {
 			"1-1": { type: "string" },
 		};
 
-		const res = v.validate({
-			"1-1": "test",
-		}, schema);
+		const res = v.validate(
+			{
+				"1-1": "test",
+			},
+			schema
+		);
 		expect(res).toBe(true);
 	});
 
@@ -850,12 +881,15 @@ describe("Test irregular object property names", () => {
 			"a\u2029bc": { type: "string" },
 		};
 
-		const res = v.validate({
-			"a\nbc\ndef": "test",
-			"a\rbc": "test",
-			"a\u2028bc": "test",
-			"a\u2029bc": "test",
-		}, schema);
+		const res = v.validate(
+			{
+				"a\nbc\ndef": "test",
+				"a\rbc": "test",
+				"a\u2028bc": "test",
+				"a\u2029bc": "test",
+			},
+			schema
+		);
 		expect(res).toBe(true);
 	});
 
@@ -877,12 +911,15 @@ describe("Test irregular object property names", () => {
 			try: { type: "string" },
 		};
 
-		const res = v.validate({
-			for: "hello",
-			goto: "hello",
-			var: "test",
-			try: "test",
-		}, schema);
+		const res = v.validate(
+			{
+				for: "hello",
+				goto: "hello",
+				var: "test",
+				try: "test",
+			},
+			schema
+		);
 		expect(res).toBe(true);
 	});
 });
@@ -892,7 +929,7 @@ describe("Test $$strict schema restriction on root-level", () => {
 
 	let schema = {
 		name: "string",
-		$$strict: true
+		$$strict: true,
 	};
 
 	let check = v.compile(schema);
@@ -900,18 +937,21 @@ describe("Test $$strict schema restriction on root-level", () => {
 	it("should give error if the object contains additional properties on the root-level", () => {
 		let obj = {
 			name: "test",
-			additionalProperty: "additional"
+			additionalProperty: "additional",
 		};
 
 		let res = check(obj);
 
-		expect(res).toEqual([{
-			"type": "objectStrict",
-			"field": undefined,
-			"actual": "additionalProperty",
-			"expected": "name",
-			"message": "The object '' contains forbidden keys: 'additionalProperty'.",
-		}]);
+		expect(res).toEqual([
+			{
+				type: "objectStrict",
+				field: undefined,
+				actual: "additionalProperty",
+				expected: "name",
+				message:
+					"The object '' contains forbidden keys: 'additionalProperty'.",
+			},
+		]);
 	});
 });
 
@@ -923,10 +963,10 @@ describe("Test $$strict schema restriction for nested objects", () => {
 		object: {
 			type: "object",
 			props: {
-				firstName: "string"
-			}
+				firstName: "string",
+			},
 		},
-		$$strict: true
+		$$strict: true,
 	};
 
 	let check = v.compile(schema);
@@ -935,20 +975,23 @@ describe("Test $$strict schema restriction for nested objects", () => {
 		let obj = {
 			name: "test",
 			object: {
-				firstName: "sub-test"
+				firstName: "sub-test",
 			},
-			additionalProperty: "additional"
+			additionalProperty: "additional",
 		};
 
 		let res = check(obj);
 
-		expect(res).toEqual([{
-			"type": "objectStrict",
-			"field": undefined,
-			"actual": "additionalProperty",
-			"expected": "name, object",
-			"message": "The object '' contains forbidden keys: 'additionalProperty'.",
-		}]);
+		expect(res).toEqual([
+			{
+				type: "objectStrict",
+				field: undefined,
+				actual: "additionalProperty",
+				expected: "name, object",
+				message:
+					"The object '' contains forbidden keys: 'additionalProperty'.",
+			},
+		]);
 	});
 });
 
@@ -961,8 +1004,8 @@ describe("Test strict schema restriction on sub-level", () => {
 			strict: true,
 			props: {
 				street: "string",
-			}
-		}
+			},
+		},
 	};
 
 	let check = v.compile(schema);
@@ -971,8 +1014,8 @@ describe("Test strict schema restriction on sub-level", () => {
 		let obj = {
 			address: {
 				street: "test",
-				additionalProperty: "additional"
-			}
+				additionalProperty: "additional",
+			},
 		};
 
 		let res = check(obj);
@@ -994,15 +1037,21 @@ describe("Test default value sanitizer", () => {
 			age: { type: "number", optional: true, default: 33 },
 			roles: { type: "array", items: "string", default: ["user"] },
 			status: { type: "boolean", default: true },
-			tuple: { type: "tuple", items: [{type: "number", default: 666}, {type: "string", default: "lucifer"}] },
-			array: { type: "array", items: {type: "string", default: "bar"}},
+			tuple: {
+				type: "tuple",
+				items: [
+					{ type: "number", default: 666 },
+					{ type: "string", default: "lucifer" },
+				],
+			},
+			array: { type: "array", items: { type: "string", default: "bar" } },
 		};
 		const check = v.compile(schema);
 		const obj = {
 			name: null,
 			status: false,
 			tuple: [undefined, undefined],
-			array: ["foo", undefined, "baz"]
+			array: ["foo", undefined, "baz"],
 		};
 
 		const res = check(obj);
@@ -1015,7 +1064,7 @@ describe("Test default value sanitizer", () => {
 			roles: ["user"],
 			status: false,
 			tuple: [666, "lucifer"],
-			array: ["foo", "bar", "baz"]
+			array: ["foo", "bar", "baz"],
 		});
 	});
 
@@ -1024,8 +1073,8 @@ describe("Test default value sanitizer", () => {
 		const check = v.compile({
 			a: {
 				type: "number",
-				default: () => number.value++
-			}
+				default: () => number.value++,
+			},
 		});
 
 		const o = {};
@@ -1044,23 +1093,27 @@ describe("Test optional option", () => {
 	it("should not throw error if value is undefined", () => {
 		const schema = {
 			foo: { type: "number", optional: true },
-			array: { type: "array", optional: true, items: {type: "string", optional: true} },
+			array: {
+				type: "array",
+				optional: true,
+				items: { type: "string", optional: true },
+			},
 			tuple: {
 				type: "tuple",
 				optional: true,
-				items: [
-					{ type: "number", optional: true },
-				],
+				items: [{ type: "number", optional: true }],
 			},
 		};
 		const check = v.compile(schema);
 
 		expect(check({})).toBe(true);
-		expect(check({
-			foo: undefined,
-			array: [undefined],
-			tuple: [undefined]
-		})).toBe(true);
+		expect(
+			check({
+				foo: undefined,
+				array: [undefined],
+				tuple: [undefined],
+			})
+		).toBe(true);
 	});
 
 	it("should not throw error if value is null", () => {
@@ -1082,15 +1135,16 @@ describe("Test optional option", () => {
 	it("should set default value if there is a default", () => {
 		const schema = {
 			foo: { type: "number", optional: true, default: 5 },
-			array: { type: "array", optional: true, items: {type: "string", optional: true, default: "foo"} },
+			array: {
+				type: "array",
+				optional: true,
+				items: { type: "string", optional: true, default: "foo" },
+			},
 			tuple: {
 				type: "tuple",
 				optional: true,
-				items: [
-					{ type: "number", optional: true, default: 666 },
-				],
+				items: [{ type: "number", optional: true, default: 666 }],
 			},
-
 		};
 		const check = v.compile(schema);
 
@@ -1100,7 +1154,7 @@ describe("Test optional option", () => {
 		expect(o1.array).toStrictEqual([]);
 		expect(o1.tuple).toStrictEqual([6]);
 
-		const o2 = {array: [undefined], tuple: [undefined]};
+		const o2 = { array: [undefined], tuple: [undefined] };
 		expect(check(o2)).toBe(true);
 		expect(o2.foo).toBe(5);
 		expect(o2.array).toStrictEqual(["foo"]);
@@ -1157,7 +1211,9 @@ describe("Test nullable option", () => {
 	});
 
 	it("should work with optional", () => {
-		const schema = { foo: { type: "number", nullable: true, optional: true } };
+		const schema = {
+			foo: { type: "number", nullable: true, optional: true },
+		};
 		const check = v.compile(schema);
 
 		expect(check({ foo: 3 })).toBe(true);
@@ -1166,7 +1222,9 @@ describe("Test nullable option", () => {
 	});
 
 	it("should work with optional and default", () => {
-		const schema = { foo: { type: "number", nullable: true, optional: true, default: 5 } };
+		const schema = {
+			foo: { type: "number", nullable: true, optional: true, default: 5 },
+		};
 		const check = v.compile(schema);
 
 		expect(check({ foo: 3 })).toBe(true);
@@ -1185,38 +1243,41 @@ describe("Test async mode", () => {
 	const v = new Validator({ useNewCustomCheckerFunction: true });
 
 	// Async mode 1
-	const custom1 = jest.fn(async value => {
-		await new Promise(resolve => setTimeout(resolve, 100));
+	const custom1 = jest.fn(async (value) => {
+		await new Promise((resolve) => setTimeout(resolve, 100));
 		return value.toUpperCase();
 	});
 
 	// Async mode 2
 	const custom2 = jest.fn(async (value) => {
-		await new Promise(resolve => setTimeout(resolve, 100));
+		await new Promise((resolve) => setTimeout(resolve, 100));
 		return value.trim();
 	});
 
 	// Async mode 3
-	v.add("even", function({ messages }) {
+	v.add("even", function ({ messages }) {
 		return {
 			source: `
 				if (value % 2 != 0)
-					${this.makeError({ type: "evenNumber",  actual: "value", messages })}
+					${this.makeError({ type: "evenNumber", actual: "value", messages })}
 
 				await new Promise(resolve => setTimeout(resolve, 100));
 
 				return value;
-			`
+			`,
 		};
 	});
-	v.addMessage("evenNumber", "The '{field}' field must be an even number! Actual: {actual}");
+	v.addMessage(
+		"evenNumber",
+		"The '{field}' field must be an even number! Actual: {actual}"
+	);
 
 	const schema = {
 		$$async: true,
 		id: { type: "number", positive: true },
 		name: { type: "string", custom: custom1 },
-		username: {	type: "custom",	custom: custom2	},
-		age: { type: "even" }
+		username: { type: "custom", custom: custom2 },
+		age: { type: "even" },
 	};
 	const check = v.compile(schema);
 
@@ -1229,17 +1290,31 @@ describe("Test async mode", () => {
 			id: 3,
 			name: "John",
 			username: "   john.doe  ",
-			age: 30
+			age: 30,
 		};
 
 		const res = await check(obj);
 		expect(res).toBe(true);
 
 		expect(custom1).toBeCalledTimes(1);
-		expect(custom1).toBeCalledWith("John", [], schema.name, "name", null, expect.anything());
+		expect(custom1).toBeCalledWith(
+			"John",
+			[],
+			schema.name,
+			"name",
+			null,
+			expect.anything()
+		);
 
 		expect(custom2).toBeCalledTimes(1);
-		expect(custom2).toBeCalledWith("   john.doe  ", [], schema.username, "username", null, expect.anything());
+		expect(custom2).toBeCalledWith(
+			"   john.doe  ",
+			[],
+			schema.username,
+			"username",
+			null,
+			expect.anything()
+		);
 	});
 
 	it("should give errors", async () => {
@@ -1247,7 +1322,7 @@ describe("Test async mode", () => {
 			id: 3,
 			name: "John",
 			username: "   john.doe  ",
-			age: 31
+			age: 31,
 		};
 
 		const res = await check(obj);
@@ -1258,30 +1333,49 @@ describe("Test async mode", () => {
 		expect(res[0].actual).toBe(31);
 		expect(res[0].expected).toBe(undefined);
 	});
-
 });
 
 describe("Test context meta", () => {
 	const v = new Validator({ useNewCustomCheckerFunction: true });
 
 	const schema = {
-		name: { type: "string", custom: (value, errors, schema, name, parent, context) => {
-			expect(context.meta).toEqual({ a: "from-meta" });
-			return context.meta.a;
-		} },
+		name: {
+			type: "string",
+			custom: (value, errors, schema, name, parent, context) => {
+				expect(context.meta).toEqual({ a: "from-meta" });
+				return context.meta.a;
+			},
+		},
 	};
 	const check = v.compile(schema);
 
 	it("should call custom async validators", () => {
 		const obj = {
-			name: "John"
+			name: "John",
 		};
 
 		const res = check(obj, {
-			meta: { a: "from-meta" }
+			meta: { a: "from-meta" },
 		});
 
 		expect(res).toBe(true);
 		expect(obj).toEqual({ name: "from-meta" });
+	});
+});
+
+describe("edge cases", () => {
+	const v = new Validator({ useNewCustomCheckerFunction: true });
+
+	it("issue #235 bug", () => {
+		const schema = { name: { type: "string" } };
+		const check = v.compile(schema);
+		expect(check({ name: { toString: 1 } })).toEqual([
+			{
+				actual: { toString: 1 },
+				field: "name",
+				message: "The 'name' field must be a string.",
+				type: "string",
+			},
+		]);
 	});
 });
