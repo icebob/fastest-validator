@@ -4,7 +4,7 @@
   "description": "The fastest JS validator library for NodeJS",
   "main": "index.js",
   "browser": "dist/index.min.js",
-  "types": "dist/index.d.ts",
+  "types": "index.d.ts",
   "scripts": {
     "bench": "node benchmark/index.js",
     "bench:watch": "nodemon benchmark/index.js",
@@ -17,7 +17,8 @@
     "deps": "npm-check -u",
     "postdeps": "npm test",
     "coverall": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
-    "test": "jest --coverage",
+    "test": "jest --coverage && npm run test:typescript",
+    "test:typescript": "tsd",
     "test:travis": "npm test"
   },
   "repository": {
@@ -46,6 +47,7 @@
     "@ampproject/rollup-plugin-closure-compiler": "^0.26.0",
     "@types/jest": "^26.0.10",
     "@types/mongodb": "^3.5.26",
+    "@types/node": "^15.6.2",
     "benchmarkify": "^2.1.2",
     "cli-highlight": "^2.1.4",
     "coveralls": "^3.0.9",
@@ -61,7 +63,6 @@
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-copy": "^3.3.0",
     "rollup-plugin-uglify-es": "^0.0.1",
-    "ts-jest": "^26.3.0",
     "ts-node": "^9.0.0",
     "tsd": "^0.13.1",
     "typescript": "^4.0.2"
@@ -72,15 +73,9 @@
     "rootDir": "./lib",
     "roots": [
       "../test"
-    ],
-    "transform": {
-      "^.+\\.(ts|tsx)$": "ts-jest"
-    },
-    "globals": {
-      "ts-jest": {
-        "tsConfig": "test/typescript/tsconfig.json",
-        "diagnostics": true
-      }
-    }
+    ]
+  },
+  "tsd": {
+    "directory": "test/types"
   }
 }
