@@ -251,6 +251,12 @@ describe("Test getRuleFromSchema method", () => {
 			expect(res2.schema).toEqual({ type: "array", optional: true, items: "string", min: 1 });
 		});
 
+		it("should convert RegExp", () => {
+			const regex = /(foo)/;
+			const res = v.getRuleFromSchema(regex);
+			expect(res.schema).toEqual({ type: "string", pattern: regex });
+		});
+
 	});
 
 	describe("Test objects shorthand rule ($$type)", () => {
