@@ -1285,3 +1285,20 @@ describe("Test context meta", () => {
 		expect(obj).toEqual({ name: "from-meta" });
 	});
 });
+
+describe("edge cases", () => {
+	const v = new Validator({ useNewCustomCheckerFunction: true });
+
+	it("issue #235 bug", () => {
+		const schema = { name: { type: "string" } };
+		const check = v.compile(schema);
+		expect(check({ name: { toString: 1 } })).toEqual([
+			{
+				actual: { toString: 1 },
+				field: "name",
+				message: "The 'name' field must be a string.",
+				type: "string",
+			},
+		]);
+	});
+});

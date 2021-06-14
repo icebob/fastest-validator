@@ -154,13 +154,13 @@ describe("Test add", () => {
 
 		check = v.compile(schema);
 
-		const context = {
+		const context = expect.objectContaining({
 			customs: expect.any(Object),
 			rules: expect.any(Array),
 			fn: expect.any(Array),
 			index: 2,
 			async: false
-		};
+		});
 
 
 		expect(validFn).toHaveBeenCalledTimes(1);
