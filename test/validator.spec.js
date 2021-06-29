@@ -695,3 +695,15 @@ describe("Test addMessage" , () => {
 	expect(v.messages.string).toBe("C");
 });
 
+describe("Test error handler", () => {
+	const v = new Validator();
+	
+	it("should handle no values field error", () => {
+		try {
+			const check = v.compile({ foo: { type: 'enum', foobar: ['foo', 'bar'] } });
+			const res = check('bar');
+		} catch (error) {
+			expect(error.message).toBe("Please provide \"values\" field to schema object in order to use it with \"enum\" validator like that: { type: \"enum\", values: [\"foo\", \"bar\"] }")
+		}
+	});
+});
