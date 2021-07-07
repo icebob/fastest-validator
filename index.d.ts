@@ -785,7 +785,8 @@ declare module "fastest-validator" {
 	export type ValidationRule =
 		| ValidationRuleObject
 		| ValidationRuleObject[]
-		| ValidationRuleName;
+		| ValidationRuleName
+		| RegExp;
 
 	/**
 	 * Definition for validation schema based on validation rules
