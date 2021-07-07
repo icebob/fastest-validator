@@ -277,6 +277,14 @@ check({ foo: ["bar"] }) // true
 
 ```js
 const schema = {
+   code: /^[0-9]{6}$/,
+   phone: /^\+9\d{11}$/,
+};
+```
+
+### Regex
+```js
+const schema = {
    dot: {
       $$type: "object",
       x: "number",  // object props here
@@ -293,6 +301,7 @@ const schema = {
    }
 };
 ```
+
 
 # Alias definition
 You can define custom aliases.
