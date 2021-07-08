@@ -799,6 +799,12 @@ declare module "fastest-validator" {
 		$$strict?: boolean | "remove";
 
 		/**
+		 * Enable asynchronous functionality. In this case the `validate` and `compile` methods return a `Promise`.
+		 * @default false
+		 */
+		$$async?: boolean;
+
+		/**
 		 * Basically the validator expects that you want to validate a Javascript object.
 		 * If you want others, you can define the root level schema.
 		 * @default false
@@ -888,11 +894,13 @@ declare module "fastest-validator" {
 
 	export interface Context {
 		index: number;
+		async: boolean;
 		rules: ValidationRuleObject[];
 		fn: Function[];
 		customs: {
 			[ruleName: string]: { schema: RuleCustom; messages: MessagesType };
 		};
+		meta?: object;
 	}
 
 	export interface CheckerFunctionError {
@@ -935,6 +943,20 @@ declare module "fastest-validator" {
 		constructor(id?: string | number | ObjectIdAbstract);
 		toHexString(): string;
 	}
+
+	export interface CheckFunctionOptions {
+		meta?: object | null;
+	}
+
+	export interface SyncCheckFunction {
+		(value: any, opts?: CheckFunctionOptions): true | ValidationError[]
+		async: false
+	 }
+
+	 export interface AsyncCheckFunction {
+		(value: any, opts?: CheckFunctionOptions): Promise<true | ValidationError[]>
+		async: true
+	 }
 
 	export default class Validator {
 		/**
@@ -1012,7 +1034,7 @@ declare module "fastest-validator" {
 		 */
 		compile<T = any>(
 			schema: ValidationSchema<T> | ValidationSchema<T>[]
-		): (value: any) => true | ValidationError[];
+		): SyncCheckFunction | AsyncCheckFunction;
 
 		/**
 		 * Native validation method to validate obj
@@ -1023,7 +1045,7 @@ declare module "fastest-validator" {
 		validate(
 			value: any,
 			schema: ValidationSchema
-		): true | ValidationError[];
+		): true | ValidationError[] | Promise<true | ValidationError[]>;
 
 		/**
 		 * Get defined in validator rule

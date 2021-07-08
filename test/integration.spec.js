@@ -994,15 +994,15 @@ describe("Test default value sanitizer", () => {
 			age: { type: "number", optional: true, default: 33 },
 			roles: { type: "array", items: "string", default: ["user"] },
 			status: { type: "boolean", default: true },
-			tuple: { type: 'tuple', items: [{type: 'number', default: 666}, {type: 'string', default: 'lucifer'}] },
-			array: { type: 'array', items: {type: 'string', default: 'bar'}},
+			tuple: { type: "tuple", items: [{type: "number", default: 666}, {type: "string", default: "lucifer"}] },
+			array: { type: "array", items: {type: "string", default: "bar"}},
 		};
 		const check = v.compile(schema);
 		const obj = {
 			name: null,
 			status: false,
 			tuple: [undefined, undefined],
-			array: ['foo', undefined, 'baz']
+			array: ["foo", undefined, "baz"]
 		};
 
 		const res = check(obj);
@@ -1014,8 +1014,8 @@ describe("Test default value sanitizer", () => {
 			age: 33,
 			roles: ["user"],
 			status: false,
-			tuple: [666, 'lucifer'],
-			array: ['foo', 'bar', 'baz']
+			tuple: [666, "lucifer"],
+			array: ["foo", "bar", "baz"]
 		});
 	});
 
@@ -1178,5 +1178,127 @@ describe("Test nullable option", () => {
 		const o2 = {};
 		expect(check(o2)).toBe(true);
 		expect(o2.foo).toBe(5);
+	});
+});
+
+describe("Test async mode", () => {
+	const v = new Validator({ useNewCustomCheckerFunction: true });
+
+	// Async mode 1
+	const custom1 = jest.fn(async value => {
+		await new Promise(resolve => setTimeout(resolve, 100));
+		return value.toUpperCase();
+	});
+
+	// Async mode 2
+	const custom2 = jest.fn(async (value) => {
+		await new Promise(resolve => setTimeout(resolve, 100));
+		return value.trim();
+	});
+
+	// Async mode 3
+	v.add("even", function({ messages }) {
+		return {
+			source: `
+				if (value % 2 != 0)
+					${this.makeError({ type: "evenNumber",  actual: "value", messages })}
+
+				await new Promise(resolve => setTimeout(resolve, 100));
+
+				return value;
+			`
+		};
+	});
+	v.addMessage("evenNumber", "The '{field}' field must be an even number! Actual: {actual}");
+
+	const schema = {
+		$$async: true,
+		id: { type: "number", positive: true },
+		name: { type: "string", custom: custom1 },
+		username: {	type: "custom",	custom: custom2	},
+		age: { type: "even" }
+	};
+	const check = v.compile(schema);
+
+	it("should be async", () => {
+		expect(check.async).toBe(true);
+	});
+
+	it("should call custom async validators", async () => {
+		const obj = {
+			id: 3,
+			name: "John",
+			username: "   john.doe  ",
+			age: 30
+		};
+
+		const res = await check(obj);
+		expect(res).toBe(true);
+
+		expect(custom1).toBeCalledTimes(1);
+		expect(custom1).toBeCalledWith("John", [], schema.name, "name", null, expect.anything());
+
+		expect(custom2).toBeCalledTimes(1);
+		expect(custom2).toBeCalledWith("   john.doe  ", [], schema.username, "username", null, expect.anything());
+	});
+
+	it("should give errors", async () => {
+		const obj = {
+			id: 3,
+			name: "John",
+			username: "   john.doe  ",
+			age: 31
+		};
+
+		const res = await check(obj);
+
+		expect(res.length).toBe(1);
+		expect(res[0].type).toBe("evenNumber");
+		expect(res[0].field).toBe("age");
+		expect(res[0].actual).toBe(31);
+		expect(res[0].expected).toBe(undefined);
+	});
+
+});
+
+describe("Test context meta", () => {
+	const v = new Validator({ useNewCustomCheckerFunction: true });
+
+	const schema = {
+		name: { type: "string", custom: (value, errors, schema, name, parent, context) => {
+			expect(context.meta).toEqual({ a: "from-meta" });
+			return context.meta.a;
+		} },
+	};
+	const check = v.compile(schema);
+
+	it("should call custom async validators", () => {
+		const obj = {
+			name: "John"
+		};
+
+		const res = check(obj, {
+			meta: { a: "from-meta" }
+		});
+
+		expect(res).toBe(true);
+		expect(obj).toEqual({ name: "from-meta" });
+	});
+});
+
+describe("edge cases", () => {
+	const v = new Validator({ useNewCustomCheckerFunction: true });
+
+	it("issue #235 bug", () => {
+		const schema = { name: { type: "string" } };
+		const check = v.compile(schema);
+		expect(check({ name: { toString: 1 } })).toEqual([
+			{
+				actual: { toString: 1 },
+				field: "name",
+				message: "The 'name' field must be a string.",
+				type: "string",
+			},
+		]);
 	});
 });

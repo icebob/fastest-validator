@@ -116,12 +116,13 @@ describe('TypeScript Definitions', () => {
 
             check = v.compile(schema);
 
-            const context = {
+            const context = expect.objectContaining({
                 customs: expect.any(Object),
                 rules: expect.any(Array),
                 fn: expect.any(Array),
-                index: 2
-            };
+                index: 2,
+				async: false
+            });
 
             expect(validFn).toHaveBeenCalledTimes(1);
             expect(validFn).toHaveBeenCalledWith(expect.any(Object), 'a', context);

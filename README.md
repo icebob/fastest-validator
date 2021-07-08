@@ -42,86 +42,6 @@ $ npm install
 $ npm run bench
 ```
 
-# Table of contents
-
-- [fastest-validator ![NPM version](https://www.npmjs.com/package/fastest-validator) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=The%20fastest%20JS%20validator%20library%20for%20NodeJS&url=https://github.com/icebob/fastest-validator&via=Icebobcsi&hashtags=nodejs,javascript)](#fastest-validator--)
-  - [Key features](#key-features)
-- [How fast?](#how-fast)
-- [Table of contents](#table-of-contents)
-  - [Installation](#installation)
-    - [NPM](#npm)
-  - [Usage](#usage)
-    - [Validate](#validate)
-    - [Browser usage](#browser-usage)
-    - [Deno usage](#deno-usage)
-    - [Supported frameworks](#supported-frameworks)
-- [Optional, Required & Nullable fields](#optional-required--nullable-fields)
-  - [Optional](#optional)
-  - [Nullable](#nullable)
-    - [Nullable and default values](#nullable-and-default-values) 
-- [Strict validation](#strict-validation)
-  - [Remove additional fields](#remove-additional-fields)
-- [Multiple validators](#multiple-validators)
-- [Root element schema](#root-element-schema)
-- [Sanitizations](#sanitizations)
-  - [Default values](#default-values)
-- [Shorthand definitions](#shorthand-definitions)
-    - [Array of X](#array-of-x)
-    - [Nested objects](#nested-objects)
-- [Alias definition](#alias-definition)
-- [Default options](#default-options)
-- [Built-in validators](#built-in-validators)
-  - [`any`](#any)
-  - [`array`](#array)
-    - [Properties](#properties)
-  - [`boolean`](#boolean)
-    - [Properties](#properties-1)
-  - [`class`](#class)
-    - [Properties](#properties-2)
-  - [`currency`](#currency)
-    - [Properties](#properties-3)
-  - [`date`](#date)
-    - [Properties](#properties-4)
-  - [`email`](#email)
-    - [Properties](#properties-5)
-  - [`enum`](#enum)
-    - [Properties](#properties-6)
-  - [`equal`](#equal)
-    - [Properties](#properties-7)
-  - [`forbidden`](#forbidden)
-    - [Properties](#properties-8)
-  - [`function`](#function)
-  - [`luhn`](#luhn)
-  - [`mac`](#mac)
-  - [`multi`](#multi)
-  - [`number`](#number)
-    - [Properties](#properties-9)
-  - [`object`](#object)
-    - [Properties](#properties-10)
-  - [`string`](#string)
-    - [Properties](#properties-11)
-  - [`tuple`](#tuple)
-    - [Properties](#properties-12)
-  - [`url`](#url)
-    - [Properties](#properties-13)
-  - [`uuid`](#uuid)
-    - [Properties](#properties-14)
-  - [`objectID`](#objectid)
-    - [Properties](#properties-15)
-- [Custom validator](#custom-validator)
-  - [Custom validation for built-in rules](#custom-validation-for-built-in-rules)
-- [Custom error messages (l10n)](#custom-error-messages-l10n)
-- [Personalised Messages](#personalised-messages)
-- [Plugins](#plugins)
-- [Message types](#message-types)
-  - [Message fields](#message-fields)
-- [Development](#development)
-- [Test](#test)
-  - [Coverage report](#coverage-report)
-- [Contribution](#contribution)
-- [License](#license)
-- [Contact](#contact)
-
 ## Installation
 
 ### NPM
@@ -175,7 +95,7 @@ console.log("Second:", check({ id: 2, name: "Adam" }));
 ```
 
 ```js
-var v = new FastestValidator();
+const v = new FastestValidator();
 
 const schema = {
     id: { type: "number", positive: true, integer: true },
@@ -197,8 +117,8 @@ import FastestValidator from "https://esm.sh/fastest-validator@1"
 
 const v = new FastestValidator();
 const check = v.compile({
-	name: "string",
-	age: "number",
+    name: "string",
+    age: "number",
 });
 
 console.log(check({ name: "Erf", age: 18 })); //true
@@ -207,6 +127,7 @@ console.log(check({ name: "Erf", age: 18 })); //true
 ### Supported frameworks
 - *Moleculer*: Natively supported
 - *Fastify*: By using [fastify-fv](https://github.com/erfanium/fastify-fv) 
+- *Express*: By using [fastest-express-validator](https://github.com/muturgan/fastest-express-validator) 
 
 
 # Optional, Required & Nullable fields
@@ -414,7 +335,7 @@ const schema = {
 You can set default rule options.
 
 ```js
-var v = new FastestValidator({
+const v = new FastestValidator({
     defaults: {
         object: {
             strict: "remove"
@@ -1252,6 +1173,79 @@ console.log(v.validate({ name: "John", phone: "36-70-123-4567" }, schema));
 ```
 
 >Please note: the custom function must return the `value`. It means you can also sanitize it.
+
+## Asynchronous custom validations
+You can also use async custom validators. This can be useful if you need to check something in a database or in a remote location.
+In this case you should use `async/await` keywords, or return a `Promise` in the custom validator functions.
+
+>This implementation uses `async/await` keywords. So this feature works only on environments which [supports async/await](https://caniuse.com/async-functions):
+>
+> - Chrome > 55
+> - Firefox > 52
+> - Edge > 15
+> - NodeJS > 8.x (or 7.6 with harmony)
+> - Deno (all versions)
+
+To enable async mode, you should set `$$async: true` in the root of your schema.
+
+**Example with custom checker function**
+```js
+const v = new Validator({
+    useNewCustomCheckerFunction: true, // using new version
+    messages: {
+        // Register our new error message text
+        unique: "The username is already exist"
+    }
+});
+
+const schema = {
+    $$async: true,
+    name: { type: "string" },
+    username: {
+        type: "string",
+        min: 2,
+        custom: async (v, errors) => {
+            // E.g. checking in the DB that the value is unique.
+            const res = await DB.checkUsername(v);
+            if (!res) 
+                errors.push({ type: "unique", actual: value });
+
+            return v;
+        }
+    }
+    // ...
+};
+
+const check = v.compile(schema);
+
+const res = await check(user);
+console.log("Result:", res);
+```
+
+
+The compiled `check` function contains an `async` property, so  you can check if it returns a `Promise` or not.
+```js
+const check = v.compile(schema);
+console.log("Is async?", check.async);
+```
+
+## Meta information for custom validators
+You can pass any extra meta information for the custom validators which is available via `context.meta`.
+
+```js
+const schema = {
+    name: { type: "string", custom: (value, errors, schema, name, parent, context) => {
+        // Access to the meta
+        return context.meta.a;
+    } },
+};
+const check = v.compile(schema);
+
+const res = check(obj, {
+    // Passes meta information
+    meta: { a: "from-meta" }
+});
+```
 
 # Custom error messages (l10n)
 You can set your custom messages in the validator constructor.

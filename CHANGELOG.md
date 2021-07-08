@@ -1,3 +1,60 @@
+<a name="1.11.0"></a>
+# 1.11.0 (2021-05-11)
+
+## Async custom validator supports
+
+```js
+const schema = {
+    // Turn on async mode for this schema
+    $$async: true,
+    name: {
+        type: "string",
+        min: 4,
+        max: 25,
+        custom: async (v) => {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            return v.toUpperCase();
+        }
+    },
+
+    username: {
+        type: "custom",
+        custom: async (v) => {
+            // E.g. checking in the DB that whether is unique.
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            return v.trim();
+        }
+    },
+}
+```
+
+The compiled `check` function has an `async` property to detect this mode. If `true` it returns a `Promise`.
+```js
+const check = v.compile(schema);
+console.log("Is async?", check.async);
+```
+
+## Meta-information for custom validators
+You can pass any extra meta information for the custom validators which is available via `context.meta`.
+```js
+const schema = {
+    name: { type: "string", custom: (value, errors, schema, name, parent, context) => {
+        // Access to the meta
+        return context.meta.a;
+    } },
+};
+const check = v.compile(schema);
+
+const res = check(obj, {
+    // Passes meta information
+    meta: { a: "from-meta" }
+});
+```
+
+## Changes
+- support default and optional in tuples and arrays [#226](https://github.com/icebob/fastest-validator/pull/226)
+- fix that `this` points to the Validator instance in custom functions [#231](https://github.com/icebob/fastest-validator/pull/231)
+- 
 <a name="1.10.1"></a>
 # 1.10.1 (2021-03-22)
 
