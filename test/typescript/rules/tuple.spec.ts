@@ -1,9 +1,6 @@
-/// <reference path="../../../index.d.ts" /> // here we make a reference to exists module definition
-import ValidatorType, { RuleTuple, ValidationError } from "fastest-validator";
+import Validator, { RuleTuple, ValidationError } from '../../../';
 
-const Validator: typeof ValidatorType = require("../../../index"); // here we importing real Validator Constructor
-
-const v: ValidatorType = new Validator({
+const v = new Validator({
 	useNewCustomCheckerFunction: true,
 	messages: {
 		evenNumber: "The '' field must be an even number!"

@@ -1,8 +1,6 @@
-/// <reference path="../../../index.d.ts" /> // here we make a reference to exists module definition
-import ValidatorType, {RuleEmail, RuleURL} from 'fastest-validator'; // here we importing type definition of default export
+import Validator, { RuleEmail, RuleURL } from '../../../';
 
-const Validator: typeof ValidatorType = require('../../../index'); // here we importing real Validator Constructor
-const v: ValidatorType = new Validator();
+const v = new Validator();
 
 describe("Test rule: email", () => {
 	it("should check empty values", () => {

@@ -16,6 +16,7 @@
 		"strictFunctionTypes": false,
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
+		"esModuleInterop": true,
         "baseUrl": ".",
         "allowJs": true
     },
