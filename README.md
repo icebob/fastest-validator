@@ -157,6 +157,26 @@ v.validate({ age: null }, schema); // Valid
 v.validate({ age: undefined }, schema); // Fail because undefined is disallowed
 v.validate({}, schema); // Fail because undefined is disallowed
 ```
+### Nullable and default values
+`null` is a valid input for nullable fields that has default value.
+
+```js
+const schema = {
+   about: { type: "string", nullable: true, default: "Hi! I'm using javascript" }
+}
+
+const check = v.compile(schema)
+
+const object1 = { about: undefined }
+check(object1) // Valid
+object1.about // is "Hi! I'm using javascript"
+
+const object2 = { about: null }
+check(object2) // valid
+object2.about // is null
+
+check({ about: "Custom" }) // Valid
+```
 
 # Strict validation
 Object properties which are not specified on the schema are ignored by default. If you set the `$$strict` option to `true` any additional properties will result in an `strictObject` error.
@@ -211,7 +231,7 @@ v.validate("Al", schema); // Fail, too short.
 The library contains several sanitizers. **Please note, the sanitizers change the original checked object.**
 
 ## Default values
-The most common sanitizer is the `default` property. With it, you can define a default value for all properties. If the property value is `null` or `undefined`, the validator set the defined default value into the property.
+The most common sanitizer is the `default` property. With it, you can define a default value for all properties. If the property value is `null`* or `undefined`, the validator set the defined default value into the property.
 
 **Static Default value example**:
 ```js
