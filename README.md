@@ -140,9 +140,11 @@ const schema = {
     age: { type: "number", optional: true }
 }
 
-v.validate({ name: "John", age: 42 }, schema); // Valid
-v.validate({ name: "John" }, schema); // Valid
-v.validate({ age: 42 }, schema); // Fail because name is required
+const check = v.compile(schema);
+
+check({ name: "John", age: 42 }); // Valid
+check({ name: "John" }); // Valid
+check({ age: 42 }); // Fail because name is required
 ```
 
 ## Nullable
@@ -152,10 +154,32 @@ const schema = {
     age: { type: "number", nullable: true }
 }
 
-v.validate({ age: 42 }, schema); // Valid
-v.validate({ age: null }, schema); // Valid
-v.validate({ age: undefined }, schema); // Fail because undefined is disallowed
-v.validate({}, schema); // Fail because undefined is disallowed
+const check = v.compile(schema);
+
+check({ age: 42 }); // Valid
+check({ age: null }); // Valid
+check({ age: undefined }); // Fail because undefined is disallowed
+check({}); // Fail because undefined is disallowed
+```
+### Nullable and default values
+`null` is a valid input for nullable fields that has default value.
+
+```js
+const schema = {
+   about: { type: "string", nullable: true, default: "Hi! I'm using javascript" }
+}
+
+const check = v.compile(schema)
+
+const object1 = { about: undefined }
+check(object1) // Valid
+object1.about // is "Hi! I'm using javascript"
+
+const object2 = { about: null }
+check(object2) // valid
+object2.about // is null
+
+check({ about: "Custom" }) // Valid
 ```
 
 # Strict validation
@@ -167,8 +191,10 @@ const schema = {
     $$strict: true // no additional properties allowed
 }
 
-v.validate({ name: "John" }, schema); // Valid
-v.validate({ name: "John", age: 42 }, schema); // Fail
+const check = v.compile(schema);
+
+check({ name: "John" }); // Valid
+check({ name: "John", age: 42 }); // Fail
 ```
 
 ## Remove additional fields
@@ -186,9 +212,11 @@ const schema = {
     ]
 }
 
-v.validate({ cache: true }, schema); // Valid
-v.validate({ cache: "redis://" }, schema); // Valid
-v.validate({ cache: 150 }, schema); // Fail
+const check = v.compile(schema);
+
+check({ cache: true }); // Valid
+check({ cache: "redis://" }); // Valid
+check({ cache: 150 }); // Fail
 ```
 
 # Root element schema
@@ -203,15 +231,17 @@ const schema = {
     max: 6
 };
 
-v.validate("John", schema); // Valid
-v.validate("Al", schema); // Fail, too short.
+const check = v.compile(schema);
+
+check("John"); // Valid
+check("Al"); // Fail, too short.
 ```
 
 # Sanitizations
 The library contains several sanitizers. **Please note, the sanitizers change the original checked object.**
 
 ## Default values
-The most common sanitizer is the `default` property. With it, you can define a default value for all properties. If the property value is `null` or `undefined`, the validator set the defined default value into the property.
+The most common sanitizer is the `default` property. With it, you can define a default value for all properties. If the property value is `null`* or `undefined`, the validator set the defined default value into the property.
 
 **Static Default value example**:
 ```js
@@ -220,9 +250,11 @@ const schema = {
     status: { type: "boolean", default: true },
 };
 
+const check = v.compile(schema);
+
 const obj = {}
 
-v.validate(obj, schema); // Valid
+check(obj); // Valid
 console.log(obj);
 /*
 {
@@ -242,9 +274,11 @@ const schema = {
     }
 };
 
+const check = v.compile(schema);
+
 const obj = {}
 
-v.validate(obj, schema); // Valid
+check(obj); // Valid
 console.log(obj);
 /*
 {
@@ -269,6 +303,8 @@ const schema = {
 const schema = {
     foo: "string[]" // means array of string
 }
+
+const check = v.compile(schema);
 
 check({ foo: ["bar"] }) // true
 ```
@@ -334,9 +370,11 @@ const schema = {
     prop: { type: "any" }
 }
 
-v.validate({ prop: true }, schema); // Valid
-v.validate({ prop: 100 }, schema); // Valid
-v.validate({ prop: "John" }, schema); // Valid
+const check = v.compile(schema)
+
+check({ prop: true }); // Valid
+check({ prop: 100 }); // Valid
+check({ prop: "John" }); // Valid
 ```
 
 ## `array`
@@ -347,10 +385,11 @@ This is an `Array` validator.
 const schema = {
     roles: { type: "array", items: "string" }
 }
+const check = v.compile(schema)
 
-v.validate({ roles: ["user"] }, schema); // Valid
-v.validate({ roles: [] }, schema); // Valid
-v.validate({ roles: "user" }, schema); // Fail
+check({ roles: ["user"] }); // Valid
+check({ roles: [] }); // Valid
+check({ roles: "user" }); // Fail
 ```
 
 **Example with only positive numbers:**
@@ -360,11 +399,12 @@ const schema = {
         type: "number", positive: true, integer: true
     } }
 }
+const check = v.compile(schema)
 
-v.validate({ list: [2, 4] }, schema); // Valid
-v.validate({ list: [1, 5, 8] }, schema); // Valid
-v.validate({ list: [1] }, schema); // Fail (min 2 elements)
-v.validate({ list: [1, -7] }, schema); // Fail (negative number)
+check({ list: [2, 4] }); // Valid
+check({ list: [1, 5, 8] }); // Valid
+check({ list: [1] }); // Fail (min 2 elements)
+check({ list: [1, -7] }); // Fail (negative number)
 ```
 
 **Example with an object list:**
@@ -378,14 +418,15 @@ const schema = {
         }
     } }
 }
+const check = v.compile(schema)
 
-v.validate({
+check({
     users: [
         { id: 1, name: "John", status: true },
         { id: 2, name: "Jane", status: true },
         { id: 3, name: "Bill", status: false }
     ]
-}, schema); // Valid
+}); // Valid
 ```
 
 **Example for `enum`:**
@@ -394,9 +435,11 @@ const schema = {
     roles: { type: "array", items: "string", enum: [ "user", "admin" ] }
 }
 
-v.validate({ roles: ["user"] }, schema); // Valid
-v.validate({ roles: ["user", "admin"] }, schema); // Valid
-v.validate({ roles: ["guest"] }, schema); // Fail
+const check = v.compile(schema)
+
+check({ roles: ["user"] }); // Valid
+check({ roles: ["user", "admin"] }); // Valid
+check({ roles: ["guest"] }); // Fail
 ```
 
 **Example for `unique`:**
@@ -404,11 +447,12 @@ v.validate({ roles: ["guest"] }, schema); // Fail
 const schema = {
     roles: { type: "array", unique: true }
 }
+const check = v.compile(schema);
 
-v.validate({ roles: ["user"] }, schema); // Valid
-v.validate({ roles: [{role:"user"},{role:"admin"},{role:"user"}] }, schema); // Valid
-v.validate({ roles: ["user", "admin", "user"] }, schema); // Fail
-v.validate({ roles: [1, 2, 1] }, schema); // Fail
+check({ roles: ["user"] }); // Valid
+check({ roles: [{role:"user"},{role:"admin"},{role:"user"}] }); // Valid
+check({ roles: ["user", "admin", "user"] }); // Fail
+check({ roles: [1, 2, 1] }); // Fail
 ```
 
 ### Properties
@@ -430,11 +474,12 @@ This is a `Boolean` validator.
 const schema = {
     status: { type: "boolean" }
 }
+const check = v.compile(schema);
 
-v.validate({ status: true }, schema); // Valid
-v.validate({ status: false }, schema); // Valid
-v.validate({ status: 1 }, schema); // Fail
-v.validate({ status: "true" }, schema); // Fail
+check({ status: true }); // Valid
+check({ status: false }); // Valid
+check({ status: 1 }); // Fail
+check({ status: "true" }); // Fail
 ```
 ### Properties
 Property | Default  | Description
@@ -443,9 +488,13 @@ Property | Default  | Description
 
 **Example for `convert`:**
 ```js
-v.validate({ status: "true" }, {
+const schema = {
     status: { type: "boolean", convert: true}
-}); // Valid
+};
+
+const check = v.compile(schema);
+
+check({ status: "true" }); // Valid
 ```
 
 ## `class`
@@ -455,9 +504,10 @@ This is a `Class` validator to check the value is an instance of a Class.
 const schema = {
     rawData: { type: "class", instanceOf: Buffer }
 }
+const check = v.compile(schema);
 
-v.validate({ rawData: Buffer.from([1, 2, 3]) }, schema); // Valid
-v.validate({ rawData: 100 }, schema); // Fail
+check({ rawData: Buffer.from([1, 2, 3]) }); // Valid
+check({ rawData: 100 }); // Fail
 ```
 
 ### Properties
@@ -472,15 +522,17 @@ This is a `Currency` validator to check if the value is a valid currency string.
 const schema = {
     money_amount: { type: "currency", currencySymbol: '$' }
 }
+const check = v.compile(schema);
 
-v.validate({ money_amount: '$12.99'}, schema); // Valid
-v.validate({ money_amount: '$0.99'}, schema); // Valid
-v.validate({ money_amount: '$12,345.99'}, schema); // Valid
-v.validate({ money_amount: '$123,456.99'}, schema); // Valid
 
-v.validate({ money_amount: '$1234,567.99'}, schema); // Fail
-v.validate({ money_amount: '$1,23,456.99'}, schema); // Fail
-v.validate({ money_amount: '$12,34.5.99' }, schema); // Fail
+check({ money_amount: '$12.99'}); // Valid
+check({ money_amount: '$0.99'}); // Valid
+check({ money_amount: '$12,345.99'}); // Valid
+check({ money_amount: '$123,456.99'}); // Valid
+
+check({ money_amount: '$1234,567.99'}); // Fail
+check({ money_amount: '$1,23,456.99'}); // Fail
+check({ money_amount: '$12,34.5.99' }); // Fail
 ```
 
 ### Properties
@@ -499,10 +551,11 @@ This is a `Date` validator.
 const schema = {
     dob: { type: "date" }
 }
+const check = v.compile(schema);
 
-v.validate({ dob: new Date() }, schema); // Valid
-v.validate({ dob: new Date(1488876927958) }, schema); // Valid
-v.validate({ dob: 1488876927958 }, schema); // Fail
+check({ dob: new Date() }); // Valid
+check({ dob: new Date(1488876927958) }); // Valid
+check({ dob: 1488876927958 }); // Fail
 ```
 
 ### Properties
@@ -512,9 +565,13 @@ Property | Default  | Description
 
 **Example for `convert`:**
 ```js
-v.validate({ dob: 1488876927958 }, {
+const schema = {
     dob: { type: "date", convert: true}
-}); // Valid
+};
+
+const check = v.compile(schema);
+
+check({ dob: 1488876927958 }, ); // Valid
 ```
 
 ## `email`
@@ -524,10 +581,12 @@ This is an e-mail address validator.
 const schema = {
     email: { type: "email" }
 }
+const check = v.compile(schema);
 
-v.validate({ email: "john.doe@gmail.com" }, schema); // Valid
-v.validate({ email: "james.123.45@mail.co.uk" }, schema); // Valid
-v.validate({ email: "abc@gmail" }, schema); // Fail
+
+check({ email: "john.doe@gmail.com" }); // Valid
+check({ email: "james.123.45@mail.co.uk" }); // Valid
+check({ email: "abc@gmail" }); // Fail
 ```
 
 ### Properties
@@ -546,10 +605,12 @@ This is an enum validator.
 const schema = {
     sex: { type: "enum", values: ["male", "female"] }
 }
+const check = v.compile(schema);
 
-v.validate({ sex: "male" }, schema); // Valid
-v.validate({ sex: "female" }, schema); // Valid
-v.validate({ sex: "other" }, schema); // Fail
+
+check({ sex: "male" }); // Valid
+check({ sex: "female" }); // Valid
+check({ sex: "other" }); // Fail
 ```
 
 ### Properties
@@ -565,9 +626,10 @@ This is an equal value validator. It checks a value with a static value or with 
 const schema = {
     agreeTerms: { type: "equal", value: true, strict: true } // strict means `===`
 }
+const check = v.compile(schema);
 
-v.validate({ agreeTerms: true }, schema); // Valid
-v.validate({ agreeTerms: false }, schema); // Fail
+check({ agreeTerms: true }); // Valid
+check({ agreeTerms: false }); // Fail
 ```
 
 **Example with other field**:
@@ -576,9 +638,10 @@ const schema = {
     password: { type: "string", min: 6 },
     confirmPassword: { type: "equal", field: "password" }
 }
+const check = v.compile(schema);
 
-v.validate({ password: "123456", confirmPassword: "123456" }, schema); // Valid
-v.validate({ password: "123456", confirmPassword: "pass1234" }, schema); // Fail
+check({ password: "123456", confirmPassword: "123456" }); // Valid
+check({ password: "123456", confirmPassword: "pass1234" }); // Fail
 ```
 
 ### Properties
@@ -594,9 +657,11 @@ This validator returns an error if the property exists in the object.
 const schema = {
     password: { type: "forbidden" }
 }
+const check = v.compile(schema);
 
-v.validate({ user: "John" }, schema); // Valid
-v.validate({ user: "John", password: "pass1234" }, schema); // Fail
+
+check({ user: "John" }); // Valid
+check({ user: "John", password: "pass1234" }); // Fail
 ```
 
 ### Properties
@@ -610,13 +675,15 @@ const schema = {
     user: { type: "string" },
     token: { type: "forbidden", remove: true }
 };
+const check = v.compile(schema);
+
 
 const obj = {
     user: "John",
     token: "123456"
 }
 
-v.validate(obj, schema); // Valid
+check(obj); // Valid
 console.log(obj);
 /*
 {
@@ -633,10 +700,12 @@ This a `Function` type validator.
 const schema = {
     show: { type: "function" }
 }
+const check = v.compile(schema);
 
-v.validate({ show: function() {} }, schema); // Valid
-v.validate({ show: Date.now }, schema); // Valid
-v.validate({ show: "function" }, schema); // Fail
+
+check({ show: function() {} }); // Valid
+check({ show: Date.now }); // Valid
+check({ show: "function" }); // Fail
 ```
 
 ## `luhn`
@@ -649,10 +718,10 @@ const schema = {
     cc: { type: "luhn" }
 }
 
-v.validate({ cc: "452373989901198" }, schema); // Valid
-v.validate({ cc: 452373989901198 }, schema); // Valid
-v.validate({ cc: "4523-739-8990-1198" }, schema); // Valid
-v.validate({ cc: "452373989901199" }, schema); // Fail
+check({ cc: "452373989901198" }); // Valid
+check({ cc: 452373989901198 }); // Valid
+check({ cc: "4523-739-8990-1198" }); // Valid
+check({ cc: "452373989901199" }); // Fail
 ```
 
 ## `mac`
@@ -662,14 +731,15 @@ This is an MAC addresses validator.
 const schema = {
     mac: { type: "mac" }
 }
+const check = v.compile(schema);
 
-v.validate({ mac: "01:C8:95:4B:65:FE" }, schema); // Valid
-v.validate({ mac: "01:c8:95:4b:65:fe", schema); // Valid
-v.validate({ mac: "01C8.954B.65FE" }, schema); // Valid
-v.validate({ mac: "01c8.954b.65fe", schema); // Valid
-v.validate({ mac: "01-C8-95-4B-65-FE" }, schema); // Valid
-v.validate({ mac: "01-c8-95-4b-65-fe" }, schema); // Valid
-v.validate({ mac: "01C8954B65FE" }, schema); // Fail
+check({ mac: "01:C8:95:4B:65:FE" }); // Valid
+check({ mac: "01:c8:95:4b:65:fe"); // Valid
+check({ mac: "01C8.954B.65FE" }); // Valid
+check({ mac: "01c8.954b.65fe"); // Valid
+check({ mac: "01-C8-95-4B-65-FE" }); // Valid
+check({ mac: "01-c8-95-4b-65-fe" }); // Valid
+check({ mac: "01C8954B65FE" }); // Fail
 ```
 
 ## `multi`
@@ -682,12 +752,13 @@ const schema = {
         { type: "number" }
     ], default: true }
 }
+const check = v.compile(schema);
 
-v.validate({ status: true }, schema); // Valid
-v.validate({ status: false }, schema); // Valid
-v.validate({ status: 1 }, schema); // Valid
-v.validate({ status: 0 }, schema); // Valid
-v.validate({ status: "yes" }, schema); // Fail
+check({ status: true }); // Valid
+check({ status: false }); // Valid
+check({ status: 1 }); // Valid
+check({ status: 0 }); // Valid
+check({ status: "yes" }); // Fail
 ```
 
 **Shorthand multiple definitions**:
@@ -698,12 +769,13 @@ const schema = {
         "number"
     ]
 }
+const check = v.compile(schema);
 
-v.validate({ status: true }, schema); // Valid
-v.validate({ status: false }, schema); // Valid
-v.validate({ status: 1 }, schema); // Valid
-v.validate({ status: 0 }, schema); // Valid
-v.validate({ status: "yes" }, schema); // Fail
+check({ status: true }); // Valid
+check({ status: false }); // Valid
+check({ status: 1 }); // Valid
+check({ status: 0 }); // Valid
+check({ status: "yes" }); // Fail
 ```
 
 ## `number`
@@ -713,10 +785,11 @@ This is a `Number` validator.
 const schema = {
     age: { type: "number" }
 }
+const check = v.compile(schema);
 
-v.validate({ age: 123 }, schema); // Valid
-v.validate({ age: 5.65 }, schema); // Valid
-v.validate({ age: "100" }, schema); // Fail
+check({ age: 123 }); // Valid
+check({ age: 5.65 }); // Valid
+check({ age: "100" }); // Fail
 ```
 
 ### Properties
@@ -742,30 +815,31 @@ const schema = {
         zip: "number" // short-hand
     } }
 }
+const check = v.compile(schema);
 
-v.validate({
+check({
     address: {
         country: "Italy",
         city: "Rome",
         zip: 12345
     }
-}, schema); // Valid
+}); // Valid
 
-v.validate({
+check({
     address: {
         country: "Italy",
         city: "Rome"
     }
-}, schema); // Fail ("The 'address.zip' field is required!")
+}); // Fail ("The 'address.zip' field is required!")
 
-v.validate({
+check({
     address: {
         country: "Italy",
         city: "Rome",
         zip: 12345,
         state: "IT"
     }
-}, schema); // Fail ("The 'address.state' is an additional field!")
+}); // Fail ("The 'address.state' is an additional field!")
 ```
 
 ### Properties
@@ -776,7 +850,7 @@ Property | Default  | Description
 `maxProps` | `null` | If set to a number N, will throw an error if the object has more than N properties.
 
 ```js
-let schema = {
+schema = {
     address: { type: "object", strict: "remove", props: {
         country: { type: "string" },
         city: "string", // short-hand
@@ -792,8 +866,9 @@ let obj = {
         state: "IT"
     }
 };
+const check = v.compile(schema);
 
-v.validate(obj, schema); // Valid
+check(obj); // Valid
 console.log(obj);
 /*
 {
@@ -804,7 +879,8 @@ console.log(obj);
     }   
 }
 */
-
+```
+```js
 schema = {
   address: {
     type: "object",
@@ -816,6 +892,8 @@ schema = {
     }
   }
 }
+const check = v.compile(schema);
+
 
 obj = {
     address: {
@@ -826,7 +904,7 @@ obj = {
     }
 }
 
-v.validate(obj, schema); // Valid
+check(obj); // Valid
 
 obj = {
     address: {
@@ -834,7 +912,7 @@ obj = {
     }
 }
 
-v.validate(obj, schema); // Fail
+check(obj); // Fail
 // [
 //   {
 //     type: 'objectMinProps',
@@ -853,10 +931,11 @@ This is a `String` validator.
 const schema = {
     name: { type: "string" }
 }
+const check = v.compile(schema);
 
-v.validate({ name: "John" }, schema); // Valid
-v.validate({ name: "" }, schema); // Valid
-v.validate({ name: 123 }, schema); // Fail
+check({ name: "John" }); // Valid
+check({ name: "" }); // Valid
+check({ name: 123 }); // Fail
 ```
 
 ### Properties
@@ -893,12 +972,13 @@ Property | Default  | Description
 const schema = {
     username: { type: "string", min: 3, trim: true, lowercase: true}
 }
+const check = v.compile(schema);
 
 const obj = {
     username: "   Icebob  "
 };
 
-v.validate(obj, schema); // Valid
+check(obj); // Valid
 console.log(obj);
 /*
 {
@@ -913,11 +993,12 @@ This validator checks if a value is an `Array` with the elements order as descri
 **Simple example:**
 ```js
 const schema = { list: "tuple" };
+const check = v.compile(schema);
 
-v.validate({ list: [] }, schema); // Valid
-v.validate({ list: [1, 2] }, schema); // Valid
-v.validate({ list: ["RON", 100, true] }, schema); // Valid
-v.validate({ list: 94 }, schema); // Fail (not an array)
+check({ list: [] }); // Valid
+check({ list: [1, 2] }); // Valid
+check({ list: ["RON", 100, true] }); // Valid
+check({ list: 94 }); // Fail (not an array)
 ```
 
 **Example with items:**
@@ -925,10 +1006,11 @@ v.validate({ list: 94 }, schema); // Fail (not an array)
 const schema = {
     grade: { type: "tuple", items: ["string", "number"] }
 }
+const check = v.compile(schema);
 
-v.validate({ grade: ["David", 85] }, schema); // Valid
-v.validate({ grade: [85, "David"] }, schema); // Fail (wrong position)
-v.validate({ grade: ["Cami"] }, schema); // Fail (require 2 elements)
+check({ grade: ["David", 85] }); // Valid
+check({ grade: [85, "David"] }); // Fail (wrong position)
+check({ grade: ["Cami"] }); // Fail (require 2 elements)
 ```
 
 **Example with a more detailed schema:**
@@ -942,10 +1024,11 @@ const schema = {
         ] }
     ] }
 }
+const check = v.compile(schema);
 
-v.validate({ location: ['New York', [40.7127281, -74.0060152]] }, schema); // Valid
-v.validate({ location: ['New York', [50.0000000, -74.0060152]] }, schema); // Fail
-v.validate({ location: ['New York', []] }, schema); // Fail (empty array)
+check({ location: ['New York', [40.7127281, -74.0060152]] }); // Valid
+check({ location: ['New York', [50.0000000, -74.0060152]] }); // Fail
+check({ location: ['New York', []] }); // Fail (empty array)
 ```
 
 ### Properties
@@ -961,10 +1044,11 @@ This is an URL validator.
 const schema = {
     url: { type: "url" }
 }
+const check = v.compile(schema);
 
-v.validate({ url: "http://google.com" }, schema); // Valid
-v.validate({ url: "https://github.com/icebob" }, schema); // Valid
-v.validate({ url: "www.facebook.com" }, schema); // Fail
+check({ url: "http://google.com" }); // Valid
+check({ url: "https://github.com/icebob" }); // Valid
+check({ url: "www.facebook.com" }); // Fail
 ```
 
 ### Properties
@@ -979,11 +1063,12 @@ This is an UUID validator.
 const schema = {
     uuid: { type: "uuid" }
 }
+const check = v.compile(schema);
 
-v.validate({ uuid: "00000000-0000-0000-0000-000000000000" }, schema); // Valid Nil UUID
-v.validate({ uuid: "10ba038e-48da-487b-96e8-8d3b99b6d18a" }, schema); // Valid UUIDv4
-v.validate({ uuid: "9a7b330a-a736-51e5-af7f-feaf819cdc9f" }, schema); // Valid UUIDv5
-v.validate({ uuid: "10ba038e-48da-487b-96e8-8d3b99b6d18a", version: 5 }, schema); // Fail
+check({ uuid: "00000000-0000-0000-0000-000000000000" }); // Valid Nil UUID
+check({ uuid: "10ba038e-48da-487b-96e8-8d3b99b6d18a" }); // Valid UUIDv4
+check({ uuid: "9a7b330a-a736-51e5-af7f-feaf819cdc9f" }); // Valid UUIDv5
+check({ uuid: "10ba038e-48da-487b-96e8-8d3b99b6d18a", version: 5 }); // Fail
 ```
 ### Properties
 Property | Default  | Description
@@ -1001,8 +1086,8 @@ const schema = {
         ObjectID // passing the ObjectID class
     }  
 }
-
 const check = v.compile(schema);
+
 check({ id: "5f082780b00cc7401fb8e8fc" }) // ok
 check({ id: new ObjectID() }) // ok
 check({ id: "5f082780b00cc7401fb8e8" }) // Error
@@ -1058,11 +1143,12 @@ const schema = {
     name: { type: "string", min: 3, max: 255 },
     age: { type: "even" }
 };
+const check = v.compile(schema);
 
-console.log(v.validate({ name: "John", age: 20 }, schema));
+console.log(check({ name: "John", age: 20 }, schema));
 // Returns: true
 
-console.log(v.validate({ name: "John", age: 19 }, schema));
+console.log(check({ name: "John", age: 19 }, schema));
 /* Returns an array with errors:
     [{
         type: 'evenNumber',
@@ -1096,11 +1182,12 @@ const schema = {
         }
     }
 };
+const check = v.compile(schema);
 
-console.log(v.validate({ name: "John", weight: 50 }, schema));
+console.log(check({ name: "John", weight: 50 }, schema));
 // Returns: true
 
-console.log(v.validate({ name: "John", weight: 8 }, schema));
+console.log(check({ name: "John", weight: 8 }, schema));
 /* Returns an array with errors:
     [{
         type: 'weightMin',
@@ -1111,7 +1198,7 @@ console.log(v.validate({ name: "John", weight: 8 }, schema));
     }]
 */
 const o = { name: "John", weight: 110 }
-console.log(v.validate(o, schema));
+console.log(check(o, schema));
 /* Returns: true
    o.weight is 100
 */
@@ -1138,11 +1225,13 @@ const schema = {
         }
     }	
 };
+const check = v.compile(schema);
 
-console.log(v.validate({ name: "John", phone: "+36-70-123-4567" }, schema));
+
+console.log(check({ name: "John", phone: "+36-70-123-4567" }));
 // Returns: true
 
-console.log(v.validate({ name: "John", phone: "36-70-123-4567" }, schema));
+console.log(check({ name: "John", phone: "36-70-123-4567" }));
 /* Returns an array with errors:
     [{
         message: "The phone number must be started with '+'!",
@@ -1239,7 +1328,12 @@ const v = new Validator({
     }
 });
 
-v.validate({ name: "John" }, { name: { type: "string", min: 6 }});
+const schema = {
+    name: { type: "string", min: 6 }
+}
+const check = v.compile(schema);
+
+check({ name: "John" });
 /* Returns:
 [
     {
@@ -1276,7 +1370,9 @@ const schema = {
         }
     }
 }
-v.validate({ firstname: "John", lastname: 23 }, schema );
+const check = v.compile(schema);
+
+check({ firstname: "John", lastname: 23 });
 /* Returns:
 [
     {
