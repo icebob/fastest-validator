@@ -717,6 +717,7 @@ Credit Card numbers, IMEI numbers, National Provider Identifier numbers and othe
 const schema = {
     cc: { type: "luhn" }
 }
+const check = v.compile(schema);
 
 check({ cc: "452373989901198" }); // Valid
 check({ cc: 452373989901198 }); // Valid
