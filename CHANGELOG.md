@@ -1,3 +1,14 @@
+<a name="1.11.1"></a>
+# 1.11.1 (2021-07-14)
+
+## Changes
+- fix debug mode. [#237](https://github.com/icebob/fastest-validator/pull/237)
+- fix object "toString" issue. [#235](https://github.com/icebob/fastest-validator/pull/235)
+- remove Node 10 from CI pipeline.
+- refactoring the typescript definitions. [#251](https://github.com/icebob/fastest-validator/pull/251)
+- update examples in readme. [#255](https://github.com/icebob/fastest-validator/pull/255) 
+
+--------------------------------------------------
 <a name="1.11.0"></a>
 # 1.11.0 (2021-05-11)
 
@@ -55,6 +66,7 @@ const res = check(obj, {
 - support default and optional in tuples and arrays [#226](https://github.com/icebob/fastest-validator/pull/226)
 - fix that `this` points to the Validator instance in custom functions [#231](https://github.com/icebob/fastest-validator/pull/231)
 - 
+--------------------------------------------------
 <a name="1.10.1"></a>
 # 1.10.1 (2021-03-22)
 
