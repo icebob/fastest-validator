@@ -387,11 +387,11 @@ export interface RuleString extends RuleCustom {
 	 */
 	enum?: string[];
 	/**
-	 * The value must be an alphabetic string
+	 * The value must be a numeric string
 	 */
 	numeric?: boolean;
 	/**
-	 * The value must be a numeric string
+	 * The value must be an alphabetic string
 	 */
 	alpha?: boolean;
 	/**
