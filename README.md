@@ -1074,7 +1074,7 @@ check({ uuid: "10ba038e-48da-487b-96e8-8d3b99b6d18a", version: 5 }); // Fail
 ### Properties
 Property | Default  | Description
 -------- | -------- | -----------
-`version`  | `4`   | UUID version in range 0-6.
+`version`  | `null`   | UUID version in range 0-6. The `null` disables version checking.
 
 ## `objectID`
 You can validate BSON/MongoDB ObjectID's
