@@ -417,7 +417,7 @@ export interface RuleString extends RuleCustom {
 	/**
 	 * The value must contain this text
 	 */
-	contains?: string[];
+	contains?: string;
 	/**
 	 * The value must be an element of the enum array
 	 */
