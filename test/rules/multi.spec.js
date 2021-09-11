@@ -63,19 +63,29 @@ describe("Test rule: multi", () => {
 				}
 			});
 
+			v.alias("targetC", {
+				type: "object", props: {
+					c: "number"
+				}
+			});
+
 			const check = v.compile({
 				$$root: true,
 				type: "multi",
-				rules: ["targetA", "targetB"]
+				rules: ["targetA", "targetB", "targetC"]
 			});
-			const oo = {b: 2, c: 3};
 
 			expect(check({a: 1})).toBe(true);
 
-			expect(check(oo)).toBe(true);
-			expect(oo).toEqual({b: 2});
+			const testB = {b: 2, z: 3};
+			expect(check(testB)).toBe(true);
+			expect(testB).toEqual({b: 2});
 
-			expect(check({c: 3})).toEqual([{"actual": undefined, "field": "a", "message": "The 'a' field is required.", "type": "required"}, {"actual": undefined, "field": "b", "message": "The 'b' field is required.", "type": "required"}]);
+			const testC = {c: 3, d: 4};
+			expect(check(testC)).toBe(true);
+			expect(testC).toEqual({c: 3, d: 4});
+
+			expect(check({d: 4})).toEqual([{"actual": undefined, "field": "a", "message": "The 'a' field is required.", "type": "required"}, {"actual": undefined, "field": "b", "message": "The 'b' field is required.", "type": "required"}, {"actual": undefined, "field": "c", "message": "The 'c' field is required.", "type": "required"}]);
 		});
 	});
 });
