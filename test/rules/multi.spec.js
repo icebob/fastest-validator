@@ -69,9 +69,13 @@ describe("Test rule: multi", () => {
 				rules: ["targetA", "targetB"]
 			});
 			const oo = {b: 2, c: 3};
+
 			expect(check({a: 1})).toBe(true);
+
 			expect(check(oo)).toBe(true);
 			expect(oo).toEqual({b: 2});
+
+			expect(check({c: 3})).toEqual([{"actual": undefined, "field": "a", "message": "The 'a' field is required.", "type": "required"}, {"actual": undefined, "field": "b", "message": "The 'b' field is required.", "type": "required"}]);
 		});
 	});
 });
