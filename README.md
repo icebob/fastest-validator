@@ -42,6 +42,9 @@ $ npm install
 $ npm run bench
 ```
 
+## Approach
+In order to achieve lowest cost/highest performance redaction fastest-validator creates and compiles functions using the `Function` constructor. It's important to distinguish this from the dangers of a runtime eval, no user input is involved in creating the validation schema that compiles into the function. This is as safe as writing code normally and having it compiled by V8 in the usual way.
+
 ## Installation
 
 ### NPM
