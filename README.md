@@ -22,7 +22,7 @@
 * no dependencies
 * unit tests & 100% coverage
 
-# How fast?
+## How fast?
 Very fast! 8 million validations/sec (on Intel i7-4770K, Node.JS: 12.14.1)
 ```
 √ validate                            8,678,752 rps
@@ -45,9 +45,9 @@ $ npm run bench
 ## Approach
 In order to achieve lowest cost/highest performance redaction fastest-validator creates and compiles functions using the `Function` constructor. It's important to distinguish this from the dangers of a runtime eval, no user input is involved in creating the validation schema that compiles into the function. This is as safe as writing code normally and having it compiled by V8 in the usual way.
 
-## Installation
+# Installation
 
-### NPM
+## NPM
 You can install it via [NPM](http://npmjs.org/).
 ```
 $ npm i fastest-validator --save
@@ -57,9 +57,9 @@ or
 $ yarn add fastest-validator
 ```
 
-## Usage
+# Usage
 
-### Validate
+## Validate
 The first step is to compile the schema to a compiled "checker" function. After that, to validate your object, just call this "checker" function.
 > This method is the fastest.
 
@@ -92,7 +92,7 @@ console.log("Second:", check({ id: 2, name: "Adam" }));
 ```
 [Try it on Repl.it](https://repl.it/@icebob/fastest-validator-fast)
 
-### Browser usage
+## Browser usage
 ```html
 <script src="https://unpkg.com/fastest-validator"></script>
 ```
@@ -112,7 +112,7 @@ console.log(check({ id: 5, name: "John", status: true }));
 // Returns: true
 ```
 
-### Deno usage
+## Deno usage
 With `esm.sh`, now Typescript is supported
 
 ```js
@@ -127,7 +127,7 @@ const check = v.compile({
 console.log(check({ name: "Erf", age: 18 })); //true
 ```
 
-### Supported frameworks
+## Supported frameworks
 - *Moleculer*: Natively supported
 - *Fastify*: By using [fastify-fv](https://github.com/erfanium/fastify-fv) 
 - *Express*: By using [fastest-express-validator](https://github.com/muturgan/fastest-express-validator) 
