@@ -1084,4 +1084,17 @@ export default class Validator {
 		schema: ValidationSchema;
 		ruleFunction: Function;
 	};
+
+	/**
+	 * Normalize a schema, type or short hand definition by expanding it to a full form. The 'normalized'
+	 * form is the equivalent schema with any short hands undone. This ensure that each rule; always includes
+	 * a 'type' key, arrays always have an 'items' key, 'multi' always have a 'rules' key and objects always
+	 * have their properties defined in a 'props' key
+	 *
+	 * @param { ValidationSchema | string | any } value The value to normalize
+	 * @return {ValidationRule | ValidationSchema } The normalized form of the given rule or schema
+	 */
+	normalize(
+		value: ValidationSchema | string | any
+	): ValidationRule | ValidationSchema
 }
