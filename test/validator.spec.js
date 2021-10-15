@@ -720,17 +720,6 @@ describe("Test normalize", () => {
 		}
 	});
 	v.add("custom", () => "");
-	it("should not change original schema", () => {
-		const schema = {
-			a: "string",
-			b: {
-				$$type: "object",
-				c: "string[]"
-			}
-		};
-		v.normalize(schema);
-		expect(schema).toEqual(schema);
-	});
 	it("should normalize shorthands", () => {
 		expect(v.normalize("string[]|min:1|max:2|optional:false")).toEqual({
 			type: "array",
@@ -824,6 +813,27 @@ describe("Test normalize", () => {
 			c: {
 				type: "custom",
 				d: true
+			}
+		});
+	});
+	it("should normalize arrays as multi types", () => {
+		const schema = {
+			a: ["string|optional", "boolean|optional"]
+		};
+		expect(v.normalize(schema)).toEqual({
+			a: {
+				type: "multi",
+				optional: true,
+				rules: [
+					{
+						type: "string",
+						optional: true
+					},
+					{
+						type: "boolean",
+						optional: true
+					}
+				]
 			}
 		});
 	});
