@@ -273,7 +273,7 @@ Also you can use dynamic default value by defining a function that returns a val
 const schema = {
     createdAt: {
         type: "date",
-        default: () => new Date()
+        default: (schema, field, parent, context) => new Date()
     }
 };
 

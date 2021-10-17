@@ -1,3 +1,13 @@
+<a name="1.12.0"></a>
+# 1.12.0 (2021-10-17)
+
+## Changes
+- update dev dependencies.
+- add parameters to dynamic default value function. E.g: `age: (schema, field, parent, context) => { ... }`
+- fix typescript definitions. [#269](https://github.com/icebob/fastest-validator/pull/269), [#270](https://github.com/icebob/fastest-validator/pull/270), [#261](https://github.com/icebob/fastest-validator/pull/261)
+- fix multi validate with object strict remove. [#272](https://github.com/icebob/fastest-validator/pull/272) 
+- add `normalize` method. [#275](https://github.com/icebob/fastest-validator/pull/275) E.g.: `validator.normalize({ a: "string[]|optional" })`
+
 <a name="1.11.1"></a>
 # 1.11.1 (2021-07-14)
 
