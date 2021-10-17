@@ -47,7 +47,15 @@ const schema = {
 	action: "function",
 	created: "date",
 	raw: { type: "class", instanceOf: Buffer, custom: v => v.toString("base64") },
-	now: { type: "date", convert: true }
+	now: { type: "date", convert: true },
+	state: {
+		type: "enum",
+		values: ["active", "inactive"],
+		defVal: "active",
+		default: (schema, field, parent, context) => {
+			return schema.defVal;
+		}
+	}
 };
 
 const obj = {

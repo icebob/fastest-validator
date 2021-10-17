@@ -572,6 +572,93 @@ describe("Test custom validation", () => {
 	});
 });
 
+describe("Test default values", () => {
+	const v = new Validator({
+		useNewCustomCheckerFunction: true
+	});
+
+	let check;
+	const fn = jest.fn(() => "fn-123");
+
+	const schema = {
+		str: "string|default:abc",
+		num: {
+			type: "number",
+			min: 10,
+			max: 15,
+			default: 123
+		},
+		boolT: {
+			type: "boolean",
+			default: true
+		},
+		boolF: {
+			type: "boolean",
+			default: false
+		},
+		arr: {
+			type: "array",
+			items: "number",
+			default: [1,2,3]
+		},
+		obj: {
+			type: "object",
+			properties: {
+				id: "number",
+				name: "string",
+				status: "boolean"
+			},
+			default: {
+				id: 1,
+				name: "abc",
+				status: false
+			}
+		},
+		par: {
+			type: "object",
+			properties: {
+				id: "number",
+				name: {
+					type: "string",
+					default: fn
+				}
+			}
+		},
+	};
+
+	it("should compile without error", () => {
+
+		check = v.compile(schema);
+
+		expect(typeof check).toBe("function");
+	});
+
+	it("should fit the obj with default values", () => {
+		const obj = { par: { id: 1 } };
+		const res = check(obj);
+		expect(res).toBe(true);
+		expect(obj).toStrictEqual({
+			str: "abc",
+			num: 123,
+			boolT: true,
+			boolF: false,
+			arr: [1,2,3],
+			obj: {
+				id: 1,
+				name: "abc",
+				status: false
+			},
+			par: {
+				id: 1,
+				name: "fn-123"
+			}
+		});
+
+		expect(fn).toBeCalledTimes(1);
+		expect(fn).toBeCalledWith(schema.par.properties.name, "par.name", obj, expect.any(Object) );
+	});
+});
+
 describe("Test default settings", () => {
 	const v = new Validator({
 		defaults: {
