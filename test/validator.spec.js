@@ -695,3 +695,253 @@ describe("Test addMessage" , () => {
 	expect(v.messages.string).toBe("C");
 });
 
+describe("Test normalize", () => {
+	const v = new Validator({
+		defaults: {
+			object: {
+				strict: "remove"
+			}
+		},
+		aliases: {
+			age: "number|optional|integer|positive|min:0|max:99",
+			address: {
+				type: "object",
+				props: {
+					street: "string[]|max:2",
+					city: "string",
+					region: "string",
+					country: "string",
+					zip: {
+						type: "string",
+						pattern: /(^\d{5}$)|(^\d{5}-\d{4}$)/,
+					}
+				}
+			}
+		}
+	});
+	v.add("custom", () => "");
+	it("should normalize shorthands", () => {
+		expect(v.normalize("string[]|min:1|max:2|optional:false")).toEqual({
+			type: "array",
+			items: {
+				type: "string",
+			},
+			min: 1,
+			max: 2,
+			optional: false
+		});
+	});
+	it("should normalize with defaults included", () => {
+		const schema = {
+			type: "object",
+			props: {
+				a: "string"
+			}
+		};
+		expect(v.normalize(schema)).toEqual({
+			type: "object",
+			strict: "remove",
+			props: {
+				a: {
+					type: "string"
+				}
+			}
+		});
+	});
+	it("should normalize aliases", () => {
+		const schema = {
+			name: "string",
+			age: "age",
+			address: "address"
+		};
+		expect(v.normalize(schema)).toEqual({
+			name: {
+				type: "string"
+			},
+			age: {
+				type: "number",
+				positive: true,
+				integer: true,
+				min: 0,
+				max: 99,
+				optional: true
+			},
+			address: {
+				type: "object",
+				strict: "remove",
+				props: {
+					street: {
+						type: "array",
+						max: 2,
+						items: {
+							type: "string",
+						}
+					},
+					city: {
+						type: "string"
+					},
+					region: {
+						type: "string"
+					},
+					country: {
+						type: "string"
+					},
+					zip: {
+						type: "string",
+						pattern: /(^\d{5}$)|(^\d{5}-\d{4}$)/
+					}
+				}
+			}
+		});
+	});
+	it("should normalize with custom types", () => {
+		const schema = {
+			a: "string",
+			b: "custom",
+			c: {
+				type: "custom",
+				d: true,
+			}
+		};
+		expect(v.normalize(schema)).toEqual({
+			a: {
+				type: "string",
+			},
+			b: {
+				type: "custom"
+			},
+			c: {
+				type: "custom",
+				d: true
+			}
+		});
+	});
+	it("should normalize arrays as multi types", () => {
+		const schema = {
+			a: ["string|optional", "boolean|optional"]
+		};
+		expect(v.normalize(schema)).toEqual({
+			a: {
+				type: "multi",
+				optional: true,
+				rules: [
+					{
+						type: "string",
+						optional: true
+					},
+					{
+						type: "boolean",
+						optional: true
+					}
+				]
+			}
+		});
+	});
+	it("should normalize complex schema", () => {
+		const schema = {
+			a: {
+				$$type: "object|optional",
+				x: "number",
+				y: "number"
+			},
+			b: {
+				type: "object",
+				props: {
+					c: "string",
+					d: ["string", "boolean"],
+					e: {
+						type: "array",
+						items: "string"
+					},
+					f: ["string|optional", "boolean|optional"],
+					g: {
+						type: "array",
+						items: {
+							$$type: "object|optional",
+							h: "string",
+							i: "date[]"
+						}
+					},
+					j: "age"
+				}
+			}
+		};
+		expect(v.normalize(schema)).toEqual({
+			a: {
+				type: "object",
+				strict: "remove",
+				optional: true,
+				props: {
+					x: {
+						type: "number"
+					},
+					y: {
+						type: "number"
+					}
+				}
+			},
+			b: {
+				type: "object",
+				strict: "remove",
+				props: {
+					c: {
+						type: "string"
+					},
+					d: {
+						type: "multi",
+						optional: false,
+						rules: [{type: "string"}, {type: "boolean"}]
+					},
+					e: {
+						type: "array",
+						items: {
+							type: "string"
+						}
+					},
+					f: {
+						type: "multi",
+						optional: true,
+						rules: [
+							{
+								type: "string",
+								optional: true,
+							},
+							{
+								type: "boolean",
+								optional: true
+							}
+						]
+					},
+					g: {
+						type: "array",
+						items: {
+							type: "object",
+							optional: true,
+							strict: "remove",
+							props: {
+								h: {
+									type: "string"
+								},
+								i: {
+									type: "array",
+									items: {
+										type: "date"
+									},
+
+								}
+							},
+						}
+					},
+					j: {
+						type: "number",
+						optional: true,
+						integer: true,
+						positive: true,
+						min: 0,
+						max: 99
+					}
+				}
+			}
+		});
+	});
+});
