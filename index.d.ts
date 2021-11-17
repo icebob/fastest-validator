@@ -350,10 +350,11 @@ export interface RuleObject extends RuleCustom {
 	 */
 	type: "object";
 	/**
-	 * if true any properties which are not defined on the schema will throw an error.
+	 * If `true` any properties which are not defined on the schema will throw an error.<br>
+	 * If `remove` all additional properties will be removed from the original object. It's a sanitizer, it will change the original object.
 	 * @default false
 	 */
-	strict?: boolean;
+	strict?: boolean | "remove";
 	/**
 	 * List of properties that should be validated by this rule
 	 */
