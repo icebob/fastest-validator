@@ -95,6 +95,13 @@ describe("Test rule: string", () => {
 		expect(check("JOHN")).toEqual(true);
 	});
 
+	it("check pattern with empty string", () => {
+		const check = v.compile({ $$root: true, type: "string", pattern: "^[A-Z]+$", patternFlags: "g", empty: true });
+
+		expect(check("")).toEqual(true);
+		expect(check("JOHN")).toEqual(true);
+	});
+
 	it("check escape pattern", () => {
 		const pattern = /^(([^<>()[]\.,;:\s@"]+(.[^<>()[]\.,;:\s@"]+)*)|(".+"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z-0-9]+.)+[a-zA-Z]{2,}))$/;
 		const check = v.compile({ $$root: true, type: "string", pattern });
@@ -114,6 +121,16 @@ describe("Test rule: string", () => {
 		const message = "The '' field does not match any of the allowed values.";
 
 		expect(check("")).toEqual([{ type: "stringEnum", expected: "male, female", actual: "", message }]);
+		expect(check("human")).toEqual([{ type: "stringEnum", expected: "male, female", actual: "human", message }]);
+		expect(check("male")).toEqual(true);
+		expect(check("female")).toEqual(true);
+	});
+
+	it("check enum with enabled empty", () => {
+		const check = v.compile({ $$root: true, type: "string", enum: ["male", "female"], empty: true });
+		const message = "The '' field does not match any of the allowed values.";
+
+		expect(check("")).toEqual(true);
 		expect(check("human")).toEqual([{ type: "stringEnum", expected: "male, female", actual: "human", message }]);
 		expect(check("male")).toEqual(true);
 		expect(check("female")).toEqual(true);
