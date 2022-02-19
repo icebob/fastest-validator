@@ -30,6 +30,7 @@ describe("Test rule: date", () => {
 		const message = "The '' field must be a Date.";
 
 		expect(check(Date.now())).toEqual(true);
+		expect(check(String(Date.now()))).toEqual(true);
 		expect(check("2017-03-07 10:11:23")).toEqual(true);
 		expect(check("2017-03-07T10:11:23Z")).toEqual(true);
 		expect(check("2017-03-07T10:11:23-01:00")).toEqual(true);
@@ -43,6 +44,10 @@ describe("Test rule: date", () => {
 		const check = v.compile({ timestamp: { type: "date", convert: true } });
 
 		let obj = { timestamp: 1488876927958 };
+		expect(check(obj)).toEqual(true);
+		expect(obj).toEqual({ timestamp: new Date(1488876927958) });
+
+		obj = { timestamp: "1488876927958" };
 		expect(check(obj)).toEqual(true);
 		expect(obj).toEqual({ timestamp: new Date(1488876927958) });
 
