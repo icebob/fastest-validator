@@ -924,7 +924,7 @@ export interface CompilationRule {
 	messages: MessagesType;
 }
 
-export interface Context {
+export interface Context<DATA = any> {
 	index: number;
 	async: boolean;
 	rules: ValidationRuleObject[];
@@ -933,6 +933,7 @@ export interface Context {
 		[ruleName: string]: { schema: RuleCustom; messages: MessagesType };
 	};
 	meta?: object;
+	data: DATA;
 }
 
 export interface CheckerFunctionError {
