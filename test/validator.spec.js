@@ -570,6 +570,76 @@ describe("Test custom validation", () => {
 		expect(checkerFn).toBeCalledTimes(1);
 		expect(checkerFn.mock.calls[0][0]).toBe(123);
 	});
+
+	describe("should work with multi rule and custom validator", () => {
+		const checkerFn = jest.fn(() => {});
+
+		const v = new Validator({
+			useNewCustomCheckerFunction: true,
+			aliases: {
+				strOK: {
+					type: "string",
+					custom: (value, errors) => {
+						checkerFn();
+						if (value !== "OK") {
+							errors.push({type: "strOK"});
+							return;
+						}
+						return value;
+					}
+				},
+				num99: {
+					type: "number",
+					custom: (value, errors) => {
+						checkerFn();
+						if (value !== 99) {
+							errors.push({type: "num99"});
+							return;
+						}
+						return value;
+					}
+				}
+			}
+		});
+
+		const schema = {
+			a: {
+				type: "multi",
+				rules: ["strOK", "num99"]
+			}
+		};
+		const check = v.compile(schema);
+
+		it("test strOK", () => {
+			{
+				const o = { a: "OK" };
+				expect(check(o)).toBe(true);
+				expect(o).toStrictEqual({ a: "OK" });
+				expect(checkerFn).toBeCalledTimes(1);
+			}
+			{
+				const o = { a: "not-OK" };
+				expect(check(o)).not.toBe(true);
+				expect(o).toStrictEqual({ a: "not-OK" });
+				expect(checkerFn).toBeCalledTimes(3);
+			}
+		});
+
+		it("test num99", () => {
+			{
+				const o = { a: 99 };
+				expect(check(o)).toBe(true);
+				expect(o).toStrictEqual({ a: 99 });
+				expect(checkerFn).toBeCalledTimes(5);
+			}
+			{
+				const o = { a: 1199 };
+				expect(check(o)).not.toBe(true);
+				expect(o).toStrictEqual({ a: 1199 });
+				expect(checkerFn).toBeCalledTimes(7);
+			}
+		});
+	});
 });
 
 describe("Test default values", () => {
