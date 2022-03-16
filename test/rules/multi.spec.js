@@ -137,7 +137,7 @@ describe("Test rule: multi", () => {
 			}
 			{
 				const o = { a: "not-OK" };
-				expect(check(o)).not.toBe(true);
+				expect(check(o)).toStrictEqual([{"field": "a", "message": undefined, "type": "strOK"}, {"actual": "not-OK", "field": "a", "message": "The 'a' field must be a number.", "type": "number"}, {"field": "a", "message": undefined, "type": "num99"}]);
 				expect(o).toStrictEqual({ a: "not-OK" });
 				expect(checkerFn).toBeCalledTimes(3);
 			}
@@ -152,7 +152,7 @@ describe("Test rule: multi", () => {
 			}
 			{
 				const o = { a: 1199 };
-				expect(check(o)).not.toBe(true);
+				expect(check(o)).toStrictEqual([{"actual": 1199, "field": "a", "message": "The 'a' field must be a string.", "type": "string"}, {"field": "a", "message": undefined, "type": "strOK"}, {"field": "a", "message": undefined, "type": "num99"}]);
 				expect(o).toStrictEqual({ a: 1199 });
 				expect(checkerFn).toBeCalledTimes(7);
 			}
