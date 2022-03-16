@@ -189,7 +189,7 @@ describe("Test rule: array", () => {
 			expect(Array.isArray(errors)).toBe(true);
 			expect(errors.length).toBe(1);
 			expect(errors[0].type).toBe("evenNumber");
-			expect(o.a).toEqual([2, 4, 8]);
+			expect(o.a).toEqual([1, 2, 4]);
 		});
 	});
 });

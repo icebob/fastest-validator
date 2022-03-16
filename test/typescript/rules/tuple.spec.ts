@@ -265,7 +265,7 @@ describe("TypeScript Definitions", () => {
 				expect(Array.isArray(errors)).toBe(true);
 				expect(errors.length).toBe(1);
 				expect(errors[0].type).toBe("evenNumber");
-				expect(o.a).toEqual([2, 4]);
+				expect(o.a).toEqual([1, 2]);
 			});
 		});
 	});
