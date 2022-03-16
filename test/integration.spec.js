@@ -1282,7 +1282,7 @@ describe("Test context meta", () => {
 		});
 
 		expect(res).toBe(true);
-		expect(obj).toEqual({ name: "John" });
+		expect(obj).toEqual({ name: "from-meta" });
 	});
 });
 

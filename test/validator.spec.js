@@ -570,6 +570,34 @@ describe("Test custom validation", () => {
 		expect(checkerFn).toBeCalledTimes(1);
 		expect(checkerFn.mock.calls[0][0]).toBe(123);
 	});
+
+	it("should not modify original data - #271", () => {
+		const v = new Validator({
+			// debug: true,
+			useNewCustomCheckerFunction: true,
+			defaults: {
+				object: {
+					strict: true,
+				},
+				string: {
+					custom(value) {
+						return value;
+					},
+				},
+			},
+		});
+
+		const schema = {
+			method: { type: "equal", value: "bar" },
+			extra: "string",
+		};
+
+		const check = v.compile(schema);
+
+		const obj = {};
+		expect(check(obj)).toStrictEqual([{"actual": undefined, "field": "method", "message": "The 'method' field is required.", "type": "required"}, {"actual": undefined, "field": "extra", "message": "The 'extra' field is required.", "type": "required"}]);
+		expect(obj).toStrictEqual({});
+	});
 });
 
 describe("Test default values", () => {
