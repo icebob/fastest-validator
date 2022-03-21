@@ -88,4 +88,74 @@ describe("Test rule: multi", () => {
 			expect(check({d: 4})).toEqual([{"actual": undefined, "field": "a", "message": "The 'a' field is required.", "type": "required"}, {"actual": undefined, "field": "b", "message": "The 'b' field is required.", "type": "required"}, {"actual": undefined, "field": "c", "message": "The 'c' field is required.", "type": "required"}]);
 		});
 	});
+
+	describe("should work with custom validator", () => {
+		const checkerFn = jest.fn(() => {});
+
+		const v = new Validator({
+			useNewCustomCheckerFunction: true,
+			aliases: {
+				strOK: {
+					type: "string",
+					custom: (value, errors) => {
+						checkerFn();
+						if (value !== "OK") {
+							errors.push({type: "strOK"});
+							return;
+						}
+						return value;
+					}
+				},
+				num99: {
+					type: "number",
+					custom: (value, errors) => {
+						checkerFn();
+						if (value !== 99) {
+							errors.push({type: "num99"});
+							return;
+						}
+						return value;
+					}
+				}
+			}
+		});
+
+		const schema = {
+			a: {
+				type: "multi",
+				rules: ["strOK", "num99"]
+			}
+		};
+		const check = v.compile(schema);
+
+		it("test strOK", () => {
+			{
+				const o = { a: "OK" };
+				expect(check(o)).toBe(true);
+				expect(o).toStrictEqual({ a: "OK" });
+				expect(checkerFn).toBeCalledTimes(1);
+			}
+			{
+				const o = { a: "not-OK" };
+				expect(check(o)).toStrictEqual([{"field": "a", "message": undefined, "type": "strOK"}, {"actual": "not-OK", "field": "a", "message": "The 'a' field must be a number.", "type": "number"}, {"field": "a", "message": undefined, "type": "num99"}]);
+				expect(o).toStrictEqual({ a: "not-OK" });
+				expect(checkerFn).toBeCalledTimes(3);
+			}
+		});
+
+		it("test num99", () => {
+			{
+				const o = { a: 99 };
+				expect(check(o)).toBe(true);
+				expect(o).toStrictEqual({ a: 99 });
+				expect(checkerFn).toBeCalledTimes(5);
+			}
+			{
+				const o = { a: 1199 };
+				expect(check(o)).toStrictEqual([{"actual": 1199, "field": "a", "message": "The 'a' field must be a string.", "type": "string"}, {"field": "a", "message": undefined, "type": "strOK"}, {"field": "a", "message": undefined, "type": "num99"}]);
+				expect(o).toStrictEqual({ a: 1199 });
+				expect(checkerFn).toBeCalledTimes(7);
+			}
+		});
+	});
 });
