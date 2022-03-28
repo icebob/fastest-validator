@@ -133,6 +133,244 @@ describe("Test rule: object", () => {
 		expect(v.validate({foo:"bar"}, {$$root: true, type: "object", maxProps: 0, strict: "remove"})).toEqual([{actual: 1, field: undefined, message: "The object '' must contain 0 properties at most.", type: "objectMaxProps", expected: 0}]);
 	});
 
+	describe("should check entries", () => {
+		const v = new Validator({
+			useNewCustomCheckerFunction: true,
+		});
+
+		it("must pass entries test", () => {
+			const check = v.compile({
+				$$root: true,
+				type: "object",
+				entries: {
+					key: "string",
+					value: ["number[]", {
+						type: "object",
+						entries: {
+							key: "string",
+							value: "number[]"
+						},
+					}],
+				}
+			});
+
+			expect(check({
+				foo: [1,2,3],
+				bar: {
+					foofoo: [0,1,2],
+				}
+			})).toBe(true);
+			expect(check({
+				foo: ["1",2,3],
+				bar: {
+					foofoo: [0,1,2]
+				}
+			})).toStrictEqual([
+				{
+					"actual": "1",
+					"field": "foo[0]",
+					"message": "The 'foo[0]' field must be a number.",
+					"type": "number"
+				},
+				{
+					"actual": [
+						"1",
+						2,
+						3
+					],
+					"field": "foo",
+					"message": "The 'foo' must be an Object.",
+					"type": "object"
+				}
+			]);
+			expect(check({
+				foo: [1,2,3],
+				bar: {
+					foofoo: ["0",1,2]
+				}
+			})).toStrictEqual([
+				{
+					"actual": {
+						"foofoo": [
+							"0",
+							1,
+							2
+						]
+					},
+					"field": "bar",
+					"message": "The 'bar' field must be an array.",
+					"type": "array"
+				},
+				{
+					"actual": "0",
+					"field": "bar[\"foofoo\"][0]",
+					"message": "The 'bar[\"foofoo\"][0]' field must be a number.",
+					"type": "number"
+				}
+			]);
+			expect(check({
+				foo: [1,2,3],
+				bar: {
+					["foo\"bar"]: [0,1,2],
+					["foo'bar"]: [0,1,2],
+					["foo\rbar"]: [0,1,2],
+					["foo\nbar"]: [0,1,2],
+					["foo\u2028bar"]: [0,1,2],
+					["foo\u2029bar"]: [0,1,2],
+				}
+			})).toBe(true);
+		});
+
+		it("must pass multi entries test", () => {
+			const check = v.compile({
+				$$root: true,
+				type: "object",
+				entries: [{
+					key: "string",
+					value: "string"
+				}, {
+					// object always force key to string type
+					// key: "number",
+					value: ["number", "number[]"]
+				}]
+			});
+
+			expect(check({
+				a: "b",
+				0: 1,
+				2: [3, 4],
+			})).toBe(true);
+			expect(check({
+				a: "b",
+				0: 1,
+				2: [3, 4],
+				5: "6", // 5 will be converted to "5" and pass entries[0] test
+			})).toBe(true);
+			expect(check({
+				a: "b",
+				0: 1,
+				2: ["3", 4],
+				5: "6", // 5 will be converted to "5" and pass entries[0] test
+			})).toStrictEqual([{"actual": ["3", 4], "field": "2", "message": "The '2' field must be a string.", "type": "string"}, {"actual": ["3", 4], "field": "2", "message": "The '2' field must be a number.", "type": "number"}, {"actual": "3", "field": "2[0]", "message": "The '2[0]' field must be a number.", "type": "number"}]);
+		});
+
+		describe("only key test", () => {
+			it("without custom", () => {
+				const check = v.compile({
+					$$root: true,
+					type: "object",
+					entries: {
+						key: "string|min:4",
+					}
+				});
+				expect(check({
+					"npm:1": "any",
+					"npm:12": 123,
+					"npm:123": [123, "234"],
+				})).toBe(true);
+				expect(check({
+					"npm": "any",
+					"npm:a": 123,
+					"npm:a123": [123, "234"],
+				})).toStrictEqual([{"actual": 3, "expected": 4, "field": "npm", "message": "The 'npm' field length must be greater than or equal to 4 characters long.", "type": "stringMin"}]);
+				expect(check({
+					"npm:1": "any",
+					"npm:a": 123,
+					"npx": [123, "234"],
+				})).toStrictEqual([{"actual": 3, "expected": 4, "field": "npx", "message": "The 'npx' field length must be greater than or equal to 4 characters long.", "type": "stringMin"}]);
+			});
+			it("with custom", ()=>{
+				const check = v.compile({
+					$$root: true,
+					type: "object",
+					entries: {
+						key: {
+							type: "string",
+							custom(value, errors) {
+								if (/^npm:\d+$/.test(value)) return value;
+								errors.push({
+									type: "custom-string",
+								});
+							},
+						},
+					}
+				});
+				expect(check({
+					"npm:1": "any",
+					"npm:12": 123,
+					"npm:123": [123, "234"],
+				})).toBe(true);
+				expect(check({
+					"npm:": "any",
+					"npm:a": 123,
+					"npm:a123": [123, "234"],
+				})).toStrictEqual([{"field": "npm:", "message": undefined, "type": "custom-string"}]);
+				expect(check({
+					"npm:1": "any",
+					"npm:a": 123,
+					"npm:a123": [123, "234"],
+				})).toStrictEqual([{"field": "npm:a", "message": undefined, "type": "custom-string"}]);
+			});
+		});
+
+		describe("only value test", () => {
+			it("without custom", () => {
+				const check = v.compile({
+					$$root: true,
+					type: "object",
+					entries: {
+						value: "string|min:4",
+					}
+				});
+				expect(check({
+					"npm:1": "any123",
+					"npm:123": "yesss",
+				})).toBe(true);
+				expect(check({
+					"npm": "any",
+					"npm:a123": ["12344", "1111234"],
+				})).toStrictEqual([{"actual": 3, "expected": 4, "field": "npm", "message": "The 'npm' field length must be greater than or equal to 4 characters long.", "type": "stringMin"}]);
+				expect(check({
+					"npm:1": "any",
+					"npm:a": 123,
+					"npx": [123, "234"],
+				})).toStrictEqual([{"actual": 3, "expected": 4, "field": "npm:1", "message": "The 'npm:1' field length must be greater than or equal to 4 characters long.", "type": "stringMin"}]);
+			});
+			it("with custom", ()=>{
+				const check = v.compile({
+					$$root: true,
+					type: "object",
+					entries: {
+						value: {
+							type: "string",
+							custom(value, errors) {
+								if (/^npm:\d+$/.test(value)) return value;
+								errors.push({
+									type: "custom-string",
+								});
+							},
+						},
+					}
+				});
+				expect(check({
+					a1: "npm:1",
+					a2: "npm:12",
+					a3: "npm:123",
+				})).toBe(true);
+				expect(check({
+					"npm:": "any",
+					"npm:a": 123,
+					"npm:a123": [123, "234"],
+				})).toStrictEqual([{"field": "npm:", "message": undefined, "type": "custom-string"}]);
+				expect(check({
+					"npm:1": "any",
+					"npm:a": 123,
+					"npm:a123": [123, "234"],
+				})).toStrictEqual([{"field": "npm:1", "message": undefined, "type": "custom-string"}]);
+			});
+		});
+	});
+
 
 	describe("Test sanitization", () => {
 

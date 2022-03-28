@@ -951,6 +951,35 @@ describe("Test normalize", () => {
 					},
 					j: "age"
 				}
+			},
+			c: {
+				type: "object",
+				entries: {
+					key: "string|min:1|max:2",
+				},
+				props: {
+					a: {
+						type: "object",
+						entries: {
+							value: "number[]"
+						}
+					},
+					b1: "number",
+					c2: {
+						type: "array",
+						items: {
+							type: "object",
+							props: {
+								d3: {
+									type: "object",
+									entries: {
+										value: "string[]"
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 		};
 		expect(v.normalize(schema)).toEqual({
@@ -1028,6 +1057,55 @@ describe("Test normalize", () => {
 						max: 99
 					}
 				}
+			},
+			"c": {
+				"entries": {
+					"key": {
+						"max": 2,
+						"min": 1,
+						"type": "string"
+					}
+				},
+				"props": {
+					"a": {
+						"entries": {
+							"value": {
+								"items": {
+									"type": "number"
+								},
+								"type": "array"
+							}
+						},
+						"strict": "remove",
+						"type": "object"
+					},
+					"b1": {
+						"type": "number"
+					},
+					"c2": {
+						"items": {
+							"props": {
+								"d3": {
+									"entries": {
+										"value": {
+											"items": {
+												"type": "string"
+											},
+											"type": "array"
+										}
+									},
+									"strict": "remove",
+									"type": "object"
+								}
+							},
+							"strict": "remove",
+							"type": "object"
+						},
+						"type": "array"
+					}
+				},
+				"strict": "remove",
+				"type": "object"
 			}
 		});
 	});
