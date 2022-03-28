@@ -138,6 +138,57 @@ describe("Test rule: object", () => {
 			useNewCustomCheckerFunction: true,
 		});
 
+		it("#276#issuecomment-962506034", () => {
+			const check = v.compile({
+				$$root: true,
+				type: "object",
+				props: {
+					timestamp: "number",
+					numUsers: "number",
+					uptime: "number",
+					users: {
+						type: "object",
+						entries: {
+							key: {
+								type: "string",
+								pattern: /^[a-z_]+$/
+							},
+							value: {
+								type: "object",
+								props: {
+									email: "email",
+									account_type: {type: "string", enum: ["premium", "standard"]},
+									last_login: "number"
+								}
+							}
+						}
+					}
+				}
+			});
+			expect(check({
+				timestamp: 1233113131,
+				numUsers: 3,
+				uptime: 201,
+				users: {
+					steve_carlos: {
+						email: "steve.carlos@ffffff.com",
+						account_type: "premium",
+						last_login: 11244114
+					},
+					doug_flutey: {
+						email: "doug.flutey@ggggg.com",
+						account_type: "standard",
+						last_login: 1251251231
+					},
+					mike_jones: {
+						email: "mike.jones@hhhhh.com",
+						account_type: "standard",
+						last_login: 1295812951
+					}
+				}
+			})).toBe(true);
+		});
+
 		it("must pass entries test", () => {
 			const check = v.compile({
 				$$root: true,
