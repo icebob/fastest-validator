@@ -374,7 +374,10 @@ export interface RuleObject extends RuleCustom {
 	entries?: {
 		key?: ValidationSchema
 		value?: ValidationSchema
-	}
+	} | {
+		key?: ValidationSchema
+		value?: ValidationSchema
+	}[]
 }
 
 export interface RuleObjectID extends RuleCustom {
