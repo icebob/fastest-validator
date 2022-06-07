@@ -42,8 +42,72 @@ $ npm install
 $ npm run bench
 ```
 
+
+
 ## Approach
 In order to achieve lowest cost/highest performance redaction fastest-validator creates and compiles functions using the `Function` constructor. It's important to distinguish this from the dangers of a runtime eval, no user input is involved in creating the validation schema that compiles into the function. This is as safe as writing code normally and having it compiled by V8 in the usual way.
+
+## Table of contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+    * [Validate](#validate)
+    * [Browser usage](#browser-usage)
+    * [Deno usage](#deno-usage)
+    * [Supported frameworks](#supported-frameworks)
+- [Optional, Required & Nullable fields](#optional--required---nullable-fields)
+    * [Optional](#optional)
+    * [Nullable](#nullable)
+        + [Nullable and default values](#nullable-and-default-values)
+- [Strict validation](#strict-validation)
+    * [Remove additional fields](#remove-additional-fields)
+- [Multiple validators](#multiple-validators)
+- [Root element schema](#root-element-schema)
+- [Sanitizations](#sanitizations)
+    * [Default values](#default-values)
+- [Shorthand definitions](#shorthand-definitions)
+    + [Array of X](#array-of-x)
+    + [Nested objects](#nested-objects)
+- [Alias definition](#alias-definition)
+- [Default options](#default-options)
+- [Built-in validators](#built-in-validators)
+    * [any](#-any-)
+    * [array](#-array-)
+    * [boolean](#-boolean-)
+    * [class](#-class-)
+    * [currency](#-currency-)
+    * [date](#-date-)
+    * [email](#-email-)
+    * [enum](#-enum-)
+    * [equal](#-equal-)
+    * [forbidden](#-forbidden-)
+    * [function](#-function-)
+    * [luhn](#-luhn-)
+    * [mac](#-mac-)
+    * [multi](#-multi-)
+    * [number](#-number-)
+    * [object](#-object-)
+    * [string](#-string-)
+    * [tuple](#-tuple-)
+    * [url](#-url-)
+    * [uuid](#-uuid-)
+    * [objectID](#-objectid-)
+- [Custom validator](#custom-validator)
+    * [Custom validation for built-in rules](#custom-validation-for-built-in-rules)
+    * [Asynchronous custom validations](#asynchronous-custom-validations)
+    * [Meta information for custom validators](#meta-information-for-custom-validators)
+- [Custom error messages (l10n)](#custom-error-messages--l10n-)
+- [Personalised Messages](#personalised-messages)
+- [Plugins](#plugins)
+- [Message types](#message-types)
+    * [Message fields](#message-fields)
+- [Development](#development)
+- [Test](#test)
+    * [Coverage report](#coverage-report)
+- [Contribution](#contribution)
+- [License](#license)
+- [Contact](#contact)
+
 
 # Installation
 
