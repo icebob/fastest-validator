@@ -821,7 +821,7 @@ export type ValidationRule =
 /**
  * Definition for validation schema based on validation rules
  */
-export type ValidationSchema<T = any> = {
+export type ValidationSchema<T extends Record<string, ValidationRule> = any> = {
 	/**
 	 * Object properties which are not specified on the schema are ignored by default.
 	 * If you set the $$strict option to true any additional properties will result in an strictObject error.
@@ -845,7 +845,7 @@ export type ValidationSchema<T = any> = {
 	/**
 	 * List of validation rules for each defined field
 	 */
-	[key in keyof T]: ValidationRule | undefined | any;
+	[key in keyof T]: ValidationRule | undefined;
 };
 
 /**
@@ -1060,7 +1060,7 @@ export default class Validator {
 	 * @param {ValidationSchema | ValidationSchema[]} schema Validation schema definition that should be used for validation
 	 * @return {(value: any) => (true | ValidationError[])} function that can be used next for validation of current schema
 	 */
-	compile<T = any>(
+	compile<T extends Record<string, ValidationRule>>(
 		schema: ValidationSchema<T> | ValidationSchema<T>[]
 	): SyncCheckFunction | AsyncCheckFunction;
 
