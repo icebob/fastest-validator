@@ -1,4 +1,3 @@
-
 export type ValidationRuleName =
 	| "any"
 	| "array"
@@ -843,11 +842,11 @@ export type ValidationSchema<T = any> = {
 	 */
 	$$root?: boolean;
 } & {
-		/**
-		 * List of validation rules for each defined field
-		 */
-		[key in keyof T]: ValidationRule | undefined | any;
-	};
+	/**
+	 * List of validation rules for each defined field
+	 */
+	[key in keyof T]: ValidationRule | undefined | any;
+};
 
 /**
  * Structure with description of validation error message
@@ -976,13 +975,15 @@ export interface CheckFunctionOptions {
 }
 
 export interface SyncCheckFunction {
-	(value: any, opts?: CheckFunctionOptions): true | ValidationError[]
-	async: false
+	(value: any, opts?: CheckFunctionOptions): true | ValidationError[];
+	async: false;
 }
 
 export interface AsyncCheckFunction {
-	(value: any, opts?: CheckFunctionOptions): Promise<true | ValidationError[]>
-	async: true
+	(value: any, opts?: CheckFunctionOptions): Promise<
+		true | ValidationError[]
+	>;
+	async: true;
 }
 
 export default class Validator {
@@ -1080,7 +1081,10 @@ export default class Validator {
 	 * @return {ValidationRule}
 	 */
 	getRuleFromSchema(
-		name: ValidationRuleName | ValidationRuleName[] | { [key: string]: unknown }
+		name:
+			| ValidationRuleName
+			| ValidationRuleName[]
+			| { [key: string]: unknown }
 	): {
 		messages: MessagesType;
 		schema: ValidationSchema;
@@ -1098,5 +1102,5 @@ export default class Validator {
 	 */
 	normalize(
 		value: ValidationSchema | string | any
-	): ValidationRule | ValidationSchema
+	): ValidationRule | ValidationSchema;
 }
