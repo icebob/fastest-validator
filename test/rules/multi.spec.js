@@ -87,6 +87,18 @@ describe("Test rule: multi", () => {
 
 			expect(check({d: 4})).toEqual([{"actual": undefined, "field": "a", "message": "The 'a' field is required.", "type": "required"}, {"actual": undefined, "field": "b", "message": "The 'b' field is required.", "type": "required"}, {"actual": undefined, "field": "c", "message": "The 'c' field is required.", "type": "required"}]);
 		});
+
+		it("issue #297", () => {
+			const v = new Validator();
+			const check = v.compile({
+				$$strict: true,
+				age: "number",
+				name: "string",
+				surname: "string",
+			});
+
+			expect(check({ address: "London", age: "22", name: "John", surname: "Doe" })).toEqual([{"type":"number","message":"The 'age' field must be a number.","field":"age","actual":"22"},{"type":"objectStrict","message":"The object '' contains forbidden keys: 'address'.","expected":"age, name, surname","actual":"address"}] );
+		});
 	});
 
 	describe("should work with custom validator", () => {
