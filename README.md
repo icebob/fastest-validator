@@ -928,6 +928,30 @@ check(obj); // Fail
 // ]
 ```
 
+## `record`
+This validator allows to check an object with arbitrary keys.
+
+```js
+const schema = {
+    surnameGroups: {
+        type: 'record',
+        key: { type: 'string', alpha: true },
+        value: { type: 'array', items: 'string' }
+    }
+};
+const check = v.compile(schema);
+
+check({ surnameGroups: { Doe: ['Jane', 'John'], Williams: ['Bill'] } }); // Valid
+check({ surnameGroups: { Doe1: ['Jane', 'John'] } }); // Fail
+check({ surnameGroups: { Doe: [1, 'Jane'] } }); // Fail
+```
+
+### Properties
+Property | Default  | Description
+-------- |----------| -----------
+`key`    | `string` | Key validation rule (It is reasonable to use only the `string` rule).
+`value`  | `any`    | Value validation rule.
+
 ## `string`
 This is a `String` validator.
 
