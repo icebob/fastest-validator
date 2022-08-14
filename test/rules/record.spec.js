@@ -49,4 +49,45 @@ describe("Test rule: record", () => {
 			{ type: "string", actual: 2, field: "1", message: "The '1' field must be a string." }
 		]);
 	});
+
+	it("should pass validation when schema has only key rule", () => {
+		const check = v.compile({
+			$$root: true,
+			type: "record",
+			key: { type: "string", alpha: true }
+		});
+
+		expect(check({ John: "Doe", Jane: "Doe" })).toEqual(true);
+	});
+
+	it.each([
+		{ rule: { type: "any" }, value: {} },
+		{ rule: { type: "array" }, value: [1, 2] },
+		{ rule: { type: "boolean" }, value: true },
+		{ rule: { type: "class", instanceOf: Number }, value: new Number() },
+		{ rule: { type: "currency", currencySymbol: "$" }, value: "$11.11" },
+		{ rule: { type: "date" }, value: new Date() },
+		{ rule: { type: "email" }, value: "user@example.com" },
+		{ rule: { type: "enum", values: ["John", "Jane"] }, value: "John" },
+		{ rule: { type: "forbidden" }, value: undefined },
+		{ rule: { type: "function" }, value: () => {} },
+		{ rule: { type: "luhn" }, value: "452373989901198" },
+		{ rule: { type: "mac" }, value: "01:C8:95:4B:65:FE" },
+		{ rule: { type: "multi", rules: ["number", "boolean"] }, value: 4 },
+		{ rule: { type: "number" }, value: 3 },
+		{ rule: { type: "object" }, value: {} },
+		{ rule: { type: "record" }, value: { test: "test" } },
+		{ rule: { type: "string" }, value: "example" },
+		{ rule: { type: "url" }, value: "https://example.com" },
+		{ rule: { type: "uuid" }, value: "10ba038e-48da-487b-96e8-8d3b99b6d18a" }
+	])(
+		"should pass validation when schema has '$rule.type' rule as value", ({ rule, value }) => {
+			const check = v.compile({
+				$$root: true,
+				type: "record",
+				value: rule
+			});
+
+			expect(check({ John: value })).toEqual(true);
+		});
 });
