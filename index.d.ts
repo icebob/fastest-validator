@@ -17,6 +17,7 @@ export type ValidationRuleName =
 	| "multi"
 	| "number"
 	| "object"
+	| "record"
 	| "string"
 	| "url"
 	| "uuid"
@@ -383,6 +384,21 @@ export interface RuleObjectID extends RuleCustom {
 	 * Convert HexStringObjectID to ObjectID
 	 */
 	convert?: boolean | "hexString";
+}
+
+export interface RuleRecord extends RuleCustom {
+	/**
+	 * Name of built-in validator
+	 */
+	type: "record";
+	/**
+	 * Key validation rule
+	 */
+	key?: RuleString;
+	/**
+	 * Value validation rule
+	 */
+	value?: ValidationRuleObject;
 }
 
 /**
@@ -804,6 +820,7 @@ export type ValidationRuleObject =
 	| RuleNumber
 	| RuleObject
 	| RuleObjectID
+	| RuleRecord
 	| RuleString
 	| RuleTuple
 	| RuleURL
