@@ -1,4 +1,18 @@
+<a name="1.13.0"></a>
+
+# 1.13.0 (2022-08-15)
+
+## Changes
+- update dev dependencies.
+- update d.ts
+- fixing string enum check in case of optional field. [#284](https://github.com/icebob/fastest-validator/pull/284)
+- date rule add convert string to number for timestamp. [#286](https://github.com/icebob/fastest-validator/pull/286)
+- fix(multi): item rule has custom checker will throw error if validate. [#290](https://github.com/icebob/fastest-validator/pull/290)
+- fix backward compatibility issue. [#298](https://github.com/icebob/fastest-validator/pull/298)
+- add [new `Record` rule](https://github.com/icebob/fastest-validator#record). [#300](https://github.com/icebob/fastest-validator/pull/300)
+
 <a name="1.12.0"></a>
+
 # 1.12.0 (2021-10-17)
 
 ## Changes
