@@ -92,6 +92,11 @@ console.log("Second:", check({ id: 2, name: "Adam" }));
 ```
 [Try it on Repl.it](https://repl.it/@icebob/fastest-validator-fast)
 
+If you want to halt immediately after the first error use: `haltOnFirstError`
+```js
+const v = new Validator({haltOnFirstError: true});
+```
+
 ## Browser usage
 ```html
 <script src="https://unpkg.com/fastest-validator"></script>
