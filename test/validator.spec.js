@@ -340,6 +340,31 @@ describe("Test compile (integration test)", () => {
 
 	});
 
+	describe("Test check generator with wrong obj and haltOnFirstError" , () => {
+		const v = new Validator({haltOnFirstError: true});
+
+		const schema = {
+			id: { type: "number" },
+			name: { type: "string", min: 5, optional: true },
+			password: { type: "forbidden" }
+		};
+
+		let check = v.compile(schema);
+
+		it("should give back one errors", () => {
+			let res = check({id: "string", name: "John", password: "123456" });
+			expect(res).toBeInstanceOf(Array);
+
+			expect(res.length).toBe(1);
+			expect(res[0]).toEqual({
+				type: "number",
+				field: "id",
+				message: "The 'id' field must be a number.",
+				actual: "string",
+			});
+		});
+	});
+	
 	/*
 	describe("Test check generator with custom path & parent", () => {
 		it("when schema is defined as an array, and custom path & parent are specified, they should be forwarded to validators", () => {
