@@ -1,8 +1,8 @@
 "use strict";
 const Validator = require("../index");
 const v = new Validator({
-    haltOnFirstError: true,
-    debug: false,
+	haltOnFirstError: true,
+	debug: false,
 	useNewCustomCheckerFunction: true
 });
 
@@ -15,10 +15,10 @@ const schema = {
 			{ type: "object" }
 		]
 	}},
-    multi: [
+	multi: [
 		{ type: "string", min: 3, max: 255 },
 		{ type: "boolean" }
-	],   
+	],
 	sex: { type: "string", enum: ["male", "female"] },
 	sex2: { type: "enum", values: ["male", "female"] },
 	roles: { type: "array", items: { type: "string" }, enum: ["admin", "user"] },
@@ -70,7 +70,7 @@ const obj = {
 			corner: "top"
 		}
 	},
-    multi: "AA", // expect error
+	multi: "AA", // expect error
 	roles: [
 		"reader" // expect error
 	],
