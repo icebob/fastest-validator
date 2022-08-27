@@ -128,11 +128,11 @@ describe("Test add", () => {
 		}
 	});
 
-	const validFn = jest.fn(function({ schema, messages }, path, context) {
+	const validFn = jest.fn(function ({ schema, messages }, path, context) {
 		return {
 			source: `
 				if (value % 2 != 0)
-					${this.makeError({ type: "evenNumber",  actual: "value", messages })}
+					${this.makeError({ type: "evenNumber", actual: "value", messages })}
 				return value;
 			`
 		};
@@ -168,7 +168,7 @@ describe("Test add", () => {
 	});
 
 	it("should check the new rule", () => {
-		expect(check({ a: 5 })).toEqual([{"type": "evenNumber", "field": "a", "actual": 5, "message": "The 'a' field must be an even number! Actual: 5"}]);
+		expect(check({ a: 5 })).toEqual([{ "type": "evenNumber", "field": "a", "actual": 5, "message": "The 'a' field must be an even number! Actual: 5" }]);
 		expect(check({ a: 6 })).toEqual(true);
 	});
 
@@ -262,7 +262,7 @@ describe("Test getRuleFromSchema method", () => {
 			});
 
 			expect(res.schema).toEqual({
-				type: "object" ,
+				type: "object",
 				props: {
 					name: { type: "string" },
 					age: { type: "number" }
@@ -278,7 +278,7 @@ describe("Test getRuleFromSchema method", () => {
 			});
 
 			expect(res.schema).toEqual({
-				type: "object" ,
+				type: "object",
 				optional: true,
 				props: {
 					name: { type: "string" },
@@ -316,7 +316,7 @@ describe("Test compile (integration test)", () => {
 		let check = v.compile(schema);
 
 		it("should give back one errors", () => {
-			let res = check({id: 5, name: "John" });
+			let res = check({ id: 5, name: "John" });
 			expect(res).toBeInstanceOf(Array);
 
 			expect(res.length).toBe(1);
@@ -338,6 +338,60 @@ describe("Test compile (integration test)", () => {
 			expect(res[1].type).toBe("forbidden");
 		});
 
+	});
+
+	describe("Test check generator with wrong obj and haltOnFirstError", () => {
+		const v = new Validator({ haltOnFirstError: true });
+
+		it("should give back one errors", () => {
+			const schema = {
+				id: { type: "number" },
+				name: { type: "string", min: 5, uppercase: true },
+				password: { type: "forbidden" }
+			};
+
+			let check = v.compile(schema);
+			let obj = { id: "string", name: "John", password: "123456" };
+
+			let res = check(obj);
+			expect(res).toBeInstanceOf(Array);
+			expect(res.length).toBe(1);
+			expect(res[0]).toEqual({
+				type: "number",
+				field: "id",
+				message: "The 'id' field must be a number.",
+				actual: "string",
+			});
+			expect(obj).toEqual({ id: "string", name: "John", password: "123456" });
+		});
+
+		it("should return true if no errors", () => {
+			const schema = {
+				id: { type: "number" },
+				name: { type: "string", min: 5, uppercase: true },
+				password: { type: "forbidden" }
+			};
+
+			let check = v.compile(schema);
+			let obj = { id: 5, name: "John Doe" };
+			let res = check(obj);
+			expect(res).toBe(true);
+			expect(obj).toEqual({ id: 5, name: "JOHN DOE" });
+		});
+
+		it("should return true if has valid in multi rule", () => {
+			const schema = {
+				status: [
+					{ type: "string", enums: ["active", "inactive"] },
+					{ type: "number", min: 0 }
+				]
+			};
+
+			let check = v.compile(schema);
+			expect(check({ status: "active" })).toBe(true);
+			expect(check({ status: 1 })).toBe(true);
+			expect(check({ status: false })).toEqual([{ "actual": false, "field": "status", "message": "The 'status' field must be a string.", "type": "string" }, { "actual": false, "field": "status", "message": "The 'status' field must be a number.", "type": "number" }]);
+		});
 	});
 
 	/*
@@ -452,7 +506,7 @@ describe("Test custom validation v1", () => {
 				min: 10,
 				max: 15,
 				integer: true,
-				custom(value){
+				custom(value) {
 					if (value % 2 !== 0) return [{ type: "evenNumber", actual: value }];
 				}
 			}
@@ -469,20 +523,20 @@ describe("Test custom validation v1", () => {
 				min: 10,
 				max: 15,
 				integer: true,
-				custom(value){
+				custom(value) {
 					fn(this, value);
 					if (value % 2 !== 0) return [{ type: "evenNumber", actual: value }];
 				}
 			}
 		});
 
-		const res = check({num: 12});
+		const res = check({ num: 12 });
 		expect(res).toBe(true);
 		expect(fn).toBeCalledWith(v, 12);
 
-		expect(check({num: 8})[0].type).toEqual("numberMin");
-		expect(check({num: 18})[0].type).toEqual("numberMax");
-		expect(check({num: 13})[0].type).toEqual("evenNumber");
+		expect(check({ num: 8 })[0].type).toEqual("numberMin");
+		expect(check({ num: 18 })[0].type).toEqual("numberMax");
+		expect(check({ num: 13 })[0].type).toEqual("evenNumber");
 	});
 
 	it("should work with multiple custom validators", () => {
@@ -491,21 +545,21 @@ describe("Test custom validation v1", () => {
 		const check = v.compile({
 			a: {
 				type: "number",
-				custom(value){
+				custom(value) {
 					fn(value);
 					if (value % 2 !== 0) return [{ type: "evenNumber", actual: value }];
 				}
 			},
 			b: {
 				type: "number",
-				custom(value){
+				custom(value) {
 					fn(value);
 					if (value % 2 !== 0) return [{ type: "evenNumber", actual: value }];
 				}
 			}
 		});
 
-		const res = check({a: 12, b:10});
+		const res = check({ a: 12, b: 10 });
 		expect(res).toBe(true);
 		expect(fn).toBeCalledTimes(2);
 	});
@@ -531,8 +585,8 @@ describe("Test custom validation", () => {
 				min: 10,
 				max: 15,
 				integer: true,
-				custom(value, errors){
-					fn(this ,value, errors);
+				custom(value, errors) {
+					fn(this, value, errors);
 					if (value % 2 !== 0) errors.push({ type: "evenNumber", actual: value });
 					return value;
 				}
@@ -543,13 +597,13 @@ describe("Test custom validation", () => {
 	});
 
 	it("should work correctly with custom validator", () => {
-		const res = check({num: 12});
+		const res = check({ num: 12 });
 		expect(res).toBe(true);
 		expect(fn).toBeCalledWith(v, 12, []);
 
-		expect(check({num: 8})[0].type).toEqual("numberMin");
-		expect(check({num: 18})[0].type).toEqual("numberMax");
-		expect(check({num: 13})[0].type).toEqual("evenNumber");
+		expect(check({ num: 8 })[0].type).toEqual("numberMin");
+		expect(check({ num: 18 })[0].type).toEqual("numberMax");
+		expect(check({ num: 13 })[0].type).toEqual("evenNumber");
 	});
 
 	it("should call checker function after build-in rule", () => {
@@ -599,7 +653,7 @@ describe("Test default values", () => {
 		arr: {
 			type: "array",
 			items: "number",
-			default: [1,2,3]
+			default: [1, 2, 3]
 		},
 		obj: {
 			type: "object",
@@ -642,7 +696,7 @@ describe("Test default values", () => {
 			num: 123,
 			boolT: true,
 			boolF: false,
-			arr: [1,2,3],
+			arr: [1, 2, 3],
 			obj: {
 				id: 1,
 				name: "abc",
@@ -655,7 +709,7 @@ describe("Test default values", () => {
 		});
 
 		expect(fn).toBeCalledTimes(1);
-		expect(fn).toBeCalledWith(schema.par.properties.name, "par.name", obj, expect.any(Object) );
+		expect(fn).toBeCalledWith(schema.par.properties.name, "par.name", obj, expect.any(Object));
 	});
 });
 
@@ -776,7 +830,7 @@ describe("Test plugins", () => {
 	});
 });
 
-describe("Test addMessage" , () => {
+describe("Test addMessage", () => {
 	const v = new Validator();
 	v.addMessage("string", "C");
 	expect(v.messages.string).toBe("C");
@@ -977,7 +1031,7 @@ describe("Test normalize", () => {
 					d: {
 						type: "multi",
 						optional: false,
-						rules: [{type: "string"}, {type: "boolean"}]
+						rules: [{ type: "string" }, { type: "boolean" }]
 					},
 					e: {
 						type: "array",
