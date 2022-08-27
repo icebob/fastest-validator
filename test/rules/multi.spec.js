@@ -99,6 +99,21 @@ describe("Test rule: multi", () => {
 
 			expect(check({ address: "London", age: "22", name: "John", surname: "Doe" })).toEqual([{"type":"number","message":"The 'age' field must be a number.","field":"age","actual":"22"},{"type":"objectStrict","message":"The object '' contains forbidden keys: 'address'.","expected":"age, name, surname","actual":"address"}] );
 		});
+
+		it("issue #303 (nullable with shorthard format)", () => {
+			const v = new Validator();
+			const check = v.compile({
+				dateString: [
+					{ type: "string", nullable: true },
+					{ type: "boolean", nullable: true }
+				]
+			});
+
+			expect(check({ dateString: true })).toBe(true);
+			expect(check({ dateString: new Date().toISOString() })).toBe(true);
+			expect(check({ dateString: null })).toBe(true);
+			expect(check({})).toEqual([{"type":"required","message":"The 'dateString' field is required.","field":"dateString","actual":undefined}] );
+		});
 	});
 
 	describe("should work with custom validator", () => {
