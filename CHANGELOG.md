@@ -1,3 +1,11 @@
+<a name="1.14.0"></a>
+
+# 1.14.0 (2022-08-27)
+
+## Changes
+- fix: Multi-schema nullable validators not working as expected. [#303](https://github.com/icebob/fastest-validator/issues/303)
+- add new `haltOnFirstError` option (https://github.com/icebob/fastest-validator#halting). [#304](https://github.com/icebob/fastest-validator/pull/304)
+
 <a name="1.13.0"></a>
 
 # 1.13.0 (2022-08-15)
