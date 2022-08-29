@@ -60,6 +60,23 @@ describe("Test rule: record", () => {
 		expect(check({ John: "Doe", Jane: "Doe" })).toEqual(true);
 	});
 
+	describe("Test sanitization", () => {
+
+		it("should return sanitized record", async () => {
+			const check = v.compile({
+				field: {
+					type: "record",
+					key: {type: "string", alpha: true, trim: true},
+					value: {type: "string", alpha: true, default: "Smith", optional: true},
+				}
+			});
+
+			const value = { field: { John: "Doe", " Jane  ": null } };
+			expect(check(value)).toEqual(true);
+			expect(value).toEqual({ field: { John: "Doe", Jane: "Smith" } });
+		});
+	});
+
 	it.each([
 		{ rule: { type: "any" }, value: {} },
 		{ rule: { type: "array" }, value: [1, 2] },
