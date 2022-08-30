@@ -369,7 +369,28 @@ const v = new FastestValidator({
     }
 });
 ```
+# Label Option
+You can use label names in error messages instead of property names.
+```js
+const schema = {
+	email: { type: "email", label: "Email Address" },
+};
+const check = v.compile(schema);
 
+console.log(check({ email: "notAnEmail" }));
+
+/* Returns
+[
+  {
+    type: 'email',
+    message: "The 'Email Address' field must be a valid e-mail.",
+    field: 'email',
+    actual: 'notAnEmail',
+    label: 'Email Address'
+  }
+]
+*/
+```
 # Built-in validators
 
 ## `any`
