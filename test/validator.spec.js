@@ -294,8 +294,8 @@ describe("Test makeError", () => {
 	const v = new Validator();
 
 	it("should generate an error creation code", () => {
-		expect(v.makeError({ type: "required", messages: v.messages })).toBe("errors.push({ type: \"required\", message: \"The '{field}' field is required.\", field: field });");
-		expect(v.makeError({ type: "stringMin", field: "firstName", expected: 6, actual: 3, messages: v.messages })).toBe("errors.push({ type: \"stringMin\", message: \"The '{field}' field length must be greater than or equal to {expected} characters long.\", field: \"firstName\", expected: 6, actual: 3 });");
+		expect(v.makeError({ type: "required", messages: v.messages })).toBe("errors.push({ type: \"required\", message: \"The '{field}' field is required.\", field: field, label: label });");
+		expect(v.makeError({ type: "stringMin", field: "firstName", expected: 6, actual: 3, messages: v.messages })).toBe("errors.push({ type: \"stringMin\", message: \"The '{field}' field length must be greater than or equal to {expected} characters long.\", field: \"firstName\", expected: 6, actual: 3, label: label });");
 	});
 
 });
@@ -338,6 +338,22 @@ describe("Test compile (integration test)", () => {
 			expect(res[1].type).toBe("forbidden");
 		});
 
+	});
+
+	describe("Test label in error message instead of property names", () => {
+		const v = new Validator();
+		const schema = {
+			email: { type: "email", label: "Email Address" },
+		};
+
+		let check = v.compile(schema);
+
+		it("Should return message with label value", () => {
+			let res = check({});
+
+			expect(res[0].label).toBe(schema.email.label);
+			expect(res[0].message).toBe("The 'Email Address' field is required.");
+		});
 	});
 
 	describe("Test check generator with wrong obj and haltOnFirstError", () => {

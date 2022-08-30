@@ -229,10 +229,10 @@ describe('TypeScript Definitions', () => {
 
 		it('should generate an error creation code', () => {
 			expect(v.makeError({ type: 'required', messages: v.messages })).
-				toBe('errors.push({ type: "required", message: "The \'{field}\' field is required.", field: field });');
+				toBe('errors.push({ type: "required", message: "The \'{field}\' field is required.", field: field, label: label });');
 			expect(v.makeError({ type: 'stringMin', field: 'firstName', expected: 6, actual: 3, messages: v.messages })).
 				toBe(
-					'errors.push({ type: "stringMin", message: "The \'{field}\' field length must be greater than or equal to {expected} characters long.", field: "firstName", expected: 6, actual: 3 });');
+					'errors.push({ type: "stringMin", message: "The \'{field}\' field length must be greater than or equal to {expected} characters long.", field: "firstName", expected: 6, actual: 3, label: label });');
 		});
 
 	});
