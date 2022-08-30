@@ -1,3 +1,11 @@
+<a name="1.15.0"></a>
+
+# 1.15.0 (2022-08-30)
+
+## Changes
+- fixed bug in record rule. [#307](https://github.com/icebob/fastest-validator/issues/307)
+- add label support for error messages (https://github.com/icebob/fastest-validator#label-option). [#306](https://github.com/icebob/fastest-validator/pull/306)
+
 <a name="1.14.0"></a>
 
 # 1.14.0 (2022-08-27)
