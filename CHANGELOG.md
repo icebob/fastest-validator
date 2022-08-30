@@ -4,7 +4,7 @@
 
 ## Changes
 - fixed bug in record rule. [#307](https://github.com/icebob/fastest-validator/issues/307)
-- add label support for error messages (https://github.com/icebob/fastest-validator#label-option). [#306](https://github.com/icebob/fastest-validator/pull/306)
+- add label support for error messages. [More info](https://github.com/icebob/fastest-validator#label-option) [#306](https://github.com/icebob/fastest-validator/pull/306)
 
 <a name="1.14.0"></a>
 
