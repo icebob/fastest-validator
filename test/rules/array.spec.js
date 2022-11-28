@@ -131,6 +131,11 @@ describe("Test rule: array", () => {
 		expect(customFnItems).toHaveBeenNthCalledWith(1, 1, [], schema.numbers.items, "numbers[]", { numbers: [1,2] }, expect.any(Object));
 		expect(customFnItems).toHaveBeenNthCalledWith(2, 2, [], schema.numbers.items, "numbers[]", { numbers: [1,2] }, expect.any(Object));
 	});
+	
+	it("should wrap single value into array", () => {
+		const check	= v.compile({ $$root: true, type: "array", items: "string", convert: true });
+		expect(check("a")).toEqual(true);
+	});
 
 	describe("Test sanitization", () => {
 

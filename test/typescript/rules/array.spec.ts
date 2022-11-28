@@ -93,6 +93,11 @@ describe('TypeScript Definitions', () => {
 				{ type: 'string', field: '[3]', actual: true, message: 'The \'[3]\' field must be a string.' },
 			]);
 		});
+		
+		it("should wrap single value into array", () => {
+			const check	= v.compile({ $$root: true, type: "array", items: "string", convert: true });
+			expect(check("a")).toEqual(true);
+		});
 	});
 
 	describe("Test sanitization", () => {
