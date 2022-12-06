@@ -191,5 +191,45 @@ describe("Test rule: array", () => {
 			expect(errors[0].type).toBe("evenNumber");
 			expect(o.a).toEqual([2, 4, 8]);
 		});
+
+		describe("conversion behavior", () => {
+			// !! Don't use a $$root schema because the value to check will not be passed as reference but as value
+			const check = v.compile({ data: { type: "array", items: "string", convert: true } });
+			// Single value check
+			it ("should wrap single value into array", () => {
+				const value = { data: "John" };
+				expect(check(value)).toEqual(true);
+				expect(value.data).toEqual(["John"]);
+			});
+			// Already array, one element
+			it ("should not change array with one element", () => {
+				const value = { data: ["John"] };
+				expect(check(value)).toEqual(true);
+				expect(value.data).toEqual(["John"]);
+			});
+			// Already array, multiple elements
+			it ("should not change array with multiple elements", () => {
+				const value = { data: ["John", "Jane"] };
+				expect(check(value)).toEqual(true);
+				expect(value.data).toEqual(["John", "Jane"]);
+			});
+			// Empty array
+			it ("should not change empty array", () => {
+				const value = { data: [] };
+				expect(check(value)).toEqual(true);
+				expect(value.data).toEqual([]);
+			});
+			// Null/undefined
+			it ("should not convert into array if null or undefined", () => {
+				// Null check
+				const value = { data: null };
+				expect(check(value)).toEqual([{ type: "required", field: "data", actual: null, message: "The 'data' field is required." }]);
+				expect(value.data).toEqual(null);
+				// Undefined check
+				const value2 = { data: undefined };
+				expect(check(value2)).toEqual([{ type: "required", field: "data", actual: undefined, message: "The 'data' field is required." }]);
+				expect(value2.data).toEqual(undefined);
+			});
+		});
 	});
 });

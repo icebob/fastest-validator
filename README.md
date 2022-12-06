@@ -486,6 +486,19 @@ check({ roles: ["user", "admin", "user"] }); // Fail
 check({ roles: [1, 2, 1] }); // Fail
 ```
 
+**Example for `convert`:**
+
+```js
+const schema = {
+    roles: { type: "array", items: 'string', convert: true }
+}
+const check = v.compile(schema);
+
+check({ roles: ["user"] }); // Valid
+check({ roles: "user" }); // Valid
+// After both validation: roles = ["user"]
+```
+
 ### Properties
 Property | Default  | Description
 -------- | -------- | -----------
@@ -497,6 +510,7 @@ Property | Default  | Description
 `unique` | `null` | The array must be unique (array of objects is always unique).
 `enum`	 | `null`   | Every element must be an element of the `enum` array.
 `items`	 | `null`   | Schema for array items.
+`convert`| `null`   | Wrap value into array if different type provided
 
 ## `boolean`
 This is a `Boolean` validator.
