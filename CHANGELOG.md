@@ -1,3 +1,10 @@
+<a name="1.16.0"></a>
+
+# 1.16.0 (2022-12-17)
+
+## Changes
+- add `convert` to array rule. [#314](https://github.com/icebob/fastest-validator/pull/314)
+
 <a name="1.15.0"></a>
 
 # 1.15.0 (2022-08-30)
