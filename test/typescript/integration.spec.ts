@@ -1198,6 +1198,26 @@ describe('TypeScript Definitions', () => {
 			expect(check(o2)).toBe(true);
 			expect(o2.foo).toBe(5);
 		});
+
+		it("should not accept null value even if optional", () => {
+			const schema = { foo: { type: "number", nullable: false, optional: true } };
+			const check = v.compile(schema);
+
+			expect(check({ foo: 3 })).toBe(true);
+			expect(check({ foo: undefined })).toBe(true);
+			expect(check({})).toBe(true);
+			expect(check({ foo: null })).toEqual([{"actual": null, "field": "foo", "message": "The 'foo' field is required.", "type": "required"}]);
+		});
+
+		it("should accept null as value", () => {
+			const schema = {foo: {type: "number", nullable: true, optional: false}};
+			const check = v.compile(schema);
+
+			expect(check({ foo: 3 })).toBe(true);
+			expect(check({ foo: undefined })).toEqual([{"actual": undefined, "field": "foo", "message": "The 'foo' field is required.", "type": "required"}]);
+			expect(check({})).toEqual([{"actual": undefined, "field": "foo", "message": "The 'foo' field is required.", "type": "required"}]);
+			expect(check({ foo: null })).toBe(true);
+		});
 	});
 })
 

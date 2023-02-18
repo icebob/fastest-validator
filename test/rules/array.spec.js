@@ -223,7 +223,7 @@ describe("Test rule: array", () => {
 			it ("should not convert into array if null or undefined", () => {
 				// Null check
 				const value = { data: null };
-				expect(check(value)).toEqual([{ type: "required", field: "data", actual: null, message: "The 'data' field is required." }]);
+				expect(check(value)).toEqual(true);
 				expect(value.data).toEqual(null);
 				// Undefined check
 				const value2 = { data: undefined };
