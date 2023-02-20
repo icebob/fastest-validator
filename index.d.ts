@@ -908,6 +908,11 @@ export interface ValidatorConstructorOptions {
 	useNewCustomCheckerFunction?: boolean;
 
 	/**
+	 * consider null as a value?
+	 */
+	considerNullAsAValue?: boolean;
+
+	/**
 	 * Default settings for rules
 	 */
 	defaults?: {

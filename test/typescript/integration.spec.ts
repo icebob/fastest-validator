@@ -1128,95 +1128,200 @@ describe('TypeScript Definitions', () => {
 	});
 
 	describe("Test nullable option", () => {
-		const v = new Validator();
+		describe("old case", () => {
+			const v = new Validator();
 
-		it("should throw error if value is undefined", () => {
-			const schema = { foo: { type: "number", nullable: true } };
-			const check = v.compile(schema);
+			it("should throw error if value is undefined", () => {
+				const schema = { foo: { type: "number", nullable: true } };
+				const check = v.compile(schema);
 
-			expect(check(check)).toBeInstanceOf(Array);
-			expect(check({ foo: undefined })).toBeInstanceOf(Array);
+				expect(check(check)).toBeInstanceOf(Array);
+				expect(check({ foo: undefined })).toBeInstanceOf(Array);
+			});
+
+			it("should not throw error if value is null", () => {
+				const schema = { foo: { type: "number", nullable: true } };
+				const check = v.compile(schema);
+
+				const o = { foo: null };
+				expect(check(o)).toBe(true);
+				expect(o.foo).toBe(null);
+			});
+
+			it("should not throw error if value exist", () => {
+				const schema = { foo: { type: "number", nullable: true } };
+				const check = v.compile(schema);
+				expect(check({ foo: 2 })).toBe(true);
+			});
+
+			it("should set default value if there is a default", () => {
+				const schema = { foo: { type: "number", nullable: true, default: 5 } };
+				const check = v.compile(schema);
+
+				const o1 = { foo: 2 };
+				expect(check(o1)).toBe(true);
+				expect(o1.foo).toBe(2);
+
+				const o2: { foo?: number } = {};
+				expect(check(o2)).toBe(true);
+				expect(o2.foo).toBe(5);
+			});
+
+			it("should not set default value if current value is null", () => {
+				const schema = { foo: { type: "number", nullable: true, default: 5 } };
+				const check = v.compile(schema);
+
+				const o = { foo: null };
+				expect(check(o)).toBe(true);
+				expect(o.foo).toBe(null);
+			});
+
+			it("should work with optional", () => {
+				const schema = { foo: { type: "number", nullable: true, optional: true } };
+				const check = v.compile(schema);
+
+				expect(check({ foo: 3 })).toBe(true);
+				expect(check({ foo: null })).toBe(true);
+				expect(check({})).toBe(true);
+			});
+
+			it("should work with optional and default", () => {
+				const schema = { foo: { type: "number", nullable: true, optional: true, default: 5 } };
+				const check = v.compile(schema);
+
+				expect(check({ foo: 3 })).toBe(true);
+
+				const o1 = { foo: null };
+				expect(check(o1)).toBe(true);
+				expect(o1.foo).toBe(null);
+
+				const o2: { foo?: number } = {};
+				expect(check(o2)).toBe(true);
+				expect(o2.foo).toBe(5);
+			});
+
+			it("should accept null value when optional", () => {
+				const schema = { foo: { type: "number", nullable: false, optional: true } };
+				const check = v.compile(schema);
+
+				expect(check({ foo: 3 })).toBe(true);
+				expect(check({ foo: undefined })).toBe(true);
+				expect(check({})).toBe(true);
+				expect(check({ foo: null })).toBe(true);
+			});
+
+			it("should accept null as value when required", () => {
+				const schema = {foo: {type: "number", nullable: true, optional: false}};
+				const check = v.compile(schema);
+
+				expect(check({ foo: 3 })).toBe(true);
+				expect(check({ foo: undefined })).toEqual([{"actual": undefined, "field": "foo", "message": "The 'foo' field is required.", "type": "required"}]);
+				expect(check({})).toEqual([{"actual": undefined, "field": "foo", "message": "The 'foo' field is required.", "type": "required"}]);
+				expect(check({ foo: null })).toBe(true);
+			});
+
+			it("should not accept null as value when required and not explicitly not nullable", () => {
+				const schema = {foo: {type: "number", optional: false}};
+				const check = v.compile(schema);
+	
+				expect(check({ foo: 3 })).toBe(true);
+				expect(check({ foo: undefined })).toEqual([{"actual": undefined, "field": "foo", "message": "The 'foo' field is required.", "type": "required"}]);
+				expect(check({})).toEqual([{"actual": undefined, "field": "foo", "message": "The 'foo' field is required.", "type": "required"}]);
+				expect(check({ foo: null })).toEqual([{"actual": null, "field": "foo", "message": "The 'foo' field is required.", "type": "required"}]);
+			});
 		});
 
-		it("should not throw error if value is null", () => {
-			const schema = { foo: { type: "number", nullable: true } };
-			const check = v.compile(schema);
+		describe("new case (with considerNullAsAValue flag set to true)", () => {
+			const v = new Validator({considerNullAsAValue: true});
 
-			const o = { foo: null };
-			expect(check(o)).toBe(true);
-			expect(o.foo).toBe(null);
-		});
+			it("should throw error if value is undefined", () => {
+				const schema = { foo: { type: "number", nullable: true } };
+				const check = v.compile(schema);
 
-		it("should not throw error if value exist", () => {
-			const schema = { foo: { type: "number", nullable: true } };
-			const check = v.compile(schema);
-			expect(check({ foo: 2 })).toBe(true);
-		});
+				expect(check(check)).toBeInstanceOf(Array);
+				expect(check({ foo: undefined })).toBeInstanceOf(Array);
+			});
 
-		it("should set default value if there is a default", () => {
-			const schema = { foo: { type: "number", nullable: true, default: 5 } };
-			const check = v.compile(schema);
+			it("should not throw error if value is null", () => {
+				const schema = { foo: { type: "number", nullable: true } };
+				const check = v.compile(schema);
 
-			const o1 = { foo: 2 };
-			expect(check(o1)).toBe(true);
-			expect(o1.foo).toBe(2);
+				const o = { foo: null };
+				expect(check(o)).toBe(true);
+				expect(o.foo).toBe(null);
+			});
 
-			const o2: { foo?: number } = {};
-			expect(check(o2)).toBe(true);
-			expect(o2.foo).toBe(5);
-		});
+			it("should not throw error if value exist", () => {
+				const schema = { foo: { type: "number", nullable: true } };
+				const check = v.compile(schema);
+				expect(check({ foo: 2 })).toBe(true);
+			});
 
-		it("should not set default value if current value is null", () => {
-			const schema = { foo: { type: "number", nullable: true, default: 5 } };
-			const check = v.compile(schema);
+			it("should set default value if there is a default", () => {
+				const schema = { foo: { type: "number", nullable: true, default: 5 } };
+				const check = v.compile(schema);
 
-			const o = { foo: null };
-			expect(check(o)).toBe(true);
-			expect(o.foo).toBe(null);
-		});
+				const o1 = { foo: 2 };
+				expect(check(o1)).toBe(true);
+				expect(o1.foo).toBe(2);
 
-		it("should work with optional", () => {
-			const schema = { foo: { type: "number", nullable: true, optional: true } };
-			const check = v.compile(schema);
+				const o2: { foo?: number } = {};
+				expect(check(o2)).toBe(true);
+				expect(o2.foo).toBe(5);
+			});
 
-			expect(check({ foo: 3 })).toBe(true);
-			expect(check({ foo: null })).toBe(true);
-			expect(check({})).toBe(true);
-		});
+			it("should not set default value if current value is null", () => {
+				const schema = { foo: { type: "number", nullable: true, default: 5 } };
+				const check = v.compile(schema);
 
-		it("should work with optional and default", () => {
-			const schema = { foo: { type: "number", nullable: true, optional: true, default: 5 } };
-			const check = v.compile(schema);
+				const o = { foo: null };
+				expect(check(o)).toBe(true);
+				expect(o.foo).toBe(null);
+			});
 
-			expect(check({ foo: 3 })).toBe(true);
+			it("should work with optional", () => {
+				const schema = { foo: { type: "number", nullable: true, optional: true } };
+				const check = v.compile(schema);
 
-			const o1 = { foo: null };
-			expect(check(o1)).toBe(true);
-			expect(o1.foo).toBe(null);
+				expect(check({ foo: 3 })).toBe(true);
+				expect(check({ foo: null })).toBe(true);
+				expect(check({})).toBe(true);
+			});
 
-			const o2: { foo?: number } = {};
-			expect(check(o2)).toBe(true);
-			expect(o2.foo).toBe(5);
-		});
+			it("should work with optional and default", () => {
+				const schema = { foo: { type: "number", nullable: true, optional: true, default: 5 } };
+				const check = v.compile(schema);
 
-		it("should not accept null value even if optional", () => {
-			const schema = { foo: { type: "number", nullable: false, optional: true } };
-			const check = v.compile(schema);
+				expect(check({ foo: 3 })).toBe(true);
 
-			expect(check({ foo: 3 })).toBe(true);
-			expect(check({ foo: undefined })).toBe(true);
-			expect(check({})).toBe(true);
-			expect(check({ foo: null })).toEqual([{"actual": null, "field": "foo", "message": "The 'foo' field is required.", "type": "required"}]);
-		});
+				const o1 = { foo: null };
+				expect(check(o1)).toBe(true);
+				expect(o1.foo).toBe(null);
 
-		it("should accept null as value", () => {
-			const schema = {foo: {type: "number", nullable: true, optional: false}};
-			const check = v.compile(schema);
+				const o2: { foo?: number } = {};
+				expect(check(o2)).toBe(true);
+				expect(o2.foo).toBe(5);
+			});
 
-			expect(check({ foo: 3 })).toBe(true);
-			expect(check({ foo: undefined })).toEqual([{"actual": undefined, "field": "foo", "message": "The 'foo' field is required.", "type": "required"}]);
-			expect(check({})).toEqual([{"actual": undefined, "field": "foo", "message": "The 'foo' field is required.", "type": "required"}]);
-			expect(check({ foo: null })).toBe(true);
+			it("should not accept null value even if optional", () => {
+				const schema = { foo: { type: "number", nullable: false, optional: true } };
+				const check = v.compile(schema);
+
+				expect(check({ foo: 3 })).toBe(true);
+				expect(check({ foo: undefined })).toBe(true);
+				expect(check({})).toBe(true);
+				expect(check({ foo: null })).toEqual([{"actual": null, "field": "foo", "message": "The 'foo' field is required.", "type": "required"}]);
+			});
+
+			it("should accept null as value", () => {
+				const schema = {foo: {type: "number", nullable: true, optional: false}};
+				const check = v.compile(schema);
+
+				expect(check({ foo: 3 })).toBe(true);
+				expect(check({ foo: undefined })).toEqual([{"actual": undefined, "field": "foo", "message": "The 'foo' field is required.", "type": "required"}]);
+				expect(check({})).toEqual([{"actual": undefined, "field": "foo", "message": "The 'foo' field is required.", "type": "required"}]);
+				expect(check({ foo: null })).toBe(true);
+			});
 		});
 	});
 })
