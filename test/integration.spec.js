@@ -1216,7 +1216,7 @@ describe("Test nullable option", () => {
 		const v = new Validator({considerNullAsAValue: true});
 
 		it("should throw error if value is undefined", () => {
-			const schema = { foo: { type: "number", nullable: true } };
+			const schema = { foo: { type: "number" } };
 			const check = v.compile(schema);
 
 			expect(check(check)).toBeInstanceOf(Array);
@@ -1224,7 +1224,7 @@ describe("Test nullable option", () => {
 		});
 
 		it("should not throw error if value is null", () => {
-			const schema = { foo: { type: "number", nullable: true } };
+			const schema = { foo: { type: "number" } };
 			const check = v.compile(schema);
 
 			const o = { foo: null };
@@ -1233,13 +1233,13 @@ describe("Test nullable option", () => {
 		});
 
 		it("should not throw error if value exist", () => {
-			const schema = { foo: { type: "number", nullable: true } };
+			const schema = { foo: { type: "number" } };
 			const check = v.compile(schema);
 			expect(check({ foo: 2 })).toBe(true);
 		});
 
 		it("should set default value if there is a default", () => {
-			const schema = { foo: { type: "number", nullable: true, default: 5 } };
+			const schema = { foo: { type: "number", default: 5 } };
 			const check = v.compile(schema);
 
 			const o1 = { foo: 2 };
@@ -1252,7 +1252,7 @@ describe("Test nullable option", () => {
 		});
 
 		it("should not set default value if current value is null", () => {
-			const schema = { foo: { type: "number", nullable: true, default: 5 } };
+			const schema = { foo: { type: "number", default: 5 } };
 			const check = v.compile(schema);
 
 			const o = { foo: null };
@@ -1261,7 +1261,7 @@ describe("Test nullable option", () => {
 		});
 
 		it("should work with optional", () => {
-			const schema = { foo: { type: "number", nullable: true, optional: true } };
+			const schema = { foo: { type: "number", optional: true } };
 			const check = v.compile(schema);
 
 			expect(check({ foo: 3 })).toBe(true);
@@ -1270,7 +1270,7 @@ describe("Test nullable option", () => {
 		});
 
 		it("should work with optional and default", () => {
-			const schema = { foo: { type: "number", nullable: true, optional: true, default: 5 } };
+			const schema = { foo: { type: "number", optional: true, default: 5 } };
 			const check = v.compile(schema);
 
 			expect(check({ foo: 3 })).toBe(true);
@@ -1294,14 +1294,14 @@ describe("Test nullable option", () => {
 			expect(check({ foo: null })).toEqual([{"actual": null, "field": "foo", "message": "The 'foo' field is required.", "type": "required"}]);
 		});
 
-		it("should accept null as value", () => {
-			const schema = {foo: {type: "number", nullable: true, optional: false}};
+		it("should not accept null as value", () => {
+			const schema = {foo: {type: "number", nullable: false}};
 			const check = v.compile(schema);
 
 			expect(check({ foo: 3 })).toBe(true);
 			expect(check({ foo: undefined })).toEqual([{"actual": undefined, "field": "foo", "message": "The 'foo' field is required.", "type": "required"}]);
 			expect(check({})).toEqual([{"actual": undefined, "field": "foo", "message": "The 'foo' field is required.", "type": "required"}]);
-			expect(check({ foo: null })).toBe(true);
+			expect(check({ foo: null })).toEqual([{"actual": null, "field": "foo", "message": "The 'foo' field is required.", "type": "required"}]);
 		});
 	});
 });
