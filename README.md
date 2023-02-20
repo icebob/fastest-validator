@@ -191,6 +191,32 @@ object2.about // is null
 
 check({ about: "Custom" }) // Valid
 ```
+### Considering `null` as a value
+In specific case, you may want to consider `null` as a valid input even for a `required` field.  
+
+It's useful in cases you want a field to be:
+ - `required` and `null` without specifying `nullable: true` in its definition.
+ - `required` and not `null` by specifying `nullable: false` in its definition.
+ - `optional` **but specifically not** `null`.  
+
+To be able to achieve this you'll have to set the `considerNullAsAValue` validator option to `true`. 
+```js
+const v = new Validator({considerNullAsAValue: true});
+
+const schema = {foo: {type: "number"}, bar: {type: "number", optional: true, nullable: false}, baz: {type: "number", nullable: false}};
+const check = v.compile(schema);
+
+const object1 = {foo: null, baz: 1};
+check(object1); // valid (foo is required and can be null)
+
+const object2 = {foo: 3, bar: null, baz: 1};
+check(object2); // not valid (bar is optional but can't be null)
+
+const object3 = {foo: 3, baz: null};
+check(object3); // not valid (baz is required but can't be null)
+
+```
+With this option set all fields will be considered _nullable_ by default.
 
 # Strict validation
 Object properties which are not specified on the schema are ignored by default. If you set the `$$strict` option to `true` any additional properties will result in an `strictObject` error.
