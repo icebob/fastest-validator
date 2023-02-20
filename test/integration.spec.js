@@ -1260,6 +1260,24 @@ describe("Test nullable option", () => {
 			expect(o.foo).toBe(null);
 		});
 
+		it("should set default value if current value is null but can't be", () => {
+			const schema = { foo: { type: "number", default: 5, nullable: false } };
+			const check = v.compile(schema);
+
+			const o = { foo: null };
+			expect(check(o)).toBe(true);
+			expect(o.foo).toBe(5);
+		});
+
+		it("should set default value if current value is null but optional", () => {
+			const schema = { foo: { type: "number", default: 5, nullable: false, optional: true } };
+			const check = v.compile(schema);
+
+			const o = { foo: null };
+			expect(check(o)).toBe(true);
+			expect(o.foo).toBe(5);
+		});
+
 		it("should work with optional", () => {
 			const schema = { foo: { type: "number", optional: true } };
 			const check = v.compile(schema);
