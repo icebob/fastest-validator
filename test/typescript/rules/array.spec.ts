@@ -167,6 +167,25 @@ describe('TypeScript Definitions', () => {
 				expect(check(value2)).toEqual([{ type: "required", field: "data", actual: undefined, message: "The 'data' field is required." }]);
 				expect(value2.data).toEqual(undefined);
 			});
+
+			it ("should not convert into array if undefined (new case)", () => {
+				const v = new Validator({
+					useNewCustomCheckerFunction: true,
+					considerNullAsAValue: true,
+					messages: {
+						evenNumber: "The '' field must be an even number!"
+					}
+				});
+				const check = v.compile({ data: { type: "array", items: "string", convert: true } });
+				// Null check
+				const value = { data: null };
+				expect(check(value)).toEqual(true);
+				expect(value.data).toEqual(null);
+				// Undefined check
+				const value2 = { data: undefined };
+				expect(check(value2)).toEqual([{ type: "required", field: "data", actual: undefined, message: "The 'data' field is required." }]);
+				expect(value2.data).toEqual(undefined);
+			});
 		});
 	});
 });
