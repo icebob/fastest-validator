@@ -276,6 +276,59 @@ describe('TypeScript Definitions', () => {
 
 		});
 
+		describe("Test check generator with wrong obj and haltOnFirstError", () => {
+			const v = new Validator({ haltOnFirstError: true });
+
+			it("should give back one errors", () => {
+				const schema = {
+					id: { type: "number" },
+					name: { type: "string", min: 5, uppercase: true },
+					password: { type: "forbidden" }
+				};
+
+				let check = v.compile(schema);
+				let obj = { id: "string", name: "John", password: "123456" };
+
+				let res = check(obj);
+				expect(res).toBeInstanceOf(Array);
+				expect(res[0]).toEqual({
+					type: "number",
+					field: "id",
+					message: "The 'id' field must be a number.",
+					actual: "string",
+				});
+				expect(obj).toEqual({ id: "string", name: "John", password: "123456" });
+			});
+
+			it("should return true if no errors", () => {
+				const schema = {
+					id: { type: "number" },
+					name: { type: "string", min: 5, uppercase: true },
+					password: { type: "forbidden" }
+				};
+
+				let check = v.compile(schema);
+				let obj = { id: 5, name: "John Doe" };
+				let res = check(obj);
+				expect(res).toBe(true);
+				expect(obj).toEqual({ id: 5, name: "JOHN DOE" });
+			});
+
+			it("should return true if has valid in multi rule", () => {
+				const schema = {
+					status: [
+						{ type: "string", enums: ["active", "inactive"] },
+						{ type: "number", min: 0 }
+					]
+				};
+
+				let check = v.compile(schema);
+				expect(check({ status: "active" })).toBe(true);
+				expect(check({ status: 1 })).toBe(true);
+				expect(check({ status: false })).toEqual([{ "actual": false, "field": "status", "message": "The 'status' field must be a string.", "type": "string" }, { "actual": false, "field": "status", "message": "The 'status' field must be a number.", "type": "number" }]);
+			});
+		});
+
 		/*
 		describe("Test check generator with custom path & parent", () => {
 

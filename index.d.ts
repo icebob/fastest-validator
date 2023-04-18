@@ -913,6 +913,11 @@ export interface ValidatorConstructorOptions {
 	considerNullAsAValue?: boolean;
 
 	/**
+	 * Immediately halt after the first error
+	 */
+	haltOnFirstError?: boolean
+
+	/**
 	 * Default settings for rules
 	 */
 	defaults?: {
