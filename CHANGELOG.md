@@ -1,3 +1,11 @@
+<a name="1.17.0"></a>
+
+# 1.17.0 (2023-04-23)
+
+## Changes
+- add `considerNullAsAValue` to Validation constructor options. [#317](https://github.com/icebob/fastest-validator/pull/317)
+- add type definition for haltOnFirstError on Validator constructor. [#322](https://github.com/icebob/fastest-validator/pull/322)
+
 <a name="1.16.0"></a>
 
 # 1.16.0 (2022-12-17)
