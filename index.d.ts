@@ -17,8 +17,10 @@ export type ValidationRuleName =
 	| "multi"
 	| "number"
 	| "object"
+	| "objectID"
 	| "record"
 	| "string"
+	| "tuple"
 	| "url"
 	| "uuid"
 	| string;
