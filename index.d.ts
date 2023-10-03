@@ -39,39 +39,43 @@ export interface RuleAny extends RuleCustom {
  * @see https://github.com/icebob/fastest-validator#array
  */
 export interface RuleArray<T = any> extends RuleCustom {
-	/**
-	 * Name of built-in validator
+    /**
+     * Name of built-in validator
+     */
+    type: "array";
+    /**
+     * If true, the validator accepts an empty array [].
+     * @default true
+     */
+    empty?: boolean;
+    /**
+     * Minimum count of elements
+     */
+    min?: number;
+    /**
+     * Maximum count of elements
+     */
+    max?: number;
+    /**
+     * Fixed count of elements
+     */
+    length?: number;
+    /**
+     * The array must contain this element too
+     */
+    contains?: T | T[];
+    /**
+     * Every element must be an element of the enum array
+     */
+    enum?: T[];
+    /**
+     * Validation rules that should be applied to each element of array
+     */
+    items?: ValidationRule;
+    /**
+	 * The array must be unique (array of objects is always unique).
 	 */
-	type: "array";
-	/**
-	 * If true, the validator accepts an empty array [].
-	 * @default true
-	 */
-	empty?: boolean;
-	/**
-	 * Minimum count of elements
-	 */
-	min?: number;
-	/**
-	 * Maximum count of elements
-	 */
-	max?: number;
-	/**
-	 * Fixed count of elements
-	 */
-	length?: number;
-	/**
-	 * The array must contain this element too
-	 */
-	contains?: T | T[];
-	/**
-	 * Every element must be an element of the enum array
-	 */
-	enum?: T[];
-	/**
-	 * Validation rules that should be applied to each element of array
-	 */
-	items?: ValidationRule;
+    unique?: boolean;
 }
 
 /**
