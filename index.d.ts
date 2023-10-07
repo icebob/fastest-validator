@@ -112,7 +112,7 @@ export interface RuleClass<T = any> extends RuleCustom {
 	/**
 	 * Checked Class
 	 */
-	instanceOf?: T;
+	instanceOf: T;
 }
 
 /**
@@ -1147,7 +1147,7 @@ export default class Validator {
 	 * @return {ValidationRule}
 	 */
 	getRuleFromSchema(
-		name: ValidationRuleName | ValidationRuleName[] | { [key: string]: unknown }
+		name: ValidationRuleName | ValidationRuleName[] | ValidationSchema | ValidationSchema[] | { [key: string]: unknown }
 	): {
 		messages: MessagesType;
 		schema: ValidationSchema;
