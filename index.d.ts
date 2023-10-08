@@ -302,7 +302,7 @@ export interface RuleMulti extends RuleCustom {
 	 */
 	type: "multi";
 
-	rules: RuleCustom[] | string[];
+	rules: (RuleCustom | string)[];
 }
 
 /**
