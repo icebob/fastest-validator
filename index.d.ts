@@ -837,9 +837,9 @@ export type ValidationRule =
 	| ValidationRuleName;
 
 /**
- * Definition for validation schema based on validation rules
+ *
  */
-export type ValidationSchema<T = any> = {
+export interface ValidationSchemaMetaKeys {
 	/**
 	 * Object properties which are not specified on the schema are ignored by default.
 	 * If you set the $$strict option to true any additional properties will result in an strictObject error.
@@ -859,12 +859,18 @@ export type ValidationSchema<T = any> = {
 	 * @default false
 	 */
 	$$root?: boolean;
-} & {
-		/**
-		 * List of validation rules for each defined field
-		 */
-		[key in keyof T]: ValidationRule | undefined | any;
-	};
+}
+
+/**
+ * Definition for validation schema based on validation rules
+ */
+export type ValidationSchema<T = any> = ValidationSchemaMetaKeys & {
+	/**
+	 * List of validation rules for each defined field
+	 */
+	[key in keyof T]: ValidationRule | undefined | any;
+}
+
 
 /**
  * Structure with description of validation error message
