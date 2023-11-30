@@ -44,6 +44,28 @@ describe("Test rule: custom v1", () => {
 		expect(checker).toHaveBeenCalledWith(10, schema.weight, "weight", { weight: 10 }, expect.any(Object));
 	});
 
+	it("should allow custom metas", async () => {
+		const checker = jest.fn(() => true);
+		const schema = {
+			$$foo: {
+				foo: "bar"
+			},
+			$$root: true,
+			type: "custom",
+			a: 5,
+			check: checker
+		};
+		const clonedSchema = {...schema};
+		const check = v.compile(schema);
+
+		expect(schema).toStrictEqual(clonedSchema);
+
+
+		expect(check(10)).toEqual(true);
+		expect(checker).toHaveBeenCalledTimes(1);
+		//checkFunction should receive the unmodified schema
+		expect(checker).toHaveBeenCalledWith(10, schema, "null", null, expect.any(Object));
+	});
 });
 
 
@@ -105,6 +127,30 @@ describe("Test rule: custom v2", () => {
 
 		expect(check({ name: "John" })).toEqual(true);
 		expect(checker).toHaveBeenCalledTimes(1);
+		expect(checker).toHaveBeenCalledWith({ name: "John" }, [], schema, "$$root", null, expect.any(Object));
+	});
+
+	it("should allow custom metas", async () => {
+		const checker = jest.fn(v => v);
+		const schema = {
+			$$foo: {
+				foo: "bar"
+			},
+			$$root: true,
+			type: "object",
+			properties: {
+				name: "string"
+			},
+			custom: checker
+		};
+		const clonedSchema = {...schema};
+		const check = v.compile(schema);
+
+		expect(schema).toStrictEqual(clonedSchema);
+
+		expect(check({ name: "John" })).toEqual(true);
+		expect(checker).toHaveBeenCalledTimes(1);
+		//checkFunction should receive the unmodified schema
 		expect(checker).toHaveBeenCalledWith({ name: "John" }, [], schema, "$$root", null, expect.any(Object));
 	});
 

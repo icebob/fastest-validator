@@ -89,4 +89,34 @@ describe("Test rule: uuid", () => {
 		expect(check5("FDDA765F-FC57-5604-A269-52A7DF8164EC")).toEqual(true);
 		expect(check6("A9030619-8514-6970-E0F9-81B9CEB08A5F")).toEqual(true);
 	});
+
+	it("should allow custom metas", async () => {
+		const schema = {
+			$$foo: {
+				foo: "bar"
+			},
+			$$root: true,
+			type: "uuid"
+		};
+		const clonedSchema = {...schema};
+		const check = v.compile(schema);
+
+		expect(clonedSchema).toEqual(schema);
+
+		let message = "The '' field must be a string.";
+
+		expect(check(0)).toEqual([{ type: "string", actual: 0, message }]);
+		expect(check(1)).toEqual([{ type: "string", actual: 1, message }]);
+		expect(check([])).toEqual([{ type: "string", actual: [], message }]);
+		expect(check({})).toEqual([{ type: "string", actual: {}, message }]);
+		expect(check(false)).toEqual([{ type: "string", actual: false, message }]);
+		expect(check(true)).toEqual([{ type: "string", actual: true, message }]);
+
+		message = "The '' field must be a valid UUID.";
+		expect(check("")).toEqual([{ type: "uuid", actual: "", message }]);
+		expect(check("true")).toEqual([{ type: "uuid", actual: "true", message }]);
+		expect(check("10000000-0000-0000-0000-000000000000")).toEqual([{ type: "uuid", actual: "10000000-0000-0000-0000-000000000000", message }]);
+		expect(check("1234567-1234-1234-1234-1234567890ab")).toEqual([{ type: "uuid", actual: "1234567-1234-1234-1234-1234567890ab", message }]);
+		expect(check("12345678-1234-1234-1234-1234567890ab")).toEqual(true);
+	});
 });

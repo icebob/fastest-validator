@@ -350,4 +350,29 @@ describe("Test rule: string", () => {
 		});
 	});
 
+	it("should allow custom metas", async () => {
+		const schema = {
+			$$foo: {
+				foo: "bar"
+			},
+			$$root: true,
+			type: "string"
+		};
+		const clonedSchema = {...schema};
+		const check = v.compile(schema);
+
+		expect(clonedSchema).toEqual(schema);
+
+		const message = "The '' field must be a string.";
+
+		expect(check(0)).toEqual([{ type: "string", actual: 0, message }]);
+		expect(check(1)).toEqual([{ type: "string", actual: 1, message }]);
+		expect(check([])).toEqual([{ type: "string", actual: [], message }]);
+		expect(check({})).toEqual([{ type: "string", actual: {}, message }]);
+		expect(check(false)).toEqual([{ type: "string", actual: false, message }]);
+		expect(check(true)).toEqual([{ type: "string", actual: true, message }]);
+
+		expect(check("")).toEqual(true);
+		expect(check("test")).toEqual(true);
+	});
 });
