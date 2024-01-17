@@ -642,6 +642,70 @@ describe("Test custom validation", () => {
 	});
 });
 
+
+describe("Test custom validation with array", () => {
+
+	const v = new Validator({
+		useNewCustomCheckerFunction: true,
+		customFunctions:{
+			even: (value, errors)=>{
+				if(value % 2 != 0 ){
+					errors.push({ type: "evenNumber",  actual: value });
+				}
+				return value;
+			},
+			real: (value, errors)=>{
+				if(value <0 ){
+					errors.push({ type: "realNumber",  actual: value });
+				}
+				return value;
+			}
+		},
+		messages: {
+			evenNumber: "The '{field}' field must be an even number! Actual: {actual}",
+			realNumber: "The '{field}' field must be a real number! Actual: {actual}",
+			permitNumber: "The '{field}' cannot have the value {actual}",
+		}
+	});
+
+	let check;
+
+	it("should compile without error", () => {
+
+		check = v.compile({
+			num: {
+				type: "number",
+				custom: [
+					"even",
+					"real",
+					(value, errors) => {
+						if ([-3,2,4,198].includes(value) ) errors.push({ type: "permitNumber", actual: value });
+						return value;
+					}
+
+				]
+			}
+		});
+
+		expect(typeof check).toBe("function");
+	});
+
+	it("should work correctly with array custom validator", () => {
+		expect(check({ num: 12 })).toBe(true);
+		expect(check({ num: 0 })).toBe(true);
+		expect(check({ num: 196 })).toBe(true);
+		expect(check({ num: 3 })[0].type).toEqual("evenNumber");
+		expect(check({ num: -12 })[0].type).toEqual("realNumber");
+		expect(check({ num: -8 })[0].type).toEqual("realNumber");
+		expect(check({ num: 198 })[0].type).toEqual("permitNumber");
+		expect(check({ num: 4 })[0].type).toEqual("permitNumber");
+		expect(check({ num: -3 }).map(e=>e.type)).toEqual(["evenNumber","realNumber","permitNumber"]);
+	});
+
+	
+});
+
+
 describe("Test default values", () => {
 	const v = new Validator({
 		useNewCustomCheckerFunction: true
