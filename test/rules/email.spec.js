@@ -91,4 +91,21 @@ describe("Test rule: email", () => {
 		expect(check("veryLongEmailAddress@veryLongProviderName.com")).toEqual([{ type: "emailMax", expected: 20, actual: 45, message: "The '' field length must be less than or equal to 20 characters long." }]);
 	});
 
+	it("should allow custom metas", async () => {
+		const schema = {
+			$$foo: {
+				foo: "bar"
+			},
+			$$root: true,
+			type: "email",
+			empty: true
+		};
+		const clonedSchema = {...schema};
+		const check = v.compile(schema);
+
+		expect(schema).toStrictEqual(clonedSchema);
+		expect(check("john.doe@company.net")).toEqual(true);
+		expect(check("")).toEqual(true);
+	});
+
 });

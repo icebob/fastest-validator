@@ -1547,7 +1547,7 @@ Name                | Default text
 `dateMin`	| The '{field}' field must be greater than or equal to {expected}.
 `dateMax`	| The '{field}' field must be less than or equal to {expected}.
 `forbidden`	| The '{field}' field is forbidden.
-‍‍`email` | The '{field}' field must be a valid e-mail.
+`email` | The '{field}' field must be a valid e-mail.
 `emailEmpty` | The '{field}' field must not be empty.
 `emailMin` | The '{field}' field length must be greater than or equal to {expected} characters long.
 `emailMax` | The '{field}' field length must be less than or equal to {expected} characters long.
@@ -1570,6 +1570,20 @@ Name        | Description
 `field`     | The field name
 `expected`  | The expected value
 `actual`    | The actual value
+
+# Pass custom metas
+In some case, you will need to do something with the validation schema . 
+Like reusing the validator to pass custom settings, you can use properties starting with `$$`
+
+````typescript
+const check = v.compile({
+    $$name: 'Person',
+    $$description: 'write a description about this schema',
+    firstName: { type: "string" },
+    lastName: { type: "string" },
+    birthDate: { type: "date" }    
+});
+````
 
 # Development
 ```

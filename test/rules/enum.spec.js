@@ -23,4 +23,23 @@ describe("Test rule: enum", () => {
 		expect(check(false)).toEqual(true);
 	});
 
+	it("should allow custom metas", async () => {
+		const schema = {
+			$$foo: {
+				foo: "bar"
+			},
+			$$root: true,
+			type: "enum",
+			values: ["male", "female"]
+		};
+		const clonedSchema = {...schema};
+		const check = v.compile(schema);
+
+		expect(clonedSchema).toEqual(schema);
+
+		expect(check("")).toEqual([{ type: "enumValue", expected: "male, female", actual: "", message: "The '' field value 'male, female' does not match any of the allowed values." }]);
+		expect(check("human")).toEqual([{ type: "enumValue", expected: "male, female", actual: "human", message: "The '' field value 'male, female' does not match any of the allowed values." }]);
+		expect(check("male")).toEqual(true);
+		expect(check("female")).toEqual(true);
+	});
 });

@@ -63,4 +63,33 @@ describe("Test rule: date", () => {
 		expect(check(obj)).toEqual(true);
 		expect(obj).toEqual({ timestamp: new Date("Wed Mar 25 2015 09:56:24 GMT+0100 (W. Europe Standard Time)") });
 	});
+
+	it("should allow custom metas", async () => {
+		const schema = {
+			$$foo: {
+				foo: "bar"
+			},
+			$$root: true,
+			type: "date"
+		};
+		const clonedSchema = {...schema};
+		expect(schema).toStrictEqual(clonedSchema);
+		const check = v.compile(schema);
+		const message = "The '' field must be a Date.";
+
+		expect(check(0)).toEqual([{ type: "date", actual: 0, message }]);
+		expect(check(1)).toEqual([{ type: "date", actual: 1, message }]);
+		expect(check("")).toEqual([{ type: "date", actual: "", message }]);
+		expect(check("true")).toEqual([{ type: "date", actual: "true", message }]);
+		expect(check("false")).toEqual([{ type: "date", actual: "false", message }]);
+		expect(check([])).toEqual([{ type: "date", actual: [], message }]);
+		expect(check({})).toEqual([{ type: "date", actual: {}, message }]);
+
+		const now = Date.now();
+		expect(check(now)).toEqual([{ type: "date", actual: now, message }]);
+
+		expect(check(new Date())).toEqual(true);
+		expect(check(new Date(1488876927958))).toEqual(true);
+
+	});
 });

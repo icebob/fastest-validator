@@ -242,4 +242,34 @@ describe("Test rule: tuple", () => {
 			expect(o.a).toEqual([2, 4]);
 		});
 	});
+
+	it("should allow custom metas", async () => {
+		const schema = {
+			$$foo: {
+				foo: "bar"
+			},
+			$$root: true,
+			type: "tuple"
+		};
+		const clonedSchema = {...schema};
+		const check = v.compile(schema);
+
+		expect(clonedSchema).toEqual(schema);
+
+		const message = "The '' field must be an array.";
+
+		expect(check(0)).toEqual([{ type: "tuple", actual: 0, message }]);
+		expect(check(1)).toEqual([{ type: "tuple", actual: 1, message }]);
+		expect(check({})).toEqual([{ type: "tuple", actual: {}, message }]);
+		expect(check(false)).toEqual([
+			{ type: "tuple", actual: false, message }
+		]);
+		expect(check(true)).toEqual([{ type: "tuple", actual: true, message }]);
+		expect(check("")).toEqual([{ type: "tuple", actual: "", message }]);
+		expect(check("test")).toEqual([
+			{ type: "tuple", actual: "test", message }
+		]);
+
+		expect(check([])).toEqual(true);
+	});
 });

@@ -107,4 +107,29 @@ describe("Test rule: record", () => {
 
 			expect(check({ John: value })).toEqual(true);
 		});
+
+	it("should allow custom metas", async () => {
+		const schema = {
+			$$foo: {
+				foo: "bar"
+			},
+			$$root: true,
+			type: "record"
+		};
+		const clonedSchema = {...schema};
+		const check = v.compile(schema);
+
+		expect(clonedSchema).toEqual(schema);
+
+		const message = "The '' must be an Object.";
+
+		expect(check(0)).toEqual([{ type: "record", actual: 0, message }]);
+		expect(check(1)).toEqual([{ type: "record", actual: 1, message }]);
+		expect(check("")).toEqual([{ type: "record", actual: "", message }]);
+		expect(check(false)).toEqual([{ type: "record", actual: false, message }]);
+		expect(check(true)).toEqual([{ type: "record", actual: true, message }]);
+		expect(check([])).toEqual([{ type: "record", actual: [], message }]);
+		expect(check({})).toEqual(true);
+		expect(check({ a: "John" })).toEqual(true);
+	});
 });

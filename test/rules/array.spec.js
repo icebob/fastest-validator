@@ -251,4 +251,34 @@ describe("Test rule: array", () => {
 			});
 		});
 	});
+
+	it("should allow custom metas", async () => {
+		const itemSchema = {
+			$$foo: {
+				foo: "bar"
+			},
+			type: "string",
+		};
+		const schema = {
+			$$foo: {
+				foo: "bar"
+			},
+			$$root: true,
+			type: "array",
+			items: itemSchema
+		};
+		const clonedSchema = {...schema};
+		const clonedItemSchema = {...itemSchema};
+		const check = v.compile(schema);
+
+		expect(schema).toStrictEqual(clonedSchema);
+		expect(itemSchema).toStrictEqual(clonedItemSchema);
+
+		expect(check([])).toEqual(true);
+		expect(check(["human"])).toEqual(true);
+		expect(check(["male", 3, "female", true])).toEqual([
+			{ type: "string", field: "[1]", actual: 3, message: "The '[1]' field must be a string." },
+			{ type: "string", field: "[3]", actual: true, message: "The '[3]' field must be a string." }
+		]);
+	});
 });

@@ -155,4 +155,35 @@ describe("Test rule: number", () => {
 		expect(obj).toEqual({ age: -45 });
 	});
 
+	it("should allow custom metas", async () => {
+		const schema = {
+			$$foo: {
+				foo: "bar"
+			},
+			$$root: true,
+			type: "number"
+		};
+		const clonedSchema = {...schema};
+		const check = v.compile(schema);
+
+		expect(clonedSchema).toEqual(schema);
+
+		const message = "The '' field must be a number.";
+
+		expect(check("")).toEqual([{ type: "number", actual: "", message }]);
+		expect(check("test")).toEqual([{ type: "number", actual: "test", message }]);
+		expect(check("1")).toEqual([{ type: "number", actual: "1", message }]);
+		expect(check([])).toEqual([{ type: "number", actual: [], message }]);
+		expect(check({})).toEqual([{ type: "number", actual: {}, message }]);
+		expect(check(false)).toEqual([{ type: "number", actual: false, message }]);
+		expect(check(true)).toEqual([{ type: "number", actual: true, message }]);
+		expect(check(NaN)).toEqual([{ type: "number", actual: NaN, message }]);
+		expect(check(Number.POSITIVE_INFINITY)).toEqual([{ type: "number", actual: Number.POSITIVE_INFINITY, message }]);
+		expect(check(Number.NEGATIVE_INFINITY)).toEqual([{ type: "number", actual: Number.NEGATIVE_INFINITY, message }]);
+
+		expect(check(0)).toEqual(true);
+		expect(check(5)).toEqual(true);
+		expect(check(-24)).toEqual(true);
+		expect(check(5.45)).toEqual(true);
+	});
 });

@@ -167,4 +167,29 @@ describe("Test rule: object", () => {
 		});
 
 	});
+
+
+	it("should allow custom metas", async () => {
+		const schema = {
+			$$foo: {
+				foo: "bar"
+			},
+			$$root: true,
+			type: "object"
+		};
+		const clonedSchema = {...schema};
+		const check = v.compile(schema);
+
+		expect(clonedSchema).toEqual(schema);
+		const message = "The '' must be an Object.";
+
+		expect(check(0)).toEqual([{ type: "object", actual: 0, message }]);
+		expect(check(1)).toEqual([{ type: "object", actual: 1, message }]);
+		expect(check("")).toEqual([{ type: "object", actual: "", message }]);
+		expect(check(false)).toEqual([{ type: "object", actual: false, message }]);
+		expect(check(true)).toEqual([{ type: "object", actual: true, message }]);
+		expect(check([])).toEqual([{ type: "object", actual: [], message }]);
+		expect(check({})).toEqual(true);
+		expect(check({ a: "John" })).toEqual(true);
+	});
 });
