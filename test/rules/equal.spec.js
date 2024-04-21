@@ -48,4 +48,26 @@ describe("Test rule: equal", () => {
 		expect(check({ accept: 1 })).toEqual([{ type: "equalValue", field: "accept", actual: 1, expected: true, message }]);
 		expect(check({ accept: true })).toEqual(true);
 	});
+
+	it("should allow custom metas", async () => {
+		const schema = {
+			$$foo: {
+				foo: "bar"
+			},
+			confirm: {
+				type: "equal",
+				field: "pass"
+			}
+		};
+		const clonedSchema = {...schema};
+		const check = v.compile(schema);
+		const message = "The 'confirm' field value must be equal to 'pass' field value.";
+
+		expect(clonedSchema).toEqual(schema);
+
+		expect(check({ confirm: "abcd"})).toEqual([{ type: "equalField", field: "confirm", actual: "abcd", expected: "pass", message }]);
+		expect(check({ pass: "1234", confirm: "abcd"})).toEqual([{ type: "equalField", field: "confirm", actual: "abcd", expected: "pass", message }]);
+		expect(check({ pass: "1234", confirm: 1234 })).toEqual(true);
+		expect(check({ pass: "1234", confirm: "1234" })).toEqual(true);
+	});
 });

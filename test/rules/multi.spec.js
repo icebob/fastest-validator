@@ -185,4 +185,34 @@ describe("Test rule: multi", () => {
 			}
 		});
 	});
+
+
+	it("should allow custom metas", async () => {
+		const fn = jest.fn((v) => v);
+		const schema = {
+			$$foo: {
+				foo: "bar"
+			},
+			$$root: true,
+			type: "multi",
+			rules: [
+				{
+					type: "string",
+					custom: fn
+				},
+				{
+					type: "number",
+					custom: fn
+				}
+			]
+		};
+		const clonedSchema = {...schema};
+		const check = v.compile(schema);
+
+		expect(clonedSchema).toEqual(schema);
+
+		check("s");
+		expect(fn).toBeCalledTimes(1);
+		expect(fn).toBeCalledWith("s", [], schema.rules[0], "$$root", null, expect.any(Object));
+	});
 });
