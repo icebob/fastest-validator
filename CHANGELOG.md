@@ -1,3 +1,11 @@
+<a name="1.18.0"></a>
+
+# 1.18.0 (2024-04-21)
+
+## Changes
+- improve typing. [#339](https://github.com/icebob/fastest-validator/pull/339)
+- allow to add metas in the schema. [#341](https://github.com/icebob/fastest-validator/pull/341)
+
 <a name="1.17.0"></a>
 
 # 1.17.0 (2023-04-23)
