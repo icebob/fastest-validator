@@ -62,4 +62,21 @@ describe("Test rule: currency", () => {
 		expect(check("123")).toEqual(true);
 		expect(check("134")).toEqual([{"actual": "134", "field": undefined, "message": "The '' must be a valid currency format", "type": "currency"}]);
 	});
+
+	it("should allow custom metas", async () => {
+		const schema = {
+			$$foo: {
+				foo: "bar"
+			},
+			$$root: true,
+			type: "currency"
+		};
+		const clonedSchema = {...schema};
+		const check = v.compile(schema);
+
+		expect(schema).toStrictEqual(clonedSchema);
+
+		expect(check("12.2")).toEqual(true);
+		expect(check("$12.2")).toEqual( [{"actual": "$12.2", "field": undefined, "message": "The '' must be a valid currency format", "type": "currency"}]);
+	});
 });

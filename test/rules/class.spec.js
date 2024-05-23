@@ -22,4 +22,26 @@ describe("Test rule: class", () => {
 		expect(check({ rawData: Buffer.from([1, 2, 3]) })).toEqual(true);
 		// expect(checker).toBeCalledTimes(1);
 	});
+
+	it("should allow custom metas", async () => {
+		const schema = {
+			$$foo: {
+				foo: "bar"
+			},
+			$$root: true,
+			type: "class",
+			instanceOf: Buffer
+		};
+		const clonedSchema = {...schema};
+		const check = v.compile(schema);
+
+		expect(schema).toStrictEqual(clonedSchema);
+
+		const message = "The '' field must be an instance of the 'Buffer' class.";
+
+		expect(check("1234")).toEqual([{ type: "classInstanceOf", field: undefined, actual: "1234", expected: "Buffer", message }]);
+		expect(check([1, 2, 3])).toEqual([{ type: "classInstanceOf", field: undefined, actual: [1, 2, 3], expected: "Buffer", message }]);
+		expect(check(Buffer.from([1, 2, 3]) )).toEqual(true);
+		expect(check(Buffer.alloc(3) )).toEqual(true);
+	});
 });

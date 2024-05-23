@@ -17,8 +17,10 @@ export type ValidationRuleName =
 	| "multi"
 	| "number"
 	| "object"
+	| "objectID"
 	| "record"
 	| "string"
+	| "tuple"
 	| "url"
 	| "uuid"
 	| string;
@@ -39,39 +41,47 @@ export interface RuleAny extends RuleCustom {
  * @see https://github.com/icebob/fastest-validator#array
  */
 export interface RuleArray<T = any> extends RuleCustom {
+    /**
+     * Name of built-in validator
+     */
+    type: "array";
+    /**
+     * If true, the validator accepts an empty array [].
+     * @default true
+     */
+    empty?: boolean;
+    /**
+     * Minimum count of elements
+     */
+    min?: number;
+    /**
+     * Maximum count of elements
+     */
+    max?: number;
+    /**
+     * Fixed count of elements
+     */
+    length?: number;
+    /**
+     * The array must contain this element too
+     */
+    contains?: T | T[];
 	/**
-	 * Name of built-in validator
+	 * The array must be unique (array of objects is always unique).
 	 */
-	type: "array";
+	unique?: boolean;
+    /**
+     * Every element must be an element of the enum array
+     */
+    enum?: T[];
+    /**
+     * Validation rules that should be applied to each element of array
+     */
+    items?: ValidationRule;
 	/**
-	 * If true, the validator accepts an empty array [].
-	 * @default true
+	 * Wrap value into array if different type provided
 	 */
-	empty?: boolean;
-	/**
-	 * Minimum count of elements
-	 */
-	min?: number;
-	/**
-	 * Maximum count of elements
-	 */
-	max?: number;
-	/**
-	 * Fixed count of elements
-	 */
-	length?: number;
-	/**
-	 * The array must contain this element too
-	 */
-	contains?: T | T[];
-	/**
-	 * Every element must be an element of the enum array
-	 */
-	enum?: T[];
-	/**
-	 * Validation rules that should be applied to each element of array
-	 */
-	items?: ValidationRule;
+	convert?: boolean
 }
 
 /**
@@ -102,7 +112,7 @@ export interface RuleClass<T = any> extends RuleCustom {
 	/**
 	 * Checked Class
 	 */
-	instanceOf?: T;
+	instanceOf: T;
 }
 
 /**
@@ -116,7 +126,6 @@ export interface RuleCurrency extends RuleCustom {
 	type: "currency";
 	/**
 	 * The currency symbol expected in string (as prefix)
-	 * @default null
 	 */
 	currencySymbol?: string;
 	/**
@@ -167,13 +176,19 @@ export interface RuleEmail extends RuleCustom {
 	type: "email";
 	/**
 	 * If true, the validator accepts an empty string ""
-	 * @default true
+	 * @default false
 	 */
 	empty?: boolean;
 	/**
 	 * Checker method. Can be quick or precise
+	 * @default quick
 	 */
 	mode?: "quick" | "precise";
+	/**
+	 * Normalize the e-mail address (trim & lower-case). It's a sanitizer, it will change the value in the original object.
+	 * @default false
+	 */
+	normalize?: boolean;
 	/**
 	 * Minimum value length
 	 */
@@ -182,8 +197,6 @@ export interface RuleEmail extends RuleCustom {
 	 * Maximum value length
 	 */
 	max?: number;
-
-	normalize?: boolean;
 }
 
 /**
@@ -223,8 +236,7 @@ export interface RuleEqual<T = any> extends RuleCustom {
 	/**
 	 * Strict value checking.
 	 *
-	 * @type {'boolean'}
-	 * @memberof RuleEqual
+	 * @default false
 	 */
 	strict?: boolean;
 }
@@ -242,8 +254,7 @@ export interface RuleForbidden extends RuleCustom {
 	/**
 	 * Removes the forbidden value.
 	 *
-	 * @type {'boolean'}
-	 * @memberof RuleForbidden
+	 * @default false
 	 */
 	remove?: boolean;
 }
@@ -291,7 +302,7 @@ export interface RuleMulti extends RuleCustom {
 	 */
 	type: "multi";
 
-	rules: RuleCustom[] | string[];
+	rules: (RuleCustom | string)[];
 }
 
 /**
@@ -371,21 +382,6 @@ export interface RuleObject extends RuleCustom {
 	maxProps?: number;
 }
 
-export interface RuleObjectID extends RuleCustom {
-	/**
-	 * Name of built-in validator
-	 */
-	type: "objectID";
-	/**
-	 * To inject ObjectID dependency
-	 */
-	ObjectID?: any;
-	/**
-	 * Convert HexStringObjectID to ObjectID
-	 */
-	convert?: boolean | "hexString";
-}
-
 export interface RuleRecord extends RuleCustom {
 	/**
 	 * Name of built-in validator
@@ -393,6 +389,7 @@ export interface RuleRecord extends RuleCustom {
 	type: "record";
 	/**
 	 * Key validation rule
+	 * @default "string"
 	 */
 	key?: RuleString;
 	/**
@@ -440,13 +437,13 @@ export interface RuleString extends RuleCustom {
 	 */
 	enum?: string[];
 	/**
-	 * The value must be a numeric string
-	 */
-	numeric?: boolean;
-	/**
 	 * The value must be an alphabetic string
 	 */
 	alpha?: boolean;
+	/**
+	 * The value must be a numeric string
+	 */
+	numeric?: boolean;
 	/**
 	 * The value must be an alphanumeric string
 	 */
@@ -457,37 +454,61 @@ export interface RuleString extends RuleCustom {
 	alphadash?: boolean;
 	/**
 	 * The value must be a hex string
-	 * @default false
 	 */
 	hex?: boolean;
 	/**
 	 * The value must be a singleLine string
-	 * @default false
 	 */
 	singleLine?: boolean;
 	/**
 	 * The value must be a base64 string
-	 * @default false
 	 */
 	base64?: boolean;
 	/**
+	 * If true, the value will be trimmed. It's a sanitizer, it will change the value in the original object.
+	 */
+	trim?: boolean;
+	/**
+	 * If true, the value will be left trimmed. It's a sanitizer, it will change the value in the original object.
+	 */
+	trimLeft?: boolean;
+	/**
+	 * If true, the value will be right trimmed. It's a sanitizer, it will change the value in the original object.
+	 */
+	trimRight?: boolean;
+	/**
+	 * If it's a number, the value will be left padded. It's a sanitizer, it will change the value in the original object.
+	 */
+	padStart?: number;
+	/**
+	 * If it's a number, the value will be right padded. It's a sanitizer, it will change the value in the original object.
+	 */
+	padEnd?: number;
+	/**
+	 * The padding character for the padStart and padEnd.
+	 * @default " "
+	 */
+	padChar?: string;
+	/**
+	 * If true, the value will be lower-cased. It's a sanitizer, it will change the value in the original object.
+	 */
+	lowercase?: boolean;
+	/**
+	 * If true, the value will be upper-cased. It's a sanitizer, it will change the value in the original object.
+	 */
+	uppercase?: boolean;
+	/**
+	 * If true, the value will be locale lower-cased. It's a sanitizer, it will change the value in the original object.
+	 */
+	localeLowercase?: boolean;
+	/**
+	 * If true, the value will be locale upper-cased. It's a sanitizer, it will change the value in the original object.
+	 */
+	localeUppercase?: boolean;
+	/**
 	 * if true and the type is not a String, converts with String()
-	 * @default false
 	 */
 	convert?: boolean;
-
-	trim?: boolean;
-	trimLeft?: boolean;
-	trimRight?: boolean;
-
-	padStart?: number;
-	padEnd?: number;
-	padChar?: string;
-
-	lowercase?: boolean;
-	uppercase?: boolean;
-	localeLowercase?: boolean;
-	localeUppercase?: boolean;
 }
 
 /**
@@ -499,6 +520,10 @@ export interface RuleTuple<T = any> extends RuleCustom {
 	 * Name of built-in validator
 	 */
 	type: "tuple";
+	/**
+	 * If true, the validator accepts an empty array [].
+	 */
+	empty?: boolean
 	/**
 	 * Validation rules that should be applied to the corresponding element of array
 	 */
@@ -516,7 +541,7 @@ export interface RuleURL extends RuleCustom {
 	type: "url";
 	/**
 	 * If true, the validator accepts an empty string ""
-	 * @default true
+	 * @default false
 	 */
 	empty?: boolean;
 }
@@ -534,6 +559,21 @@ export interface RuleUUID extends RuleCustom {
 	 * UUID version in range 0-6
 	 */
 	version?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+}
+
+export interface RuleObjectID extends RuleCustom {
+	/**
+	 * Name of built-in validator
+	 */
+	type: "objectID";
+	/**
+	 * To inject ObjectID dependency
+	 */
+	ObjectID?: any;
+	/**
+	 * Convert HexStringObjectID to ObjectID
+	 */
+	convert?: boolean | "hexString";
 }
 
 /**
@@ -837,9 +877,9 @@ export type ValidationRule =
 	| ValidationRuleName;
 
 /**
- * Definition for validation schema based on validation rules
+ *
  */
-export type ValidationSchema<T = any> = {
+export interface ValidationSchemaMetaKeys {
 	/**
 	 * Object properties which are not specified on the schema are ignored by default.
 	 * If you set the $$strict option to true any additional properties will result in an strictObject error.
@@ -859,12 +899,18 @@ export type ValidationSchema<T = any> = {
 	 * @default false
 	 */
 	$$root?: boolean;
-} & {
-		/**
-		 * List of validation rules for each defined field
-		 */
-		[key in keyof T]: ValidationRule | undefined | any;
-	};
+}
+
+/**
+ * Definition for validation schema based on validation rules
+ */
+export type ValidationSchema<T = any> = ValidationSchemaMetaKeys & {
+	/**
+	 * List of validation rules for each defined field
+	 */
+	[key in keyof T]: ValidationRule | undefined | any;
+}
+
 
 /**
  * Structure with description of validation error message
@@ -1107,7 +1153,7 @@ export default class Validator {
 	 * @return {ValidationRule}
 	 */
 	getRuleFromSchema(
-		name: ValidationRuleName | ValidationRuleName[] | { [key: string]: unknown }
+		name: ValidationRuleName | ValidationRuleName[] | ValidationSchema | ValidationSchema[] | { [key: string]: unknown }
 	): {
 		messages: MessagesType;
 		schema: ValidationSchema;

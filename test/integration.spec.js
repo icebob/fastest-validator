@@ -1,6 +1,7 @@
 "use strict";
 
 const Validator = require("../lib/validator");
+const {RuleEmail} = require("../index");
 
 describe("Test flat schema", () => {
 	const v = new Validator();
@@ -1443,5 +1444,107 @@ describe("edge cases", () => {
 				type: "string",
 			},
 		]);
+	});
+});
+
+describe("allow metas starting with $$", () => {
+	const v = new Validator({ useNewCustomCheckerFunction: true });
+	describe("test on schema", () => {
+		it("should not remove keys from source object", async () => {
+			const schema = {
+				$$foo: {
+					foo: "bar"
+				},
+				name: { type: "string" } };
+			const clonedSchema = {...schema};
+			v.compile(schema);
+
+			expect(schema).toStrictEqual(clonedSchema);
+		});
+
+		it("should works with $$root", () => {
+			const schema = {
+				$$foo: {
+					foo: "bar"
+				},
+				$$root: true,
+				type: "email",
+				empty: true
+			};
+			const clonedSchema = {...schema};
+			const check = v.compile(schema);
+
+			expect(check("john.doe@company.net")).toEqual(true);
+			expect(check("")).toEqual(true);
+			expect(schema).toStrictEqual(clonedSchema);
+		});
+
+		it("should works with $$async", async () => {
+			const custom1 = jest.fn().mockResolvedValue("NAME");
+			const schema = {
+				$$foo: {
+					foo: "bar"
+				},
+				$$async: true,
+				name: { type: "string", custom: custom1 },
+			};
+			const clonedSchema = {...schema};
+			const check = v.compile(schema);
+
+			//check schema meta was not changed
+			expect(schema.$$foo).toStrictEqual(clonedSchema.$$foo);
+
+			expect(check.async).toBe(true);
+
+			let obj = {
+				id: 3,
+				name: "John",
+				username: "   john.doe  ",
+				age: 30
+			};
+
+			const res = await check(obj);
+			expect(res).toBe(true);
+
+			expect(custom1).toBeCalledTimes(1);
+			expect(custom1).toBeCalledWith("John", [], schema.name, "name", null, expect.anything());
+		});
+	});
+
+	describe("test on rule", () => {
+		it("should not remove keys from source object", async () => {
+			const schema = {
+				name: {
+					$$foo: {
+						foo: "bar"
+					},
+					type: "string"
+				}
+			};
+			const clonedSchema = {...schema};
+			v.compile(schema);
+
+			expect(schema).toStrictEqual(clonedSchema);
+		});
+		it("should works with $$type", async () => {
+			const schema = {
+				dot: {
+					$$foo: {
+						foo: "bar"
+					},
+					$$type: "object",
+					x: "number",  // object props here
+					y: "number",  // object props here
+				}
+			};
+			const clonedSchema = {...schema};
+			const check = v.compile(schema);
+
+			expect(schema).toStrictEqual(clonedSchema);
+			expect(check({
+				x: 1,
+				y: 1,
+			})).toBeTruthy();
+		});
 	});
 });
