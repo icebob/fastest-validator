@@ -1339,6 +1339,64 @@ console.log(check({ name: "John", phone: "36-70-123-4567" }));
 
 >Please note: the custom function must return the `value`. It means you can also sanitize it.
 
+### Chaining custom functions and global definitions
+You can define the `custom` property as an array of functions, allowing you to chain various validation logics. 
+
+Additionally, you can define custom functions globally, making them reusable.
+```js
+
+let v = new Validator({
+	debug: true,
+	useNewCustomCheckerFunction: true,
+	messages: {
+		// Register our new error message text
+		evenNumber: "The '{field}' field must be an even number! Actual: {actual}",
+		realNumber: "The '{field}' field must be a real number! Actual: {actual}",
+		notPermitNumber: "The '{field}'  cannot have the value  {actual}",
+	},
+	customFunctions:{
+		even: (value, errors)=>{
+			if(value % 2 != 0 ){
+				errors.push({ type: "evenNumber",  actual: value });
+			}
+			return value;
+		},
+		real: (value, errors)=>{
+			if(value <0 ){
+				errors.push({ type: "realNumber",  actual: value });
+			}
+			return value;
+		}
+	}
+});
+
+
+
+const schema = {
+	people:{
+		type: "number",
+		custom: [
+			"even",
+			"real",
+			function (value, errors){
+				if(value === "3" ){
+					errors.push({ type: "notPermitNumber",  actual: value });
+				}
+				return value;
+			}
+		]
+	}
+};
+
+console.log(v.validate({people:5}, schema));
+console.log(v.validate({people:-5}, schema));
+console.log(v.validate({people:3}, schema));
+
+```
+
+
+
+
 ## Asynchronous custom validations
 You can also use async custom validators. This can be useful if you need to check something in a database or in a remote location.
 In this case you should use `async/await` keywords, or return a `Promise` in the custom validator functions.
