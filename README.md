@@ -1353,6 +1353,10 @@ let v = new Validator({
 		evenNumber: "The '{field}' field must be an even number! Actual: {actual}",
 		realNumber: "The '{field}' field must be a real number! Actual: {actual}",
 		notPermitNumber: "The '{field}'  cannot have the value  {actual}",
+        compareGt: "The '{field}' field must be greater than {gt}! Actual: {actual}",
+        compareGte: "The '{field}' field must be greater than or equal to {gte}! Actual: {actual}",
+        compareLt: "The '{field}' field must be less than {lt}! Actual: {actual}",
+        compareLte: "The '{field}' field must be less than or equal to {lte}! Actual: {actual}"
 	},
 	customFunctions:{
 		even: (value, errors)=>{
@@ -1366,7 +1370,22 @@ let v = new Validator({
 				errors.push({ type: "realNumber",  actual: value });
 			}
 			return value;
-		}
+		},
+        compare: (value, errors, schema)=>{
+				if( typeof schema.custom.gt==="number" && value <= schema.custom.gt ){
+					errors.push({ type: "compareGt",  actual: value, gt: schema.custom.gt });
+				}
+				if( typeof schema.custom.gte==="number" && value < schema.custom.gte ){
+					errors.push({ type: "compareGte",  actual: value, gte: schema.custom.gte });
+				}
+				if( typeof schema.custom.lt==="number" && value >= schema.custom.lt ){
+					errors.push({ type: "compareLt",  actual: value, lt: schema.custom.lt });
+				}
+				if( typeof schema.custom.lte==="number" && value > schema.custom.lte ){
+					errors.push({ type: "compareLte",  actual: value, lte: schema.custom.lte });
+				}
+				return value;
+			}
 	}
 });
 
@@ -1376,6 +1395,7 @@ const schema = {
 	people:{
 		type: "number",
 		custom: [
+            "compare|gte:-100|lt:200",  // extended definition with additional parameters - equal to: {type:"compare",gte:-100, lt:200}, 
 			"even",
 			"real",
 			function (value, errors){
@@ -1388,6 +1408,8 @@ const schema = {
 	}
 };
 
+console.log(v.validate({people:-200}, schema));
+console.log(v.validate({people:200}, schema));
 console.log(v.validate({people:5}, schema));
 console.log(v.validate({people:-5}, schema));
 console.log(v.validate({people:3}, schema));
