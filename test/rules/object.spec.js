@@ -133,6 +133,12 @@ describe("Test rule: object", () => {
 		expect(v.validate({foo:"bar"}, {$$root: true, type: "object", maxProps: 0, strict: "remove"})).toEqual([{actual: 1, field: undefined, message: "The object '' must contain 0 properties at most.", type: "objectMaxProps", expected: 0}]);
 	});
 
+	it("shorthand label",()=>{
+		const check = v.compile({ $$root: true, type: "object", props: { shorthand_label: "string|label:My Label" } });
+		const res = check({ shorthand_label: 123 });
+		expect(res[0].label).toEqual("My Label");
+		
+	});
 
 	describe("Test sanitization", () => {
 
