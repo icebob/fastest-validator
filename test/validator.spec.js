@@ -251,6 +251,11 @@ describe("Test getRuleFromSchema method", () => {
 			expect(res2.schema).toEqual({ type: "array", optional: true, items: "string", min: 1 });
 		});
 
+		it("should convert label", () => {
+			const res = v.getRuleFromSchema("string|label:My Label");
+			expect(res.schema).toEqual({ type: "string", label: "My Label" });
+		});
+
 	});
 
 	describe("Test objects shorthand rule ($$type)", () => {
