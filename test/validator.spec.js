@@ -647,6 +647,91 @@ describe("Test custom validation", () => {
 	});
 });
 
+
+describe("Test custom validation with array", () => {
+
+	const v = new Validator({
+		useNewCustomCheckerFunction: true,
+		customFunctions:{
+			even: (value, errors)=>{
+				if(value % 2 != 0 ){
+					errors.push({ type: "evenNumber",  actual: value });
+				}
+				return value;
+			},
+			real: (value, errors)=>{
+				if(value <0 ){
+					errors.push({ type: "realNumber",  actual: value });
+				}
+				return value;
+			},
+			compare: (value, errors, schema)=>{
+				if( typeof schema.custom.gt==="number" && value <= schema.custom.gt ){
+					errors.push({ type: "compareGt",  actual: value, gt: schema.custom.gt });
+				}
+				if( typeof schema.custom.gte==="number" && value < schema.custom.gte ){
+					errors.push({ type: "compareGte",  actual: value, gte: schema.custom.gte });
+				}
+				if( typeof schema.custom.lt==="number" && value >= schema.custom.lt ){
+					errors.push({ type: "compareLt",  actual: value, lt: schema.custom.lt });
+				}
+				if( typeof schema.custom.lte==="number" && value > schema.custom.lte ){
+					errors.push({ type: "compareLte",  actual: value, lte: schema.custom.lte });
+				}
+				return value;
+			}
+		},
+		messages: {
+			evenNumber: "The '{field}' field must be an even number! Actual: {actual}",
+			realNumber: "The '{field}' field must be a real number! Actual: {actual}",
+			permitNumber: "The '{field}' cannot have the value {actual}",
+			compareGt: "The '{field}' field must be greater than {gt}! Actual: {actual}",
+			compareGte: "The '{field}' field must be greater than or equal to {gte}! Actual: {actual}",
+			compareLt: "The '{field}' field must be less than {lt}! Actual: {actual}",
+			compareLte: "The '{field}' field must be less than or equal to {lte}! Actual: {actual}"
+		}
+	});
+
+	let check;
+
+	it("should compile without error", () => {
+
+		check = v.compile({
+			num: {
+				type: "number",
+				custom: [
+					"compare|gte:-100|lt:200",  // equal to: {type:"compare",gte:-100, lt:200}, 
+					"even",
+					"real",
+					(value, errors) => {
+						if ([-3,2,4,198].includes(value) ) errors.push({ type: "permitNumber", actual: value });
+						return value;
+					}
+
+				]
+			}
+		});
+
+		expect(typeof check).toBe("function");
+	});
+
+	it("should work correctly with array custom validator", () => {
+		expect(check({ num: 12 })).toBe(true);
+		expect(check({ num: 0 })).toBe(true);
+		expect(check({ num: 196 })).toBe(true);
+		expect(check({ num: 3 })[0].type).toEqual("evenNumber");
+		expect(check({ num: -12 })[0].type).toEqual("realNumber");
+		expect(check({ num: -8 })[0].type).toEqual("realNumber");
+		expect(check({ num: 198 })[0].type).toEqual("permitNumber");
+		expect(check({ num: 4 })[0].type).toEqual("permitNumber");
+		expect(check({ num: 202 })[0].type).toEqual("compareLt");
+		expect(check({ num: -3 }).map(e=>e.type)).toEqual(["evenNumber","realNumber","permitNumber"]);
+	});
+
+	
+});
+
+
 describe("Test default values", () => {
 	const v = new Validator({
 		useNewCustomCheckerFunction: true
