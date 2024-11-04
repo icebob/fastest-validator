@@ -1,3 +1,4 @@
+import { describe, it } from "tstyche";
 import Validator, { RuleTuple, ValidationError } from '../../../';
 
 const v = new Validator({

@@ -1,3 +1,4 @@
+import { describe, it } from "tstyche";
 import Validator, { RuleBoolean, RuleString, ValidationSchema } from '../../../';
 
 const v = new Validator();

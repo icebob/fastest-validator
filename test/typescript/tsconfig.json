@@ -20,5 +20,5 @@
         "baseUrl": ".",
         "allowJs": true
     },
-    "include": ["test", "lib", "index.d.ts", "index.js"]
+	"include": ["**/*"],
 }

@@ -1,9 +1,8 @@
+import { describe, it } from "tstyche";
 import Validator, { RuleCustom, ValidationSchema, CheckerFunction } from '../../../';
-
 
 describe("Test rule: custom v1", () => {
 	const v = new Validator();
-
 
 	it("should call custom checker", () => {
 		const checker = jest.fn(() => true);

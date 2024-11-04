@@ -1,3 +1,4 @@
+import { describe, it } from "tstyche";
 import Validator from '../../';
 
 describe('TypeScript Definitions', () => {

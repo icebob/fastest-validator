@@ -1,3 +1,4 @@
+import { describe, it } from "tstyche";
 import Validator, { RuleObjectID } from '../../../';
 import { ObjectID } from 'mongodb';
 

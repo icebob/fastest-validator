@@ -1,4 +1,5 @@
 /// <reference path="../../index.d.ts" /> // here we make a reference to exists module definition
+import { describe, it } from "tstyche";
 import { BuiltInMessages } from "../../";
 
 const msg: BuiltInMessages = require("../../lib/messages");
