@@ -27,3 +27,17 @@ jobs:
         npm run build
       env:
         CI: true
+
+  test-types:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: lts/*
+    - name: npm install, build, and test types
+      run: |
+        npm ci
+        npm run build
+        npm run test:types -- --target 4.6,5.0,latest
