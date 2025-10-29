@@ -525,6 +525,18 @@ check({ roles: "user" }); // Valid
 // After both validation: roles = ["user"]
 ```
 
+**Example for `filterUndefined`:**
+
+```js
+const schema = {
+    roles: { type: "array", filterUndefined: true }
+}
+const check = v.compile(schema);
+
+check({ roles: ["user", undefined, "employer"] }); // Valid
+// After validation: roles = ["user", "employer"]
+```
+
 ### Properties
 Property | Default  | Description
 -------- | -------- | -----------
@@ -537,6 +549,7 @@ Property | Default  | Description
 `enum`	 | `null`   | Every element must be an element of the `enum` array.
 `items`	 | `null`   | Schema for array items.
 `convert`| `null`   | Wrap value into array if different type provided
+`filterUndefined`| `null`   | Filter undefined value in resulted array.
 
 ## `boolean`
 This is a `Boolean` validator.
