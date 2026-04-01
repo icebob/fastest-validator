@@ -1,3 +1,22 @@
+<a name="1.20.0"></a>
+
+# 1.20.0 (2026-04-01)
+
+## New features
+- add new `pipe` validation rule for sequential validate-transform-validate workflows. [#359](https://github.com/icebob/fastest-validator/pull/359)
+
+## Bug fixes
+- fix crash when enum values contain double-quotes. [#293](https://github.com/icebob/fastest-validator/issues/293)
+- fix TypeScript `ValidationSchema` type — remove `| any` that made the mapped type useless. [#334](https://github.com/icebob/fastest-validator/issues/334)
+
+## Other changes
+- replace Rollup with esbuild for build pipeline. [#360](https://github.com/icebob/fastest-validator/pull/360)
+- replace Jest with Vitest for test framework. [#360](https://github.com/icebob/fastest-validator/pull/360)
+- migrate ESLint 8 to ESLint 9 flat config. [#360](https://github.com/icebob/fastest-validator/pull/360)
+- update devDependencies: TypeScript 5.7, Prettier 3, Nodemon 3, tsd 0.31, benchmarkify 4. [#360](https://github.com/icebob/fastest-validator/pull/360)
+- update CI Node.js matrix to 20.x, 22.x, 24.x. [#360](https://github.com/icebob/fastest-validator/pull/360)
+- add additional UUID v7 validation tests. [#358](https://github.com/icebob/fastest-validator/pull/358)
+
 <a name="1.19.1"></a>
 
 # 1.19.1 (2025-04-30)
