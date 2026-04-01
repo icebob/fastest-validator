@@ -16,7 +16,7 @@ describe("Test rule: class", () => {
 	});
 
 	it("should work with custom checker function", () => {
-		const checker = jest.fn((v) => v);
+		const checker = vi.fn((v) => v);
 		const check = v.compile({ rawData: { type: "class", instanceOf: Buffer, custom: checker } });
 
 		expect(check({ rawData: Buffer.from([1, 2, 3]) })).toEqual(true);

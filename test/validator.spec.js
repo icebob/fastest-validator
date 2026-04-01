@@ -81,7 +81,7 @@ describe("Test constructor", () => {
 	});
 
 	it("should apply plugins", () => {
-		const plugin = jest.fn();
+		const plugin = vi.fn();
 		const v = new Validator({
 			plugins: [plugin]
 		});
@@ -95,8 +95,8 @@ describe("Test constructor", () => {
 describe("Test validate", () => {
 
 	const v = new Validator();
-	const compiledFn = jest.fn(() => true);
-	v.compile = jest.fn(() => compiledFn);
+	const compiledFn = vi.fn(() => true);
+	v.compile = vi.fn(() => compiledFn);
 
 	const schema = {
 		name: { type: "string" }
@@ -128,7 +128,7 @@ describe("Test add", () => {
 		}
 	});
 
-	const validFn = jest.fn(function ({ schema, messages }, path, context) {
+	const validFn = vi.fn(function ({ schema, messages }, path, context) {
 		return {
 			source: `
 				if (value % 2 != 0)
@@ -419,7 +419,7 @@ describe("Test compile (integration test)", () => {
 	describe("Test check generator with custom path & parent", () => {
 		it("when schema is defined as an array, and custom path & parent are specified, they should be forwarded to validators", () => {
 			const v = new Validator();
-			const customValidator = jest.fn().mockReturnValue(true);	// Will be called with (value, schema, path, parent)
+			const customValidator = vi.fn().mockReturnValue(true);	// Will be called with (value, schema, path, parent)
 			v.add("customValidator", customValidator);
 			const validate = v.compile([{ type: "customValidator" }]);
 			const parent = {};
@@ -430,7 +430,7 @@ describe("Test compile (integration test)", () => {
 		});
 		it("when schema is defined as an array, path & parent should be set to default values in validators", () => {
 			const v = new Validator();
-			const customValidator = jest.fn().mockReturnValue(true);	// Will be called with (value, schema, path, parent)
+			const customValidator = vi.fn().mockReturnValue(true);	// Will be called with (value, schema, path, parent)
 			v.add("customValidator", customValidator);
 			const validate = v.compile([{ type: "customValidator" }]);
 			const res = validate({ customValue: 4711 });
@@ -444,7 +444,7 @@ describe("Test compile (integration test)", () => {
 			// The parent is currently used in the validator code (only forwarded to the generated
 			// function that validates all properties) and there is no way to test it.
 			const v = new Validator();
-			const customValidator = jest.fn().mockReturnValue(true);	// Will be called with (value, schema, path, parent)
+			const customValidator = vi.fn().mockReturnValue(true);	// Will be called with (value, schema, path, parent)
 			v.add("customValidator", customValidator);
 			const validate = v.compile({ customValue: { type: "customValidator" } });
 			const res = validate({ customValue: 4711 }, "customPath");
@@ -453,7 +453,7 @@ describe("Test compile (integration test)", () => {
 		});
 		it("when schema is defined as an object, path should be set to default value in validators", () => {
 			const v = new Validator();
-			const customValidator = jest.fn().mockReturnValue(true);	// Will be called with (value, schema, path, parent)
+			const customValidator = vi.fn().mockReturnValue(true);	// Will be called with (value, schema, path, parent)
 			v.add("customValidator", customValidator);
 			const validate = v.compile({ customValue: { type: "customValidator" } });
 			const res = validate({ customValue: 4711 });
@@ -537,7 +537,7 @@ describe("Test custom validation v1", () => {
 	});
 
 	it("should work correctly with custom validator", () => {
-		const fn = jest.fn();
+		const fn = vi.fn();
 		const check = v.compile({
 			num: {
 				type: "number",
@@ -561,7 +561,7 @@ describe("Test custom validation v1", () => {
 	});
 
 	it("should work with multiple custom validators", () => {
-		const fn = jest.fn();
+		const fn = vi.fn();
 
 		const check = v.compile({
 			a: {
@@ -595,7 +595,7 @@ describe("Test custom validation", () => {
 	});
 
 	let check;
-	const fn = jest.fn();
+	const fn = vi.fn();
 
 
 	it("should compile without error", () => {
@@ -629,7 +629,7 @@ describe("Test custom validation", () => {
 
 	it("should call checker function after build-in rule", () => {
 		// depended to number rule
-		const checkerFn = jest.fn((v) => v);
+		const checkerFn = vi.fn((v) => v);
 
 		const schema = {
 			a: {
@@ -738,7 +738,7 @@ describe("Test default values", () => {
 	});
 
 	let check;
-	const fn = jest.fn(() => "fn-123");
+	const fn = vi.fn(() => "fn-123");
 
 	const schema = {
 		str: "string|default:abc",
@@ -928,7 +928,7 @@ describe("Test plugins", () => {
 	const v = new Validator();
 
 	it("should apply plugin", () => {
-		const plugin = jest.fn();
+		const plugin = vi.fn();
 		v.plugin(plugin);
 
 		expect(plugin).toBeCalledTimes(1);
@@ -937,9 +937,11 @@ describe("Test plugins", () => {
 });
 
 describe("Test addMessage", () => {
-	const v = new Validator();
-	v.addMessage("string", "C");
-	expect(v.messages.string).toBe("C");
+	it("should add a message", () => {
+		const v = new Validator();
+		v.addMessage("string", "C");
+		expect(v.messages.string).toBe("C");
+	});
 });
 
 describe("Test normalize", () => {

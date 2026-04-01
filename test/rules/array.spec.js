@@ -106,7 +106,7 @@ describe("Test rule: array", () => {
 	});
 
 	it("should call custom checker", () => {
-		const customFn = jest.fn(v => v);
+		const customFn = vi.fn(v => v);
 		const schema = { numbers: { type: "array", min: 1, custom: customFn, items: "number" } };
 		const check = v.compile(schema);
 
@@ -116,8 +116,8 @@ describe("Test rule: array", () => {
 	});
 
 	it("should call custom checker for items", () => {
-		const customFn = jest.fn(v => v);
-		const customFnItems = jest.fn(v => v);
+		const customFn = vi.fn(v => v);
+		const customFnItems = vi.fn(v => v);
 		const schema = { numbers: { type: "array", min: 1, custom: customFn, items: {
 			type: "number", custom: customFnItems
 		} } };
