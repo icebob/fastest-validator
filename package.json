@@ -16,8 +16,7 @@
     "lint:fix": "eslint --fix --ext=.js lib test",
     "deps": "npm-check -u",
     "postdeps": "npm test",
-    "coverall": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
-    "test": "vitest run --coverage",
+"test": "vitest run --coverage",
     "test:travis": "npm test"
   },
   "repository": {
@@ -45,18 +44,17 @@
   "devDependencies": {
     "@types/mongodb": "^4.0.7",
     "@vitest/coverage-v8": "^4.1.2",
-    "benchmarkify": "^3.0.0",
+    "benchmarkify": "^4.0.0",
     "cli-highlight": "^2.1.11",
-    "coveralls": "^3.1.1",
     "esbuild": "^0.27.4",
     "eslint": "^8.22.0",
     "mongodb": "^4.17.2",
-    "nodemon": "^2.0.19",
+    "nodemon": "^3.1.14",
     "npm-check": "^6.0.1",
-    "prettier": "^2.7.1",
-    "ts-node": "^10.9.1",
-    "tsd": "^0.22.0",
-    "typescript": "^4.7.4",
+    "prettier": "^3.8.1",
+    "ts-node": "^10.9.2",
+    "tsd": "^0.31.2",
+    "typescript": "~5.7",
     "vitest": "^4.1.2"
   }
 }
