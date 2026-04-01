@@ -16,8 +16,7 @@
     "lint:fix": "eslint --fix lib test",
     "deps": "npm-check -u",
     "postdeps": "npm test",
-    "test": "vitest run --coverage",
-    "test:travis": "npm test"
+    "test": "vitest run --coverage"
   },
   "repository": {
     "type": "git",
