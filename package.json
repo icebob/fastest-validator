@@ -11,7 +11,7 @@
     "build": "node build.mjs",
     "prepublishOnly": "npm run build",
     "dev": "nodemon examples/index.js",
-    "ci": "vitest --watch",
+    "test:watch": "vitest --watch",
     "lint": "eslint lib test",
     "lint:fix": "eslint --fix lib test",
     "deps": "npm-check -u",

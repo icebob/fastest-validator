@@ -26,6 +26,7 @@ function build(minify) {
 		sourcemap: !minify,
 		minify,
 		write: false,
+		target: "es2015",
 	});
 
 	// esbuild with globalName produces:
