@@ -15,6 +15,7 @@ export type ValidationRuleName =
 	| "luhn"
 	| "mac"
 	| "multi"
+	| "pipe"
 	| "number"
 	| "object"
 	| "objectID"
@@ -303,6 +304,21 @@ export interface RuleMulti extends RuleCustom {
 	type: "multi";
 
 	rules: (RuleCustom | string)[];
+}
+
+/**
+ * Validation schema definition for "pipe" built-in validator
+ */
+export interface RulePipe extends RuleCustom {
+	/**
+	 * Name of built-in validator
+	 */
+	type: "pipe";
+
+	/**
+	 * Validation rules that should be applied sequentially to the current value
+	 */
+	steps?: ValidationRule[];
 }
 
 /**
@@ -857,6 +873,7 @@ export type ValidationRuleObject =
 	| RuleLuhn
 	| RuleMac
 	| RuleMulti
+	| RulePipe
 	| RuleNumber
 	| RuleObject
 	| RuleObjectID
