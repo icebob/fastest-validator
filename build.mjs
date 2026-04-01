@@ -41,10 +41,13 @@ function build(minify) {
 	const umdCode = UMD_HEADER + code + "return FastestValidator;\n" + UMD_FOOTER + sourcemapComment;
 	writeFileSync(outfile, umdCode);
 
-	// Write sourcemap if present
+	// Write sourcemap with line offset correction for UMD header
 	const sourcemapFile = result.outputFiles.find(f => f.path.endsWith(".map"));
 	if (sourcemapFile) {
-		writeFileSync(outfile + ".map", sourcemapFile.text);
+		const headerLines = UMD_HEADER.split("\n").length - 1;
+		const map = JSON.parse(sourcemapFile.text);
+		map.mappings = ";".repeat(headerLines) + map.mappings;
+		writeFileSync(outfile + ".map", JSON.stringify(map));
 	}
 
 	console.log(`Built ${outfile} (${(umdCode.length / 1024).toFixed(1)} KB)`);
