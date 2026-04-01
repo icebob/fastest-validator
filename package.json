@@ -8,17 +8,15 @@
   "scripts": {
     "bench": "node benchmark/index.js",
     "bench:watch": "nodemon benchmark/index.js",
-    "build": "rollup -c",
+    "build": "node build.mjs",
     "prepublishOnly": "npm run build",
     "dev": "nodemon examples/index.js",
-    "ci": "jest --watch",
-    "lint": "eslint --ext=.js lib test rollup.config.js",
-    "lint:fix": "eslint --fix --ext=.js lib test rollup.config.js",
+    "test:watch": "vitest --watch",
+    "lint": "eslint lib test",
+    "lint:fix": "eslint --fix lib test",
     "deps": "npm-check -u",
     "postdeps": "npm test",
-    "coverall": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
-    "test": "jest --coverage",
-    "test:travis": "npm test"
+    "test": "vitest run --coverage"
   },
   "repository": {
     "type": "git",
@@ -43,44 +41,21 @@
   },
   "homepage": "https://github.com/icebob/fastest-validator#readme",
   "devDependencies": {
-    "@ampproject/rollup-plugin-closure-compiler": "^0.27.0",
-    "@types/jest": "^27.0.2",
+    "@eslint/js": "^9.39.4",
     "@types/mongodb": "^4.0.7",
-    "benchmarkify": "^3.0.0",
+    "@vitest/coverage-v8": "^4.1.2",
+    "benchmarkify": "^4.0.0",
     "cli-highlight": "^2.1.11",
-    "coveralls": "^3.1.1",
-    "eslint": "^8.22.0",
-    "jest": "^27.2.5",
-    "jest-cli": "^27.2.5",
+    "esbuild": "^0.27.4",
+    "eslint": "^9.39.4",
+    "globals": "^17.4.0",
     "mongodb": "^4.17.2",
-    "nodemon": "^2.0.19",
+    "nodemon": "^3.1.14",
     "npm-check": "^6.0.1",
-    "prettier": "^2.7.1",
-    "rollup": "^2.78.0",
-    "rollup-plugin-buble": "^0.19.8",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-copy": "^3.4.0",
-    "rollup-plugin-uglify-es": "^0.0.1",
-    "ts-jest": "^27.0.7",
-    "ts-node": "^10.9.1",
-    "tsd": "^0.22.0",
-    "typescript": "^4.7.4"
-  },
-  "jest": {
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node",
-    "rootDir": "./lib",
-    "roots": [
-      "../test"
-    ],
-    "transform": {
-      "^.+\\.(ts|tsx)$": "ts-jest"
-    },
-    "globals": {
-      "ts-jest": {
-        "tsconfig": "test/typescript/tsconfig.json",
-        "diagnostics": true
-      }
-    }
+    "prettier": "^3.8.1",
+    "ts-node": "^10.9.2",
+    "tsd": "^0.31.2",
+    "typescript": "~5.7",
+    "vitest": "^4.1.2"
   }
 }

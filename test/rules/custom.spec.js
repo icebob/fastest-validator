@@ -7,7 +7,7 @@ describe("Test rule: custom v1", () => {
 
 
 	it("should call custom checker", () => {
-		const checker = jest.fn(() => true);
+		const checker = vi.fn(() => true);
 		const schema = { $$root: true, type: "custom", a: 5, check: checker };
 		const check = v.compile(schema);
 
@@ -17,7 +17,7 @@ describe("Test rule: custom v1", () => {
 	});
 
 	it("should call custom checker", () => {
-		const checker = jest.fn((v) => v);
+		const checker = vi.fn((v) => v);
 		const schema = { weight: { type: "custom", a: 5, check: checker } };
 		const check = v.compile(schema);
 
@@ -27,7 +27,7 @@ describe("Test rule: custom v1", () => {
 	});
 
 	it("should handle returned errors", () => {
-		const checker = jest.fn(function (value, schema, field) {
+		const checker = vi.fn(function (value, schema, field) {
 			return [{ type: "myError", expected: 3, actual: 4 }];
 		});
 		const schema = { weight: { type: "custom", a: 5, check: checker, messages: { myError: "My error message. Expected: {expected}, actual: {actual}, field: {field}" } } };
@@ -45,7 +45,7 @@ describe("Test rule: custom v1", () => {
 	});
 
 	it("should allow custom metas", async () => {
-		const checker = jest.fn(() => true);
+		const checker = vi.fn(() => true);
 		const schema = {
 			$$foo: {
 				foo: "bar"
@@ -75,7 +75,7 @@ describe("Test rule: custom v2", () => {
 	});
 
 	it("should call custom checker on $$root level", () => {
-		const checker = jest.fn(v => v);
+		const checker = vi.fn(v => v);
 		const schema = { $$root: true, type: "custom", a: 5, check: checker };
 		const check = v.compile(schema);
 
@@ -85,7 +85,7 @@ describe("Test rule: custom v2", () => {
 	});
 
 	it("should call custom checker", () => {
-		const checker = jest.fn((v) => v);
+		const checker = vi.fn((v) => v);
 		const schema = { weight: { type: "custom", a: 5, check: checker } };
 		const check = v.compile(schema);
 
@@ -95,7 +95,7 @@ describe("Test rule: custom v2", () => {
 	});
 
 	it("should handle returned errors", () => {
-		const checker = jest.fn(function (value, errors, schema, field) {
+		const checker = vi.fn(function (value, errors, schema, field) {
 			errors.push({ type: "myError", expected: 3, actual: 4 });
 			return value;
 		});
@@ -114,7 +114,7 @@ describe("Test rule: custom v2", () => {
 	});
 
 	it("should call custom checker on $$root level", () => {
-		const checker = jest.fn(v => v);
+		const checker = vi.fn(v => v);
 		const schema = {
 			$$root: true,
 			type: "object",
@@ -131,7 +131,7 @@ describe("Test rule: custom v2", () => {
 	});
 
 	it("should allow custom metas", async () => {
-		const checker = jest.fn(v => v);
+		const checker = vi.fn(v => v);
 		const schema = {
 			$$foo: {
 				foo: "bar"
