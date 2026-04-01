@@ -41,7 +41,7 @@
   },
   "homepage": "https://github.com/icebob/fastest-validator#readme",
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
+    "@eslint/js": "^9.39.4",
     "@types/mongodb": "^4.0.7",
     "@vitest/coverage-v8": "^4.1.2",
     "benchmarkify": "^4.0.0",
