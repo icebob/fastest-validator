@@ -925,7 +925,7 @@ export type ValidationSchema<T = any> = ValidationSchemaMetaKeys & {
 	/**
 	 * List of validation rules for each defined field
 	 */
-	[key in keyof T]: ValidationRule | undefined | any;
+	[key in keyof T]: ValidationRule | undefined;
 }
 
 
