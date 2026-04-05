@@ -22,6 +22,7 @@ describe("TypeScript Definitions", () => {
 			expect(msg.numberEqual).toBeDefined();
 			expect(msg.numberNotEqual).toBeDefined();
 			expect(msg.numberInteger).toBeDefined();
+			expect(msg.numberStep).toBeDefined();
 			expect(msg.numberPositive).toBeDefined();
 			expect(msg.numberNegative).toBeDefined();
 			expect(msg.array).toBeDefined();

@@ -78,6 +78,19 @@ describe('TypeScript Definitions', () => {
 			expect(check(20)).toEqual(true);
 		});
 
+		it('check step', () => {
+			const check = v.compile({ $$root: true, type: 'number', step: 10 } as RuleNumber);
+			const message = 'The \'\' field must be a multiple of 10.';
+
+			expect(check(8.5)).toEqual([{ type: "numberStep", expected: 10, actual: 8.5, message }]);
+			expect(check(-5.5)).toEqual([{ type: "numberStep", expected: 10, actual: -5.5, message }]);
+			expect(check(15)).toEqual([{ type: "numberStep", expected: 10, actual: 15, message }]);
+			expect(check(0)).toEqual(true);
+			expect(check(-20)).toEqual(true);
+			expect(check(20)).toEqual(true);
+			expect(check(100)).toEqual(true);
+		});
+
 		it('check positive number', () => {
 			const check = v.compile({ $$root: true, type: 'number', positive: true } as RuleNumber);
 			const message = 'The \'\' field must be a positive number.';
