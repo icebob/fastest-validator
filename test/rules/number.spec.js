@@ -82,17 +82,41 @@ describe("Test rule: number", () => {
 		expect(check(20)).toEqual(true);
 	});
 
+	it("check schema's 'step' field type", () => {
+		const message =	"Invalid 'number' schema. The 'step' field must be a positive number.";
+
+		expect(() => v.compile({ $$root: true, type: "number", step: 0 })).toThrow(message);
+	});
+
 	it("check step", () => {
 		const check = v.compile({ $$root: true, type: "number", step: 10 });
 		const message = "The '' field must be a multiple of 10.";
 
+		expect(check(15)).toEqual([{ type: "numberStep", expected: 10, actual: 15, message }]);
 		expect(check(8.5)).toEqual([{ type: "numberStep", expected: 10, actual: 8.5, message }]);
 		expect(check(-5.5)).toEqual([{ type: "numberStep", expected: 10, actual: -5.5, message }]);
-		expect(check(15)).toEqual([{ type: "numberStep", expected: 10, actual: 15, message }]);
+		
 		expect(check(0)).toEqual(true);
-		expect(check(-20)).toEqual(true);
 		expect(check(20)).toEqual(true);
+		expect(check(-20)).toEqual(true);
 		expect(check(100)).toEqual(true);
+	});
+
+	it("check step (float)", () => {
+		const check = v.compile({ $$root: true, type: "number", step: 0.2 });
+		const message = "The '' field must be a multiple of 0.2.";
+
+		expect(check(1.1)).toEqual([{ type: "numberStep", expected: 0.2, actual: 1.1, message }]);
+		expect(check(-5.5)).toEqual([{ type: "numberStep", expected: 0.2, actual: -5.5, message }]);
+		expect(check(0.20001)).toEqual([{ type: "numberStep", expected: 0.2, actual: 0.20001, message }]);
+
+		expect(check(0)).toEqual(true);
+		expect(check(2)).toEqual(true);
+		expect(check(1.4)).toEqual(true);
+		expect(check(-20.2)).toEqual(true);
+
+		expect(check(1.4000000001)).toEqual([{ type: "numberStep", expected: 0.2, actual: 1.4000000001, message }]);
+		expect(check(1.40000000001)).toEqual(true); // will pass due to precision tolerance
 	});
 
 	it("check positive number", () => {
