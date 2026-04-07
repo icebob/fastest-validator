@@ -8,12 +8,19 @@ describe('TypeScript Definitions', () => {
 			const check = v.compile({ $$root: true, type: 'number' });
 			const message = 'The \'\' field must be a number.';
 
+			// @ts-expect-error
 			expect(check('')).toEqual([{ type: 'number', actual: '', message }]);
+			// @ts-expect-error
 			expect(check('test')).toEqual([{ type: 'number', actual: 'test', message }]);
+			// @ts-expect-error
 			expect(check('1')).toEqual([{ type: 'number', actual: '1', message }]);
+			// @ts-expect-error
 			expect(check([])).toEqual([{ type: 'number', actual: [], message }]);
+			// @ts-expect-error
 			expect(check({})).toEqual([{ type: 'number', actual: {}, message }]);
+			// @ts-expect-error
 			expect(check(false)).toEqual([{ type: 'number', actual: false, message }]);
+			// @ts-expect-error
 			expect(check(true)).toEqual([{ type: 'number', actual: true, message }]);
 			expect(check(NaN)).toEqual([{ type: 'number', actual: NaN, message }]);
 			expect(check(Number.POSITIVE_INFINITY)).toEqual([{ type: 'number', actual: Number.POSITIVE_INFINITY, message }]);
@@ -26,7 +33,7 @@ describe('TypeScript Definitions', () => {
 		});
 
 		it('check min', () => {
-			const check = v.compile({ $$root: true, type: 'number', min: 5 } as RuleNumber);
+			const check = v.compile({ $$root: true, type: 'number', min: 5 } satisfies RuleNumber);
 			const message = 'The \'\' field must be greater than or equal to 5.';
 
 			expect(check(3)).toEqual([{ type: 'numberMin', expected: 5, actual: 3, message }]);
@@ -36,7 +43,7 @@ describe('TypeScript Definitions', () => {
 		});
 
 		it('check max', () => {
-			const check = v.compile({ $$root: true, type: 'number', max: 5 } as RuleNumber);
+			const check = v.compile({ $$root: true, type: 'number', max: 5 } satisfies RuleNumber);
 			const message = 'The \'\' field must be less than or equal to 5.';
 
 			expect(check(8)).toEqual([{ type: 'numberMax', expected: 5, actual: 8, message }]);
@@ -47,7 +54,7 @@ describe('TypeScript Definitions', () => {
 		});
 
 		it('check equal value', () => {
-			const check = v.compile({ $$root: true, type: 'number', equal: 123 } as RuleNumber);
+			const check = v.compile({ $$root: true, type: 'number', equal: 123 } satisfies RuleNumber);
 			const message = 'The \'\' field must be equal to 123.';
 
 			expect(check(8)).toEqual([{ type: 'numberEqual', expected: 123, actual: 8, message }]);
@@ -57,7 +64,7 @@ describe('TypeScript Definitions', () => {
 		});
 
 		it('check not equal value', () => {
-			const check = v.compile({ $$root: true, type: 'number', notEqual: 123 } as RuleNumber);
+			const check = v.compile({ $$root: true, type: 'number', notEqual: 123 } satisfies RuleNumber);
 			const message = 'The \'\' field can\'t be equal to 123.';
 
 			expect(check(8)).toEqual(true);
@@ -67,7 +74,7 @@ describe('TypeScript Definitions', () => {
 		});
 
 		it('check integer', () => {
-			const check = v.compile({ $$root: true, type: 'number', integer: true } as RuleNumber);
+			const check = v.compile({ $$root: true, type: 'number', integer: true } satisfies RuleNumber);
 			const message = 'The \'\' field must be an integer.';
 
 			expect(check(8.5)).toEqual([{ type: 'numberInteger', actual: 8.5, message }]);
@@ -79,7 +86,7 @@ describe('TypeScript Definitions', () => {
 		});
 
 		it('check positive number', () => {
-			const check = v.compile({ $$root: true, type: 'number', positive: true } as RuleNumber);
+			const check = v.compile({ $$root: true, type: 'number', positive: true } satisfies RuleNumber);
 			const message = 'The \'\' field must be a positive number.';
 
 			expect(check(-5.5)).toEqual([{ type: 'numberPositive', actual: -5.5, message }]);
@@ -91,7 +98,7 @@ describe('TypeScript Definitions', () => {
 		});
 
 		it('check negative number', () => {
-			const check = v.compile({ $$root: true, type: 'number', negative: true } as RuleNumber);
+			const check = v.compile({ $$root: true, type: 'number', negative: true } satisfies RuleNumber);
 			const message = 'The \'\' field must be a negative number.';
 
 			expect(check(5.5)).toEqual([{ type: 'numberNegative', actual: 5.5, message }]);
@@ -103,7 +110,7 @@ describe('TypeScript Definitions', () => {
 		});
 
 		it('should convert & check values', () => {
-			const check = v.compile({ $$root: true, type: 'number', convert: true } as RuleNumber);
+			const check = v.compile({ $$root: true, type: 'number', convert: true } satisfies RuleNumber);
 			const message = 'The \'\' field must be a number.';
 
 			expect(check({})).toEqual([{ type: 'number', actual: {}, message }]);
@@ -120,7 +127,7 @@ describe('TypeScript Definitions', () => {
 		});
 
 		it('should sanitize', () => {
-			const check = v.compile({ age: { type: 'number', convert: true } as RuleNumber });
+			const check = v.compile({ age: { type: 'number', convert: true } satisfies RuleNumber });
 
 			let obj: ValidationSchema = { age: '' };
 			expect(check(obj)).toEqual(true);

@@ -54,8 +54,8 @@ describe('TypeScript Definitions', () => {
 	describe('Test validate', () => {
 
 		const v = new Validator();
-		const compiledFn = jest.fn(() => true);
-		v.compile = jest.fn(() => compiledFn) as any;
+		const compiledFn = vi.fn(() => true);
+		v.compile = vi.fn(() => compiledFn) as any;
 
 		const schema = {
 			name: { type: 'string' },
@@ -87,7 +87,7 @@ describe('TypeScript Definitions', () => {
 			},
 		});
 
-		const validFn = jest.fn(function (this: Validator, { messages }) {
+		const validFn = vi.fn(function (this: Validator, { messages }) {
 			return {
 				source: `
 				if (value % 2 != 0)

@@ -5,21 +5,27 @@ const v = new Validator();
 describe('TypeScript Definitions', () => {
 	describe('Test rule: url', () => {
 		it("should check empty values", () => {
-			const check = v.compile({ $$root: true, type: "url", empty: true } as RuleURL);
+			const check = v.compile({ $$root: true, type: "url", empty: true } satisfies RuleURL);
 
 			expect(check("https://google.com")).toEqual(true);
 			expect(check("")).toEqual(true);
 		});
 
 		it('should check values', () => {
-			const check = v.compile({ $$root: true, type: 'url' } as RuleURL);
+			const check = v.compile({ $$root: true, type: 'url' } satisfies RuleURL);
 			let message = 'The \'\' field must be a string.';
 
+			// @ts-expect-error
 			expect(check(0)).toEqual([{ type: 'string', actual: 0, message }]);
+			// @ts-expect-error
 			expect(check(1)).toEqual([{ type: 'string', actual: 1, message }]);
+			// @ts-expect-error
 			expect(check([])).toEqual([{ type: 'string', actual: [], message }]);
+			// @ts-expect-error
 			expect(check({})).toEqual([{ type: 'string', actual: {}, message }]);
+			// @ts-expect-error
 			expect(check(false)).toEqual([{ type: 'string', actual: false, message }]);
+			// @ts-expect-error
 			expect(check(true)).toEqual([{ type: 'string', actual: true, message }]);
 
 			message = 'The \'\' field must be a valid URL.';

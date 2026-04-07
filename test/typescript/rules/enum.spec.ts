@@ -1,4 +1,4 @@
-import Validator, { RuleEnum } from '../../../';
+import Validator from '../../../';
 
 const v = new Validator();
 
@@ -6,10 +6,12 @@ describe('TypeScript Definitions', () => {
 	describe('Test rule: enum', () => {
 
 		it('check enum', () => {
-			const check = v.compile({ $$root: true, type: 'enum', values: ['male', 'female'] } as RuleEnum);
+			const check = v.compile({ $$root: true, type: 'enum', values: ['male', 'female'] });
 
+			// @ts-expect-error
 			expect(check('')).
 				toEqual([{ type: 'enumValue', expected: 'male, female', actual: '', message: 'The \'\' field value \'male, female\' does not match any of the allowed values.' }]);
+			// @ts-expect-error
 			expect(check('human')).
 				toEqual([{ type: 'enumValue', expected: 'male, female', actual: 'human', message: 'The \'\' field value \'male, female\' does not match any of the allowed values.' }]);
 			expect(check('male')).toEqual(true);
@@ -17,8 +19,9 @@ describe('TypeScript Definitions', () => {
 		});
 
 		it('check enum', () => {
-			const check = v.compile({ $$root: true, type: 'enum', values: [null, 1, 2, 'done', false] } as RuleEnum);
+			const check = v.compile({ $$root: true, type: 'enum', values: [null, 1, 2, 'done', false] } );
 
+			// @ts-expect-error
 			expect(check('male')).
 				toEqual([
 					{

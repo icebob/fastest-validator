@@ -1,4 +1,8 @@
-import Validator, { RuleTuple, ValidationError } from '../../../';
+import Validator, {
+	RuleTuple,
+	ValidationError,
+	ValidationSchema,
+} from "../../../";
 
 const v = new Validator({
 	useNewCustomCheckerFunction: true,
@@ -43,21 +47,28 @@ describe("TypeScript Definitions", () => {
 			const check = v.compile({
 				$$root: true,
 				type: "tuple"
-			} as RuleTuple);
+			} satisfies RuleTuple);
 			const message = "The '' field must be an array.";
 
+			// @ts-expect-error
 			expect(check(0)).toEqual([{ type: "tuple", actual: 0, message }]);
+			// @ts-expect-error
 			expect(check(1)).toEqual([{ type: "tuple", actual: 1, message }]);
+			// @ts-expect-error
 			expect(check({})).toEqual([{ type: "tuple", actual: {}, message }]);
+			// @ts-expect-error
 			expect(check(false)).toEqual([
-				{ type: "tuple", actual: false, message }
+				{ type: "tuple", actual: false, message },
 			]);
+			// @ts-expect-error
 			expect(check(true)).toEqual([
-				{ type: "tuple", actual: true, message }
+				{ type: "tuple", actual: true, message },
 			]);
+			// @ts-expect-error
 			expect(check("")).toEqual([{ type: "tuple", actual: "", message }]);
+			// @ts-expect-error
 			expect(check("test")).toEqual([
-				{ type: "tuple", actual: "test", message }
+				{ type: "tuple", actual: "test", message },
 			]);
 
 			expect(check([])).toEqual(true);
@@ -68,7 +79,7 @@ describe("TypeScript Definitions", () => {
 				$$root: true,
 				type: "tuple",
 				empty: false,
-			} as RuleTuple);
+			} satisfies RuleTuple);
 			const message = "The '' field must not be an empty array.";
 
 			expect(check([1])).toEqual(true);
@@ -80,8 +91,8 @@ describe("TypeScript Definitions", () => {
 		it("check length (w/o defined items)", () => {
 			const check = v.compile({
 				$$root: true,
-				type: "tuple"
-			} as RuleTuple);
+				type: "tuple",
+			} satisfies RuleTuple);
 
 			expect(check([1])).toEqual(true);
 			expect(check([1, 2, 3])).toEqual(true);
@@ -92,8 +103,8 @@ describe("TypeScript Definitions", () => {
 			const check = v.compile({
 				$$root: true,
 				type: "tuple",
-				items: ["boolean", "string"]
-			} as RuleTuple);
+				items: ["boolean", "string"],
+			} satisfies RuleTuple);
 			const message = "The '' field must contain 2 items.";
 
 			expect(check([1])).toEqual([
@@ -119,7 +130,7 @@ describe("TypeScript Definitions", () => {
 			const check = v.compile({
 				$$root: true,
 				type: "tuple"
-			} as RuleTuple);
+			} satisfies RuleTuple);
 
 			expect(check([1])).toEqual(true);
 			expect(check([1, 2, 3])).toEqual(true);
@@ -131,7 +142,7 @@ describe("TypeScript Definitions", () => {
 				$$root: true,
 				type: "tuple",
 				items: ["string", "number"]
-			} as RuleTuple);
+			} satisfies RuleTuple);
 
 			expect(check([1, "human"])).toEqual([
 				{
@@ -145,16 +156,16 @@ describe("TypeScript Definitions", () => {
 					message: "The '[1]' field must be a number.",
 					field: "[1]",
 					actual: "human"
-				}
+				},
 			]);
 
 			expect(check(["male", 3])).toEqual(true);
 		});
 
 		it("should call custom checker", () => {
-			const customFn = jest.fn(v => v);
+			const customFn = vi.fn((v) => v);
 			const schema = {
-				pair: { type: "tuple", custom: customFn } as RuleTuple
+				pair: { type: "tuple", custom: customFn } satisfies RuleTuple,
 			};
 			const check = v.compile(schema);
 
@@ -171,8 +182,8 @@ describe("TypeScript Definitions", () => {
 		});
 
 		it("should call custom checker for items", () => {
-			const customFn = jest.fn(v => v);
-			const customFnItems = jest.fn(v => v);
+			const customFn = vi.fn((v) => v);
+			const customFnItems = vi.fn((v) => v);
 			const schema = {
 				pair: {
 					type: "tuple",
@@ -187,8 +198,8 @@ describe("TypeScript Definitions", () => {
 							custom: customFnItems
 						}
 					]
-				} as RuleTuple
-			};
+				}
+			} satisfies ValidationSchema;
 			const check = v.compile(schema);
 
 			expect(check({ pair: ["Pizza", true] })).toEqual(true);
@@ -226,8 +237,8 @@ describe("TypeScript Definitions", () => {
 		describe("Test sanitization", () => {
 			it("should untouch the checked obj", () => {
 				let schema = {
-					roles: { type: "tuple" } as RuleTuple
-				};
+					roles: { type: "tuple" } satisfies RuleTuple,
+				} as const;
 				let check = v.compile(schema);
 
 				const obj = {
@@ -251,9 +262,9 @@ describe("TypeScript Definitions", () => {
 						type: "tuple",
 						items: [
 							{ type: "number", custom: customFn },
-							{ type: "number", custom: customFn }
+							{ type: "number", custom: customFn },
 						]
-					} as RuleTuple
+					} satisfies RuleTuple
 				});
 
 				const o = {

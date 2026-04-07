@@ -1,4 +1,4 @@
-import Validator from '../../';
+import Validator, {  ValidationSchema, ValidationRule } from '../../';
 
 describe('TypeScript Definitions', () => {
 	describe('Test flat schema', () => {
@@ -57,7 +57,7 @@ describe('TypeScript Definitions', () => {
 					zip: { type: 'number', min: 100, max: 99999 },
 				},
 			},
-		};
+		} as const;
 		let check = v.compile(schema);
 
 		it('should give true if obj is valid', () => {
@@ -86,6 +86,7 @@ describe('TypeScript Definitions', () => {
 				},
 			};
 
+			// @ts-expect-error
 			let res = check(obj);
 
 			expect(res).toBeInstanceOf(Array);
@@ -713,10 +714,11 @@ describe('TypeScript Definitions', () => {
 				type: 'array',
 				items: 'number',
 			},
-		];
+		] satisfies ValidationRule;
 
+		const a:ValidationSchema = schema;
 		let check = v.compile(schema);
-
+		
 		it('should give true if first array is given', () => {
 			let obj = ['hello', 'there', 'this', 'is', 'a', 'test'];
 
@@ -736,6 +738,7 @@ describe('TypeScript Definitions', () => {
 		it('should give error if the array is broken', () => {
 			let obj = ['hello', 3];
 
+			// @ts-expect-error
 			let res = check(obj);
 
 			expect(res).toBeInstanceOf(Array);
@@ -749,6 +752,7 @@ describe('TypeScript Definitions', () => {
 
 		it('should give error if the array is broken', () => {
 			let obj = [true, false];
+			// @ts-expect-error
 			let res = check(obj);
 
 			expect(res).toBeInstanceOf(Array);
@@ -769,7 +773,7 @@ describe('TypeScript Definitions', () => {
 		it('should compile and validate', () => {
 			const schema = {
 				valid: { type: 'object' },
-			};
+			} satisfies ValidationSchema;
 
 			const check = v.compile(schema);
 			expect(check).toBeInstanceOf(Function);
@@ -785,7 +789,7 @@ describe('TypeScript Definitions', () => {
 		it('should compile and validate', () => {
 			const schema = {
 				valid: { type: 'array' },
-			};
+			} satisfies ValidationSchema;
 
 			const check = v.compile(schema);
 			expect(check).toBeInstanceOf(Function);
@@ -927,7 +931,8 @@ describe('TypeScript Definitions', () => {
 		let schema = {
 			name: 'string',
 			$$strict: true,
-		};
+		} satisfies ValidationSchema;
+
 
 		let check = v.compile(schema);
 
@@ -962,7 +967,7 @@ describe('TypeScript Definitions', () => {
 				},
 			},
 			$$strict: true,
-		};
+		} satisfies ValidationSchema;
 
 		let check = v.compile(schema);
 
@@ -999,7 +1004,7 @@ describe('TypeScript Definitions', () => {
 					street: 'string',
 				},
 			},
-		};
+		} satisfies ValidationSchema;
 
 		let check = v.compile(schema);
 
@@ -1031,7 +1036,7 @@ describe('TypeScript Definitions', () => {
 			status: { type: 'boolean', default: true },
 			tuple: { type: 'tuple', items: [{ type: 'number', default: 666 }, { type: 'string', default: 'lucifer' }] },
 			array: { type: 'array', items: { type: 'string', default: 'bar' } },
-		};
+		} satisfies ValidationSchema;
 		let check = v.compile(schema);
 
 		it('should fill not defined properties', () => {
@@ -1071,7 +1076,7 @@ describe('TypeScript Definitions', () => {
 						{ type: "number", optional: true },
 					],
 				},
-			};
+			} satisfies ValidationSchema;
 			const check = v.compile(schema);
 
 			expect(check({})).toBe(true);
@@ -1083,7 +1088,7 @@ describe('TypeScript Definitions', () => {
 		});
 
 		it("should not throw error if value is null", () => {
-			const schema = { foo: { type: "number", optional: true } };
+			const schema = { foo: { type: "number", optional: true } } satisfies ValidationSchema;
 			const check = v.compile(schema);
 
 			const o = { foo: null, array: [null], tuple: [null] };
@@ -1092,7 +1097,7 @@ describe('TypeScript Definitions', () => {
 		});
 
 		it("should not throw error if value exist", () => {
-			const schema = { foo: { type: "number", optional: true } };
+			const schema = { foo: { type: "number", optional: true } } satisfies ValidationSchema;
 			const check = v.compile(schema);
 
 			expect(check({ foo: 2 })).toBe(true);
@@ -1109,8 +1114,7 @@ describe('TypeScript Definitions', () => {
 						{ type: "number", optional: true, default: 666 },
 					],
 				},
-
-			};
+			} satisfies ValidationSchema;
 			const check = v.compile(schema);
 
 			const o1 = { foo: 2, array: [], tuple: [6] };
@@ -1132,15 +1136,17 @@ describe('TypeScript Definitions', () => {
 			const v = new Validator();
 
 			it("should throw error if value is undefined", () => {
-				const schema = { foo: { type: "number", nullable: true } };
+				const schema = { foo: { type: "number", nullable: true } } satisfies ValidationSchema;
 				const check = v.compile(schema);
 
+				// @ts-expect-error
 				expect(check(check)).toBeInstanceOf(Array);
+				// @ts-expect-error
 				expect(check({ foo: undefined })).toBeInstanceOf(Array);
 			});
 
 			it("should not throw error if value is null", () => {
-				const schema = { foo: { type: "number", nullable: true } };
+				const schema = { foo: { type: "number", nullable: true } } satisfies ValidationSchema;
 				const check = v.compile(schema);
 
 				const o = { foo: null };
@@ -1149,13 +1155,13 @@ describe('TypeScript Definitions', () => {
 			});
 
 			it("should not throw error if value exist", () => {
-				const schema = { foo: { type: "number", nullable: true } };
+				const schema = { foo: { type: "number", nullable: true } } satisfies ValidationSchema;
 				const check = v.compile(schema);
 				expect(check({ foo: 2 })).toBe(true);
 			});
 
 			it("should set default value if there is a default", () => {
-				const schema = { foo: { type: "number", nullable: true, default: 5 } };
+				const schema = { foo: { type: "number", nullable: true, default: 5 } } satisfies ValidationSchema;
 				const check = v.compile(schema);
 
 				const o1 = { foo: 2 };
@@ -1168,7 +1174,7 @@ describe('TypeScript Definitions', () => {
 			});
 
 			it("should not set default value if current value is null", () => {
-				const schema = { foo: { type: "number", nullable: true, default: 5 } };
+				const schema = { foo: { type: "number", nullable: true, default: 5 } } satisfies ValidationSchema;
 				const check = v.compile(schema);
 
 				const o = { foo: null };
@@ -1177,7 +1183,7 @@ describe('TypeScript Definitions', () => {
 			});
 
 			it("should work with optional", () => {
-				const schema = { foo: { type: "number", nullable: true, optional: true } };
+				const schema = { foo: { type: "number", nullable: true, optional: true } } satisfies ValidationSchema;
 				const check = v.compile(schema);
 
 				expect(check({ foo: 3 })).toBe(true);
@@ -1186,7 +1192,7 @@ describe('TypeScript Definitions', () => {
 			});
 
 			it("should work with optional and default", () => {
-				const schema = { foo: { type: "number", nullable: true, optional: true, default: 5 } };
+				const schema = { foo: { type: "number", nullable: true, optional: true, default: 5 } } satisfies ValidationSchema;
 				const check = v.compile(schema);
 
 				expect(check({ foo: 3 })).toBe(true);
@@ -1201,7 +1207,7 @@ describe('TypeScript Definitions', () => {
 			});
 
 			it("should accept null value when optional", () => {
-				const schema = { foo: { type: "number", nullable: false, optional: true } };
+				const schema = { foo: { type: "number", nullable: false, optional: true } } satisfies ValidationSchema;
 				const check = v.compile(schema);
 
 				expect(check({ foo: 3 })).toBe(true);
@@ -1211,22 +1217,27 @@ describe('TypeScript Definitions', () => {
 			});
 
 			it("should accept null as value when required", () => {
-				const schema = {foo: {type: "number", nullable: true, optional: false}};
+				const schema = {foo: {type: "number", nullable: true, optional: false}} satisfies ValidationSchema;
 				const check = v.compile(schema);
 
 				expect(check({ foo: 3 })).toBe(true);
+				// @ts-expect-error
 				expect(check({ foo: undefined })).toEqual([{"actual": undefined, "field": "foo", "message": "The 'foo' field is required.", "type": "required"}]);
+				// @ts-expect-error
 				expect(check({})).toEqual([{"actual": undefined, "field": "foo", "message": "The 'foo' field is required.", "type": "required"}]);
 				expect(check({ foo: null })).toBe(true);
 			});
 
 			it("should not accept null as value when required and not explicitly not nullable", () => {
-				const schema = {foo: {type: "number", optional: false}};
+				const schema = {foo: {type: "number", optional: false}} satisfies ValidationSchema;
 				const check = v.compile(schema);
 	
 				expect(check({ foo: 3 })).toBe(true);
+				// @ts-expect-error
 				expect(check({ foo: undefined })).toEqual([{"actual": undefined, "field": "foo", "message": "The 'foo' field is required.", "type": "required"}]);
+				// @ts-expect-error
 				expect(check({})).toEqual([{"actual": undefined, "field": "foo", "message": "The 'foo' field is required.", "type": "required"}]);
+				// @ts-expect-error
 				expect(check({ foo: null })).toEqual([{"actual": null, "field": "foo", "message": "The 'foo' field is required.", "type": "required"}]);
 			});
 		});
@@ -1235,7 +1246,7 @@ describe('TypeScript Definitions', () => {
 			const v = new Validator({considerNullAsAValue: true});
 
 			it("should throw error if value is undefined", () => {
-				const schema = { foo: { type: "number" } };
+				const schema = { foo: { type: "number" } } satisfies ValidationSchema;
 				const check = v.compile(schema);
 
 				expect(check(check)).toBeInstanceOf(Array);
@@ -1243,7 +1254,7 @@ describe('TypeScript Definitions', () => {
 			});
 
 			it("should not throw error if value is null", () => {
-				const schema = { foo: { type: "number" } };
+				const schema = { foo: { type: "number" } } satisfies ValidationSchema;
 				const check = v.compile(schema);
 
 				const o = { foo: null };
@@ -1252,13 +1263,13 @@ describe('TypeScript Definitions', () => {
 			});
 
 			it("should not throw error if value exist", () => {
-				const schema = { foo: { type: "number" } };
+				const schema = { foo: { type: "number" } } satisfies ValidationSchema;
 				const check = v.compile(schema);
 				expect(check({ foo: 2 })).toBe(true);
 			});
 
 			it("should set default value if there is a default", () => {
-				const schema = { foo: { type: "number", default: 5 } };
+				const schema = { foo: { type: "number", default: 5 } } satisfies ValidationSchema;
 				const check = v.compile(schema);
 
 				const o1 = { foo: 2 };
@@ -1271,7 +1282,7 @@ describe('TypeScript Definitions', () => {
 			});
 
 			it("should not set default value if current value is null", () => {
-				const schema = { foo: { type: "number", default: 5 } };
+				const schema = { foo: { type: "number", default: 5 } } satisfies ValidationSchema;
 				const check = v.compile(schema);
 
 				const o = { foo: null };
@@ -1280,7 +1291,7 @@ describe('TypeScript Definitions', () => {
 			});
 
 			it("should set default value if current value is null but can't be", () => {
-				const schema = { foo: { type: "number", default: 5, nullable: false } };
+				const schema = { foo: { type: "number", default: 5, nullable: false } } satisfies ValidationSchema;
 				const check = v.compile(schema);
 	
 				const o = { foo: null };
@@ -1289,7 +1300,7 @@ describe('TypeScript Definitions', () => {
 			});
 
 			it("should set default value if current value is null but optional", () => {
-				const schema = { foo: { type: "number", default: 5, nullable: false, optional: true } };
+				const schema = { foo: { type: "number", default: 5, nullable: false, optional: true } } satisfies ValidationSchema;
 				const check = v.compile(schema);
 	
 				const o = { foo: null };
@@ -1298,7 +1309,7 @@ describe('TypeScript Definitions', () => {
 			});
 
 			it("should work with optional", () => {
-				const schema = { foo: { type: "number", optional: true } };
+				const schema = { foo: { type: "number", optional: true } } satisfies ValidationSchema;
 				const check = v.compile(schema);
 
 				expect(check({ foo: 3 })).toBe(true);
@@ -1307,7 +1318,7 @@ describe('TypeScript Definitions', () => {
 			});
 
 			it("should work with optional and default", () => {
-				const schema = { foo: { type: "number", optional: true, default: 5 } };
+				const schema = { foo: { type: "number", optional: true, default: 5 } } satisfies ValidationSchema;
 				const check = v.compile(schema);
 
 				expect(check({ foo: 3 })).toBe(true);
@@ -1322,7 +1333,7 @@ describe('TypeScript Definitions', () => {
 			});
 
 			it("should not accept null value even if optional", () => {
-				const schema = { foo: { type: "number", nullable: false, optional: true } };
+				const schema = { foo: { type: "number", nullable: false, optional: true } } satisfies ValidationSchema;
 				const check = v.compile(schema);
 
 				expect(check({ foo: 3 })).toBe(true);
@@ -1332,7 +1343,7 @@ describe('TypeScript Definitions', () => {
 			});
 
 			it("should not accept null as value", () => {
-				const schema = {foo: {type: "number", nullable: false}};
+				const schema = {foo: {type: "number", nullable: false}} satisfies ValidationSchema;
 				const check = v.compile(schema);
 	
 				expect(check({ foo: 3 })).toBe(true);
@@ -1348,13 +1359,13 @@ describe("Test async mode", () => {
 	const v = new Validator({ useNewCustomCheckerFunction: true });
 
 	// Async mode 1
-	const custom1 = jest.fn(async value => {
+	const custom1 = vi.fn(async value => {
 		await new Promise(resolve => setTimeout(resolve, 100));
 		return value.toUpperCase();
 	});
 
 	// Async mode 2
-	const custom2 = jest.fn(async (value) => {
+	const custom2 = vi.fn(async (value) => {
 		await new Promise(resolve => setTimeout(resolve, 100));
 		return value.trim();
 	});
@@ -1380,7 +1391,7 @@ describe("Test async mode", () => {
 		name: { type: "string", custom: custom1 },
 		username: { type: "custom", custom: custom2 },
 		age: { type: "even" }
-	};
+	} satisfies ValidationSchema;
 	const check = v.compile(schema);
 
 	it("should be async", () => {
@@ -1432,10 +1443,10 @@ describe("Test context meta", () => {
 		name: {
 			type: "string", custom: (value, errors, schema, name, parent, context) => {
 				expect(context.meta).toEqual({ a: "from-meta" });
-				return context.meta.a;
+				return context.meta?.a;
 			}
 		},
-	};
+	} satisfies ValidationSchema;
 	const check = v.compile(schema);
 
 	it("should call custom async validators", () => {

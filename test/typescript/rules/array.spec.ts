@@ -9,12 +9,19 @@ describe('TypeScript Definitions', () => {
 			const check = v.compile({ $$root: true, type: 'array' });
 			const message = 'The \'\' field must be an array.';
 
+			// @ts-expect-error
 			expect(check(0)).toEqual([{ type: 'array', actual: 0, message }]);
+			// @ts-expect-error
 			expect(check(1)).toEqual([{ type: 'array', actual: 1, message }]);
+			// @ts-expect-error
 			expect(check({})).toEqual([{ type: 'array', actual: {}, message }]);
+			// @ts-expect-error
 			expect(check(false)).toEqual([{ type: 'array', actual: false, message }]);
+			// @ts-expect-error
 			expect(check(true)).toEqual([{ type: 'array', actual: true, message }]);
+			// @ts-expect-error
 			expect(check('')).toEqual([{ type: 'array', actual: '', message }]);
+			// @ts-expect-error
 			expect(check('test')).toEqual([{ type: 'array', actual: 'test', message }]);
 
 			expect(check([])).toEqual(true);
@@ -74,12 +81,12 @@ describe('TypeScript Definitions', () => {
 			const check = v.compile({ $$root: true, type: 'array', enum: ['male', 'female'] } as RuleArray);
 
 			expect(check(['human'])).
-				toEqual(
+toEqual(
 					[{ type: 'arrayEnum', actual: 'human', expected: 'male, female', message: 'The \'human\' value in \'\' field does not match any of the \'male, female\' values.' }]);
 			expect(check(['male'])).toEqual(true);
 			expect(check(['male', 'female'])).toEqual(true);
 			expect(check(['male', 'female', 'human'])).
-				toEqual(
+toEqual(
 					[{ type: 'arrayEnum', actual: 'human', expected: 'male, female', message: 'The \'human\' value in \'\' field does not match any of the \'male, female\' values.' }]);
 		});
 
@@ -88,6 +95,7 @@ describe('TypeScript Definitions', () => {
 
 			expect(check([])).toEqual(true);
 			expect(check(['human'])).toEqual(true);
+			// @ts-expect-error
 			expect(check(['male', 3, 'female', true])).toEqual([
 				{ type: 'string', field: '[1]', actual: 3, message: 'The \'[1]\' field must be a string.' },
 				{ type: 'string', field: '[3]', actual: true, message: 'The \'[3]\' field must be a string.' },
@@ -160,11 +168,13 @@ describe('TypeScript Definitions', () => {
 			it ("should not convert into array if null or undefined", () => {
 				// Null check
 				const value = { data: null };
+				// @ts-expect-error
 				expect(check(value)).toEqual([{ type: "required", field: "data", actual: null, message: "The 'data' field is required." }]);
 				expect(value.data).toEqual(null);
 				// Undefined check
 				const value2 = { data: undefined };
-				expect(check(value2)).toEqual([{ type: "required", field: "data", actual: undefined, message: "The 'data' field is required." }]);
+				// @ts-expect-error
+					expect(check(value2)).toEqual([{ type: "required", field: "data", actual: undefined, message: "The 'data' field is required." }]);
 				expect(value2.data).toEqual(undefined);
 			});
 

@@ -9,15 +9,23 @@ describe('TypeScript Definitions', () => {
 			const check = v.compile({ $$root: true, type: 'date' });
 			const message = 'The \'\' field must be a Date.';
 
+			// @ts-expect-error
 			expect(check(0)).toEqual([{ type: 'date', actual: 0, message }]);
+			// @ts-expect-error
 			expect(check(1)).toEqual([{ type: 'date', actual: 1, message }]);
+			// @ts-expect-error
 			expect(check('')).toEqual([{ type: 'date', actual: '', message }]);
+			// @ts-expect-error
 			expect(check('true')).toEqual([{ type: 'date', actual: 'true', message }]);
+			// @ts-expect-error
 			expect(check('false')).toEqual([{ type: 'date', actual: 'false', message }]);
+			// @ts-expect-error
 			expect(check([])).toEqual([{ type: 'date', actual: [], message }]);
+			// @ts-expect-error
 			expect(check({})).toEqual([{ type: 'date', actual: {}, message }]);
 
 			const now = Date.now();
+			// @ts-expect-error
 			expect(check(now)).toEqual([{ type: 'date', actual: now, message }]);
 
 			expect(check(new Date())).toEqual(true);
