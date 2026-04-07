@@ -86,6 +86,8 @@ describe("Test rule: number", () => {
 		const message =	"Invalid 'number' schema. The 'step' field must be a positive number.";
 
 		expect(() => v.compile({ $$root: true, type: "number", step: 0 })).toThrow(message);
+		expect(() => v.compile({ $$root: true, type: "number", step: -1 })).toThrow(message);
+		expect(() => v.compile({ $$root: true, type: "number", step: NaN })).toThrow(message);
 	});
 
 	it("check step", () => {
