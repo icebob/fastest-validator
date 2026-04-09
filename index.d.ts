@@ -352,6 +352,10 @@ export interface RuleNumber extends RuleCustom {
 	 */
 	integer?: boolean;
 	/**
+	 * The stepping interval for the input value
+	 */
+	step?: number;
+	/**
 	 * The value must be greater than zero
 	 * @default false
 	 */
@@ -731,6 +735,10 @@ export interface BuiltInMessages {
 	 * The '{field}' field must be an integer.
 	 */
 	numberInteger?: string;
+	/**
+	 * The '{field}' field must be a multiple of {expected}.
+	 */
+	numberStep?: string;
 	/**
 	 * The '{field}' field must be a positive number.
 	 */
