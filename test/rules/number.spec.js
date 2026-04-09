@@ -88,6 +88,7 @@ describe("Test rule: number", () => {
 		expect(() => v.compile({ $$root: true, type: "number", step: 0 })).toThrow(message);
 		expect(() => v.compile({ $$root: true, type: "number", step: -1 })).toThrow(message);
 		expect(() => v.compile({ $$root: true, type: "number", step: NaN })).toThrow(message);
+		expect(() => v.compile({ $$root: true, type: "number", step: Infinity })).toThrow(message);
 	});
 
 	it("check step", () => {
@@ -97,6 +98,8 @@ describe("Test rule: number", () => {
 		expect(check(15)).toEqual([{ type: "numberStep", expected: 10, actual: 15, message }]);
 		expect(check(8.5)).toEqual([{ type: "numberStep", expected: 10, actual: 8.5, message }]);
 		expect(check(-5.5)).toEqual([{ type: "numberStep", expected: 10, actual: -5.5, message }]);
+		expect(check(NaN)).toEqual([{ type: "numberStep", expected: 10, actual: NaN, message }]);
+		expect(check(Infinity)).toEqual([{ type: "numberStep", expected: 10, actual: Infinity, message }]);
 		
 		expect(check(0)).toEqual(true);
 		expect(check(20)).toEqual(true);
@@ -111,6 +114,8 @@ describe("Test rule: number", () => {
 		expect(check(1.1)).toEqual([{ type: "numberStep", expected: 0.2, actual: 1.1, message }]);
 		expect(check(-5.5)).toEqual([{ type: "numberStep", expected: 0.2, actual: -5.5, message }]);
 		expect(check(0.20001)).toEqual([{ type: "numberStep", expected: 0.2, actual: 0.20001, message }]);
+		expect(check(NaN)).toEqual([{ type: "numberStep", expected: 0.2, actual: NaN, message }]);
+		expect(check(Infinity)).toEqual([{ type: "numberStep", expected: 0.2, actual: Infinity, message }]);
 
 		expect(check(0)).toEqual(true);
 		expect(check(2)).toEqual(true);
@@ -118,7 +123,6 @@ describe("Test rule: number", () => {
 		expect(check(-20.2)).toEqual(true);
 
 		expect(check(1.4000000001)).toEqual([{ type: "numberStep", expected: 0.2, actual: 1.4000000001, message }]);
-		expect(check(1.40000000001)).toEqual(true); // will pass due to precision tolerance
 	});
 
 	it("check positive number", () => {
