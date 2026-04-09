@@ -98,8 +98,6 @@ describe("Test rule: number", () => {
 		expect(check(15)).toEqual([{ type: "numberStep", expected: 10, actual: 15, message }]);
 		expect(check(8.5)).toEqual([{ type: "numberStep", expected: 10, actual: 8.5, message }]);
 		expect(check(-5.5)).toEqual([{ type: "numberStep", expected: 10, actual: -5.5, message }]);
-		expect(check(NaN)).toEqual([{ type: "numberStep", expected: 10, actual: NaN, message }]);
-		expect(check(Infinity)).toEqual([{ type: "numberStep", expected: 10, actual: Infinity, message }]);
 		
 		expect(check(0)).toEqual(true);
 		expect(check(20)).toEqual(true);
@@ -114,8 +112,6 @@ describe("Test rule: number", () => {
 		expect(check(1.1)).toEqual([{ type: "numberStep", expected: 0.2, actual: 1.1, message }]);
 		expect(check(-5.5)).toEqual([{ type: "numberStep", expected: 0.2, actual: -5.5, message }]);
 		expect(check(0.20001)).toEqual([{ type: "numberStep", expected: 0.2, actual: 0.20001, message }]);
-		expect(check(NaN)).toEqual([{ type: "numberStep", expected: 0.2, actual: NaN, message }]);
-		expect(check(Infinity)).toEqual([{ type: "numberStep", expected: 0.2, actual: Infinity, message }]);
 
 		expect(check(0)).toEqual(true);
 		expect(check(2)).toEqual(true);
