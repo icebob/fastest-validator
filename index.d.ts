@@ -923,22 +923,23 @@ export interface ValidationSchemaMetaKeys {
 /**
  * Definition for validation schema based on validation rules
  */
-export type ValidationSchema =
-	| ({ $$root?: false } & ValidationSchemaNested & ValidationSchemaMetaKeys)
+export type ValidationSchema<T = any> =
+	| ({ $$root?: false } & ValidationSchemaNested<T> &
+			ValidationSchemaMetaKeys)
 	// If $$root is true, we expect a ValidationRuleObject, not a JS object schema.
 	| ({ $$root: true } & ValidationRuleObject & ValidationSchemaMetaKeys)
 	// If it's not set
-	| ({ $$root?: boolean } & (ValidationRule | ValidationSchemaNested) &
+	| ({ $$root?: boolean } & (ValidationRule | ValidationSchemaNested<T>) &
 			ValidationSchemaMetaKeys);
 
-export type ValidationSchemaNested = {
+export type ValidationSchemaNested<T = any> = {
 	/**
 	 * List of validation rules for each defined field.
 	 * Note that `boolean` is only acceptable for ValidationSchemaMetaKeys.
 	 * However, omitting it here would cause TypeScript errors.
 	 * @see https://www.typescriptlang.org/docs/handbook/2/objects.html#index-signatures
 	 */
-	[key: string]: ValidationRule | boolean | undefined;
+	[key in keyof T]: ValidationRule | boolean | undefined;
 };
 
 /**
