@@ -9,11 +9,17 @@ describe('TypeScript Definitions', () => {
 			const check = v.compile({ $$root: true, type: 'luhn' });
 			let message = 'The \'\' field must be a string.';
 
+			// @ts-expect-error
 			expect(check(0)).toEqual([{ type: 'string', actual: 0, message }]);
+			// @ts-expect-error
 			expect(check(1)).toEqual([{ type: 'string', actual: 1, message }]);
+			// @ts-expect-error
 			expect(check([])).toEqual([{ type: 'string', actual: [], message }]);
+			// @ts-expect-error
 			expect(check({})).toEqual([{ type: 'string', actual: {}, message }]);
+			// @ts-expect-error
 			expect(check(false)).toEqual([{ type: 'string', actual: false, message }]);
+			// @ts-expect-error
 			expect(check(true)).toEqual([{ type: 'string', actual: true, message }]);
 
 			message = 'The \'\' field must be a valid checksum luhn.';

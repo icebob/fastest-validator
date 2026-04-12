@@ -8,20 +8,27 @@ describe("TypeScript Definitions", () => {
 			const check = v.compile({ $$root: true, type: "boolean" });
 			const message = "The '' field must be a boolean.";
 
+			// @ts-expect-error
 			expect(check(0)).toEqual([{ type: "boolean", actual: 0, message }]);
+			// @ts-expect-error
 			expect(check(1)).toEqual([{ type: "boolean", actual: 1, message }]);
+			// @ts-expect-error
 			expect(check("")).toEqual([
 				{ type: "boolean", actual: "", message },
 			]);
+			// @ts-expect-error
 			expect(check("true")).toEqual([
 				{ type: "boolean", actual: "true", message },
 			]);
+			// @ts-expect-error
 			expect(check("false")).toEqual([
 				{ type: "boolean", actual: "false", message },
 			]);
+			// @ts-expect-error
 			expect(check([])).toEqual([
 				{ type: "boolean", actual: [], message },
 			]);
+			// @ts-expect-error
 			expect(check({})).toEqual([
 				{ type: "boolean", actual: {}, message },
 			]);
@@ -40,6 +47,7 @@ describe("TypeScript Definitions", () => {
 
 			expect(check(0)).toEqual(true);
 			expect(check(1)).toEqual(true);
+			// @ts-expect-error
 			expect(check("")).toEqual([
 				{ type: "boolean", actual: "", message },
 			]);
@@ -47,9 +55,11 @@ describe("TypeScript Definitions", () => {
 			expect(check("false")).toEqual(true);
 			expect(check("on")).toEqual(true);
 			expect(check("off")).toEqual(true);
+			// @ts-expect-error
 			expect(check([])).toEqual([
 				{ type: "boolean", actual: [], message },
 			]);
+			// @ts-expect-error
 			expect(check({})).toEqual([
 				{ type: "boolean", actual: {}, message },
 			]);
@@ -64,7 +74,7 @@ describe("TypeScript Definitions", () => {
 			});
 
 			let obj: {
-				status: number | boolean | "true" | "false" | "on" | "off";
+				status: 0 | 1 | boolean | "true" | "false" | "on" | "off";
 			} = { status: 0 };
 			expect(check(obj)).toEqual(true);
 			expect(obj).toEqual({ status: false });

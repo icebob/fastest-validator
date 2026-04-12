@@ -9,11 +9,17 @@ describe('TypeScript Definitions', () => {
 			const check = v.compile({ $$root: true, type: 'string' });
 			const message = 'The \'\' field must be a string.';
 
+			// @ts-expect-error
 			expect(check(0)).toEqual([{ type: 'string', actual: 0, message }]);
+			// @ts-expect-error
 			expect(check(1)).toEqual([{ type: 'string', actual: 1, message }]);
+			// @ts-expect-error
 			expect(check([])).toEqual([{ type: 'string', actual: [], message }]);
+			// @ts-expect-error
 			expect(check({})).toEqual([{ type: 'string', actual: {}, message }]);
+			// @ts-expect-error
 			expect(check(false)).toEqual([{ type: 'string', actual: false, message }]);
+			// @ts-expect-error
 			expect(check(true)).toEqual([{ type: 'string', actual: true, message }]);
 
 			expect(check('')).toEqual(true);
@@ -21,7 +27,7 @@ describe('TypeScript Definitions', () => {
 		});
 
 		it('check empty values', () => {
-			const check = v.compile({ $$root: true, type: 'string', empty: false } as RuleString);
+			const check = v.compile({ $$root: true, type: 'string', empty: false } satisfies RuleString);
 
 			expect(check('abc')).toEqual(true);
 			expect(check('')).toEqual([{ type: 'stringEmpty', actual: '', message: 'The \'\' field must not be empty.' }]);
@@ -54,28 +60,28 @@ describe('TypeScript Definitions', () => {
 		});
 
 		it('check min length', () => {
-			const check = v.compile({ $$root: true, type: 'string', min: 5 } as RuleString);
+			const check = v.compile({ $$root: true, type: 'string', min: 5 } satisfies RuleString);
 
 			expect(check('John')).toEqual([{ type: 'stringMin', expected: 5, actual: 4, message: 'The \'\' field length must be greater than or equal to 5 characters long.' }]);
 			expect(check('Icebob')).toEqual(true);
 		});
 
 		it('check max length', () => {
-			const check = v.compile({ $$root: true, type: 'string', max: 5 } as RuleString);
+			const check = v.compile({ $$root: true, type: 'string', max: 5 } satisfies RuleString);
 
 			expect(check('John')).toEqual(true);
 			expect(check('Icebob')).toEqual([{ type: 'stringMax', expected: 5, actual: 6, message: 'The \'\' field length must be less than or equal to 5 characters long.' }]);
 		});
 
 		it('check fix length', () => {
-			const check = v.compile({ $$root: true, type: 'string', length: 6 } as RuleString);
+			const check = v.compile({ $$root: true, type: 'string', length: 6 } satisfies RuleString);
 
 			expect(check('John')).toEqual([{ type: 'stringLength', expected: 6, actual: 4, message: 'The \'\' field length must be 6 characters long.' }]);
 			expect(check('Icebob')).toEqual(true);
 		});
 
 		it('check pattern', () => {
-			const check = v.compile({ $$root: true, type: 'string', pattern: /^[A-Z]+$/ } as RuleString);
+			const check = v.compile({ $$root: true, type: 'string', pattern: /^[A-Z]+$/ } satisfies RuleString);
 
 			expect(check('John')).toEqual([{ type: 'stringPattern', expected: '/^[A-Z]+$/', actual: 'John', message: 'The \'\' field fails to match the required pattern.' }]);
 			expect(check('JOHN')).toEqual(true);
@@ -89,7 +95,7 @@ describe('TypeScript Definitions', () => {
 		});
 
 		it('check pattern with a quote', () => {
-			const check = v.compile({ $$root: true, type: 'string', pattern: /^[a-z0-9 .\-'?!":;\\/,_]+$/i } as RuleString);
+			const check = v.compile({ $$root: true, type: 'string', pattern: /^[a-z0-9 .\-'?!":;\\/,_]+$/i } satisfies RuleString);
 
 			expect(check('John^')).toEqual([{ field: undefined, type: 'stringPattern', expected: '/^[a-z0-9 .\-\'?!":;\\/,_]+$/i', actual: 'John^', message: 'The \'\' field fails to match the required pattern.' }]);
 			expect(check('JOHN')).toEqual(true);
@@ -109,7 +115,7 @@ describe('TypeScript Definitions', () => {
 		});
 
 		it('check enum', () => {
-			const check = v.compile({ $$root: true, type: 'string', enum: ['male', 'female'] } as RuleString);
+			const check = v.compile({ $$root: true, type: 'string', enum: ['male', 'female'] } satisfies RuleString);
 			const message = 'The \'\' field does not match any of the allowed values.';
 
 			expect(check('')).toEqual([{ type: 'stringEnum', expected: 'male, female', actual: '', message }]);
@@ -186,7 +192,7 @@ describe('TypeScript Definitions', () => {
 		});
 
 		it("check singleLine string", () => {
-			const schema: RuleString = { $$root: true, type: "string", singleLine: true }
+			const schema = { $$root: true, type: "string", singleLine: true } satisfies RuleString;
 			const check = v.compile(schema);
 			const message = "The '' field must be a single line string.";
 

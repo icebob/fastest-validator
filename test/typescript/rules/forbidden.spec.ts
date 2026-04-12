@@ -10,30 +10,37 @@ describe('TypeScript Definitions', () => {
 			const message = 'The \'\' field is forbidden.';
 			expect(check(null)).toEqual(true);
 			expect(check(undefined)).toEqual(true);
+			// @ts-expect-error
 			expect(check(0)).toEqual([{ type: 'forbidden', actual: 0, message }]);
+			// @ts-expect-error
 			expect(check(1)).toEqual([{ type: 'forbidden', actual: 1, message }]);
+			// @ts-expect-error
 			expect(check('')).toEqual([{ type: 'forbidden', actual: '', message }]);
+			// @ts-expect-error
 			expect(check('null')).toEqual([{ type: 'forbidden', actual: 'null', message }]);
+			// @ts-expect-error
 			expect(check([])).toEqual([{ type: 'forbidden', actual: [], message }]);
+			// @ts-expect-error
 			expect(check({})).toEqual([{ type: 'forbidden', actual: {}, message }]);
+			// @ts-expect-error
 			expect(check(false)).toEqual([{ type: 'forbidden', actual: false, message }]);
+			// @ts-expect-error
 			expect(check(true)).toEqual([{ type: 'forbidden', actual: true, message }]);
 		});
 
 		describe('Test sanitization', () => {
-
-			it('should remove the field if \'remove: true\'', () => {
+			it("should remove the field if 'remove: true'", () => {
 				let schema = {
 					id: { type: 'number' },
 					name: { type: 'string' },
-					token: { type: 'forbidden', remove: true },
-				};
+					token: { type: 'forbidden', remove: true }
+				} as const;
 				let check = v.compile(schema);
 
 				const obj = {
 					id: 2,
 					name: 'John',
-				};
+				} as const;
 
 				expect(check(obj)).toEqual(true);
 				expect(obj).toEqual({

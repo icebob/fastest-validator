@@ -1,10 +1,10 @@
 {
     "compilerOptions": {
         "target": "es6",
-		"lib": [ "es2015" ],
+        "lib": ["ESNext"],
         "sourceMap": false,
-        "module": "commonjs",
-        "moduleResolution": "node",
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
         "isolatedModules": false,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
@@ -12,13 +12,12 @@
         "noImplicitAny": false,
         "removeComments": true,
         "noLib": false,
-		"strict": true,
-		"strictFunctionTypes": false,
+        "strict": true,
+        "strictFunctionTypes": false,
         "preserveConstEnums": true,
-        "suppressImplicitAnyIndexErrors": true,
-		"esModuleInterop": true,
-        "baseUrl": ".",
-        "allowJs": true
-    },
-    "include": ["test", "lib", "index.d.ts", "index.js"]
+        "esModuleInterop": true,
+        "paths": { "*": ["./*"] },
+        "allowJs": true,
+        "types": ["vitest/globals"]
+    }
 }

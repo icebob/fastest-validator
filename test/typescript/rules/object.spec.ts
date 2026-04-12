@@ -9,18 +9,24 @@ describe('TypeScript Definitions', () => {
 			const check = v.compile({ $$root: true, type: 'object' });
 			const message = 'The \'\' must be an Object.';
 
+			// @ts-expect-error
 			expect(check(0)).toEqual([{ type: 'object', actual: 0, message }]);
+			// @ts-expect-error
 			expect(check(1)).toEqual([{ type: 'object', actual: 1, message }]);
+			// @ts-expect-error
 			expect(check('')).toEqual([{ type: 'object', actual: '', message }]);
+			// @ts-expect-error
 			expect(check(false)).toEqual([{ type: 'object', actual: false, message }]);
+			// @ts-expect-error
 			expect(check(true)).toEqual([{ type: 'object', actual: true, message }]);
+			// @ts-expect-error
 			expect(check([])).toEqual([{ type: 'object', actual: [], message }]);
 			expect(check({})).toEqual(true);
 			expect(check({ a: 'John' })).toEqual(true);
 		});
 
 		it('should check strict object', () => {
-			const check = v.compile({ $$root: true, type: 'object', strict: true, properties: {} } as RuleObject);
+			const check = v.compile({ $$root: true, type: 'object', strict: true, properties: {} } satisfies RuleObject);
 			expect(check({})).toEqual(true);
 			expect(check({ a: 'John' })).toEqual([{ type: 'objectStrict', actual: 'a', expected: '', message: 'The object \'\' contains forbidden keys: \'a\'.' }]);
 		});
@@ -30,7 +36,8 @@ describe('TypeScript Definitions', () => {
 				$$root: true, type: 'object', strict: true, props: {
 					a: { type: 'string', trim: true },
 				},
-			} as RuleObject);
+			} satisfies RuleObject);
+			// @ts-expect-error
 			expect(check({ a: 'John', b: 'Doe' })).toEqual([{ type: 'objectStrict', actual: 'b', expected: 'a', message: 'The object \'\' contains forbidden keys: \'b\'.' }]);
 
 			const o = { a: '    John' };
@@ -44,7 +51,8 @@ describe('TypeScript Definitions', () => {
 					'read-only': 'boolean',
 					'op.tional': { type: 'string', optional: true },
 				},
-			} as RuleObject);
+			} satisfies RuleObject);
+			// @ts-expect-error
 			expect(check({})).toEqual([{ type: 'required', field: 'read-only', actual: undefined, message: 'The \'read-only\' field is required.' }]);
 			expect(check({ 'read-only': false })).toEqual(true);
 		});
@@ -63,6 +71,7 @@ describe('TypeScript Definitions', () => {
 					},
 				},
 			});
+			// @ts-expect-error
 			expect(check({ user: { firstName: 'John', address: { country: 'UK' } } })).
 				toEqual([{ type: 'required', field: 'user.address.city', actual: undefined, message: 'The \'user.address.city\' field is required.' }]);
 		});
@@ -78,7 +87,7 @@ describe('TypeScript Definitions', () => {
 							city: 'string',
 						},
 					},
-				};
+				} as const;
 				let check = v.compile(schema);
 
 				const obj = {
@@ -89,7 +98,7 @@ describe('TypeScript Definitions', () => {
 						street: 'Kossuth Lajos street',
 						zip: 1234,
 					},
-				};
+				} as const;
 
 				expect(check(obj)).toEqual(true);
 				expect(obj).toEqual({

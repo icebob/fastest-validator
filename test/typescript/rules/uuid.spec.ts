@@ -8,11 +8,17 @@ describe('TypeScript Definitions', () => {
 			const check = v.compile({ $$root: true, type: 'uuid' });
 			let message = 'The \'\' field must be a string.';
 
+			// @ts-expect-error
 			expect(check(0)).toEqual([{ type: 'string', actual: 0, message }]);
+			// @ts-expect-error
 			expect(check(1)).toEqual([{ type: 'string', actual: 1, message }]);
+			// @ts-expect-error
 			expect(check([])).toEqual([{ type: 'string', actual: [], message }]);
+			// @ts-expect-error
 			expect(check({})).toEqual([{ type: 'string', actual: {}, message }]);
+			// @ts-expect-error
 			expect(check(false)).toEqual([{ type: 'string', actual: false, message }]);
+			// @ts-expect-error
 			expect(check(true)).toEqual([{ type: 'string', actual: true, message }]);
 
 			message = 'The \'\' field must be a valid UUID.';
@@ -30,13 +36,13 @@ describe('TypeScript Definitions', () => {
 			expect(check('00000000-0000-7000-0000-000000000000')).toEqual([{ type: 'uuid', actual: '00000000-0000-7000-0000-000000000000', message }]);
 			expect(check('fdda765f-fc57-5604-c269-52a7df8164ec')).toEqual([{ type: 'uuid', actual: 'fdda765f-fc57-5604-c269-52a7df8164ec', message }]);
 
-			const check0 = v.compile({ $$root: true, type: "uuid", version: 0 } as RuleUUID);
-			const check1 = v.compile({ $$root: true, type: 'uuid', version: 1 } as RuleUUID);
-			const check2 = v.compile({ $$root: true, type: 'uuid', version: 2 } as RuleUUID);
-			const check3 = v.compile({ $$root: true, type: 'uuid', version: 3 } as RuleUUID);
-			const check4 = v.compile({ $$root: true, type: 'uuid', version: 4 } as RuleUUID);
-			const check5 = v.compile({ $$root: true, type: 'uuid', version: 5 } as RuleUUID);
-			const check7 = v.compile({ $$root: true, type: 'uuid', version: 7 } as RuleUUID);
+			const check0 = v.compile({ $$root: true, type: "uuid", version: 0 } satisfies RuleUUID);
+			const check1 = v.compile({ $$root: true, type: 'uuid', version: 1 } satisfies RuleUUID);
+			const check2 = v.compile({ $$root: true, type: 'uuid', version: 2 } satisfies RuleUUID);
+			const check3 = v.compile({ $$root: true, type: 'uuid', version: 3 } satisfies RuleUUID);
+			const check4 = v.compile({ $$root: true, type: 'uuid', version: 4 } satisfies RuleUUID);
+			const check5 = v.compile({ $$root: true, type: 'uuid', version: 5 } satisfies RuleUUID);
+			const check7 = v.compile({ $$root: true, type: 'uuid', version: 7 } satisfies RuleUUID);
 			message = 'The \'\' field must be a valid UUID version provided.';
 
 			expect(check0("00000000-0000-1000-0000-000000000000")).toEqual([{ "actual": 1, "expected": 0, "type": "uuidVersion", message }]);
@@ -50,15 +56,15 @@ describe('TypeScript Definitions', () => {
 		});
 
 		it('check valid version', () => {
-			const check0 = v.compile({ $$root: true, type: "uuid", version: 0 } as RuleUUID);
-			const check1 = v.compile({ $$root: true, type: 'uuid', version: 1 } as RuleUUID);
-			const check2 = v.compile({ $$root: true, type: 'uuid', version: 2 } as RuleUUID);
-			const check3 = v.compile({ $$root: true, type: 'uuid', version: 3 } as RuleUUID);
-			const check4 = v.compile({ $$root: true, type: 'uuid', version: 4 } as RuleUUID);
-			const check5 = v.compile({ $$root: true, type: 'uuid', version: 5 } as RuleUUID);
-			const check6 = v.compile({ $$root: true, type: 'uuid', version: 6 } as RuleUUID);
-			const check7 = v.compile({ $$root: true, type: 'uuid', version: 7 } as RuleUUID);
-			const check8 = v.compile({ $$root: true, type: 'uuid', version: 8 } as RuleUUID);
+			const check0 = v.compile({ $$root: true, type: "uuid", version: 0 } satisfies RuleUUID);
+			const check1 = v.compile({ $$root: true, type: 'uuid', version: 1 } satisfies RuleUUID);
+			const check2 = v.compile({ $$root: true, type: 'uuid', version: 2 } satisfies RuleUUID);
+			const check3 = v.compile({ $$root: true, type: 'uuid', version: 3 } satisfies RuleUUID);
+			const check4 = v.compile({ $$root: true, type: 'uuid', version: 4 } satisfies RuleUUID);
+			const check5 = v.compile({ $$root: true, type: 'uuid', version: 5 } satisfies RuleUUID);
+			const check6 = v.compile({ $$root: true, type: 'uuid', version: 6 } satisfies RuleUUID);
+			const check7 = v.compile({ $$root: true, type: 'uuid', version: 7 } satisfies RuleUUID);
+			const check8 = v.compile({ $$root: true, type: 'uuid', version: 8 } satisfies RuleUUID);
 
 			expect(check0("00000000-0000-0000-0000-000000000000")).toEqual(true);
 			expect(check1('45745c60-7b1a-11e8-9c9c-2d42b21b1a3e')).toEqual(true);
@@ -72,14 +78,14 @@ describe('TypeScript Definitions', () => {
 		});
 
 		it("should not be case insensitive", () => {
-			const check1 = v.compile({ $$root: true, type: "uuid", version: 1 } as RuleUUID);
-			const check2 = v.compile({ $$root: true, type: "uuid", version: 2 } as RuleUUID);
-			const check3 = v.compile({ $$root: true, type: "uuid", version: 3 } as RuleUUID);
-			const check4 = v.compile({ $$root: true, type: "uuid", version: 4 } as RuleUUID);
-			const check5 = v.compile({ $$root: true, type: "uuid", version: 5 } as RuleUUID);
-			const check6 = v.compile({ $$root: true, type: "uuid", version: 6 } as RuleUUID);
-			const check7 = v.compile({ $$root: true, type: 'uuid', version: 7 } as RuleUUID);
-			const check8 = v.compile({ $$root: true, type: 'uuid', version: 8 } as RuleUUID);
+			const check1 = v.compile({ $$root: true, type: "uuid", version: 1 } satisfies RuleUUID);
+			const check2 = v.compile({ $$root: true, type: "uuid", version: 2 } satisfies RuleUUID);
+			const check3 = v.compile({ $$root: true, type: "uuid", version: 3 } satisfies RuleUUID);
+			const check4 = v.compile({ $$root: true, type: "uuid", version: 4 } satisfies RuleUUID);
+			const check5 = v.compile({ $$root: true, type: "uuid", version: 5 } satisfies RuleUUID);
+			const check6 = v.compile({ $$root: true, type: "uuid", version: 6 } satisfies RuleUUID);
+			const check7 = v.compile({ $$root: true, type: 'uuid', version: 7 } satisfies RuleUUID);
+			const check8 = v.compile({ $$root: true, type: 'uuid', version: 8 } satisfies RuleUUID);
 
 			expect(check1("45745c60-7b1a-11e8-9c9c-2d42b21b1a3e")).toEqual(true);
 			expect(check2("9a7b330a-a736-21e5-af7f-feaf819cdc9f")).toEqual(true);
