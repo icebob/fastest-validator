@@ -5,6 +5,18 @@
   "main": "index.js",
   "browser": "dist/index.min.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./index.js"
+      }
+    }
+  },
   "scripts": {
     "bench": "node benchmark/index.js",
     "bench:watch": "nodemon benchmark/index.js",

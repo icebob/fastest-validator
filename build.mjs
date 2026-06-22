@@ -63,3 +63,7 @@ build(true);
 // Copy TypeScript definitions
 copyFileSync("index.d.ts", "dist/index.d.ts");
 console.log("Copied index.d.ts -> dist/index.d.ts");
+
+// Copy as .d.mts for TypeScript ESM consumers (node16/nodenext module resolution)
+copyFileSync("index.d.ts", "dist/index.d.mts");
+console.log("Copied index.d.ts -> dist/index.d.mts");
