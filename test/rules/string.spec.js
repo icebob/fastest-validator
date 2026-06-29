@@ -116,6 +116,13 @@ describe("Test rule: string", () => {
 		expect(check("Icebob")).toEqual(true);
 	});
 
+	it("check contains with a double-quote in the value", () => {
+		const check = v.compile({ $$root: true, type: "string", contains: "a\"b" });
+
+		expect(check("John")).toEqual([{ type: "stringContains", expected: "a\"b", actual: "John", message: "The '' field must contain the 'a\"b' text." }]);
+		expect(check("x a\"b y")).toEqual(true);
+	});
+
 	it("check enum", () => {
 		const check = v.compile({ $$root: true, type: "string", enum: ["male", "female"] });
 		const message = "The '' field does not match any of the allowed values.";
@@ -124,6 +131,15 @@ describe("Test rule: string", () => {
 		expect(check("human")).toEqual([{ type: "stringEnum", expected: "male, female", actual: "human", message }]);
 		expect(check("male")).toEqual(true);
 		expect(check("female")).toEqual(true);
+	});
+
+	it("check enum with a double-quote in a value", () => {
+		const check = v.compile({ $$root: true, type: "string", enum: ["male", "fe\"male"] });
+		const message = "The '' field does not match any of the allowed values.";
+
+		expect(check("human")).toEqual([{ type: "stringEnum", expected: "male, fe\"male", actual: "human", message }]);
+		expect(check("male")).toEqual(true);
+		expect(check("fe\"male")).toEqual(true);
 	});
 
 	it("check enum with enabled empty", () => {
