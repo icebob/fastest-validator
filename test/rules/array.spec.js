@@ -94,6 +94,13 @@ describe("Test rule: array", () => {
 		expect(check(["male", "female", "human"])).toEqual([{ type: "arrayEnum", actual: "human", expected: "male, female", message: "The 'human' value in '' field does not match any of the 'male, female' values." }]);
 	});
 
+	it("check enum with a double-quote in a value", () => {
+		const check = v.compile({ $$root: true, type: "array", enum: ["male", "fe\"male"] });
+
+		expect(check(["human"])).toEqual([{ type: "arrayEnum", actual: "human", expected: "male, fe\"male", message: "The 'human' value in '' field does not match any of the 'male, fe\"male' values." }]);
+		expect(check(["fe\"male"])).toEqual(true);
+	});
+
 	it("check items", () => {
 		const check = v.compile({ $$root: true, type: "array", items: "string" });
 

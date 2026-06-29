@@ -36,6 +36,14 @@ describe("Test rule: object", () => {
 		expect(o.a).toBe("John");
 	});
 
+	it("should check strict object with a double-quote in a property name", () => {
+		const check = v.compile({ $$root: true, type: "object", strict: true, props: {
+			"a\"b": { type: "string" }
+		} });
+		expect(check({ "a\"b": "John" })).toEqual(true);
+		expect(check({ "a\"b": "John", c: "Doe" })).toEqual([{ type: "objectStrict", actual: "c", expected: "a\"b", message: "The object '' contains forbidden keys: 'c'." }]);
+	});
+
 	it("should work with safe property name", () => {
 		const check = v.compile({ $$root: true, type: "object", properties: {
 			"read-only": "boolean",
