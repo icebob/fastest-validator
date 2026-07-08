@@ -525,16 +525,59 @@ check({ roles: "user" }); // Valid
 // After both validation: roles = ["user"]
 ```
 
-**Example for `filterUndefined`:**
+**Example for `filter`:**
 
 ```js
+// *********Filter undefined values
 const schema = {
-    roles: { type: "array", filterUndefined: true }
+    roles: { type: "array", filter: "undefined" }
 }
 const check = v.compile(schema);
 
-check({ roles: ["user", undefined, "employer"] }); // Valid
+check({ roles: ["user", undefined, null, "employer"] }); // Valid
+// After validation: roles = ["user", null, "employer"]
+
+// *********Filter null values
+const schema = {
+    roles: { type: "array", filter: "null" }
+}
+const check = v.compile(schema);
+
+check({ roles: ["user", undefined, null, "employer"] }); // Valid
+// After validation: roles = ["user", undefined, "employer"]
+
+// *********Filter undefined and null values
+const schema = {
+    roles: { type: "array", filter: "nulled" }
+}
+const check = v.compile(schema);
+
+check({ roles: ["user", undefined, null, "employer"] }); // Valid
 // After validation: roles = ["user", "employer"]
+
+
+// *********Filter with custom function
+const schema = {
+    roles: { 
+        type: "array", 
+        filter: (schema, field, parent, context) => {
+            const data = context.data[field];
+            let i = 0;
+            while (i < data.length) {
+                if (data[i] === null || data[i] === undefined || data[i] === "user") {
+                    data.splice(i, 1);
+                } else {
+                    ++i;
+                }
+            }
+            return data;
+        },
+    }
+}
+const check = v.compile(schema);
+
+check({ roles: ["user", undefined, null, "employer"] }); // Valid
+// After validation: roles = ["employer"]
 ```
 
 ### Properties
@@ -549,7 +592,7 @@ Property | Default  | Description
 `enum`	 | `null`   | Every element must be an element of the `enum` array.
 `items`	 | `null`   | Schema for array items.
 `convert`| `null`   | Wrap value into array if different type provided
-`filterUndefined`| `null`   | Filter undefined value in resulted array.
+`filter`| `null`   | Filter array items (valid values: "undefined", "null", "nulled", function).
 
 ## `boolean`
 This is a `Boolean` validator.

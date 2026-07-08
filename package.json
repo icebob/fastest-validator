@@ -1,6 +1,6 @@
 {
   "name": "fastest-validator",
-  "version": "1.19.1",
+  "version": "1.19.2",
   "description": "The fastest JS validator library for NodeJS",
   "main": "index.js",
   "browser": "dist/index.min.js",
@@ -46,6 +46,7 @@
     "@ampproject/rollup-plugin-closure-compiler": "^0.27.0",
     "@types/jest": "^27.0.2",
     "@types/mongodb": "^4.0.7",
+    "@types/node": "^26.1.0",
     "benchmarkify": "^3.0.0",
     "cli-highlight": "^2.1.11",
     "coveralls": "^3.1.1",

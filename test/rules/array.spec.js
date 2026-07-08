@@ -340,15 +340,25 @@ describe("Test rule: array", () => {
 		const schema = {
 			arr: {
 				type: "array",
-				default: (x) => {
-					console.log(`>>>>>>>>Arr: ${JSON.stringify(x)}`)
+				filter: (schema, field, parent, context) => {
+					const data = context.data[field];
+					let i = 0;
+					while (i < data.length) {
+						if (data[i] === null || data[i] === undefined || data[i] === 1) {
+							data.splice(i, 1);
+						} else {
+							++i;
+						}
+					}
+					return data;
 				},
 			},
 		};
 		const check = v.compile(schema);
 		const arr = [1, "string", null, undefined, "abc"];
-		const expected = [1, "string", null, undefined, "abc"];
+		const expected = ["string", "abc"];
 		expect(check({arr})).toEqual(true);
 		expect(arr).toEqual(expected);
+		
 	});
 });
