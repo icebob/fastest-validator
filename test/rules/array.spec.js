@@ -322,11 +322,11 @@ describe("Test rule: array", () => {
 		expect(arr).toEqual(expected);
 	});
 
-	it("should filter nulled values", async () => {	
+	it("should filter nullish values", async () => {	
 		const schema = {
 			arr: {
 				type: "array",
-				filter: "nulled",
+				filter: "nullish",
 			},
 		};
 		const check = v.compile(schema);

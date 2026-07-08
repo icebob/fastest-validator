@@ -1,3 +1,10 @@
+<a name="1.19.2"></a>
+
+# 1.19.2 (2026-07-08)
+
+## Changes
+- Added filter option to array validator
+
 <a name="1.19.1"></a>
 
 # 1.19.1 (2025-04-30)

@@ -548,7 +548,7 @@ check({ roles: ["user", undefined, null, "employer"] }); // Valid
 
 // *********Filter undefined and null values
 const schema = {
-    roles: { type: "array", filter: "nulled" }
+    roles: { type: "array", filter: "nullish" }
 }
 const check = v.compile(schema);
 
@@ -592,7 +592,7 @@ Property | Default  | Description
 `enum`	 | `null`   | Every element must be an element of the `enum` array.
 `items`	 | `null`   | Schema for array items.
 `convert`| `null`   | Wrap value into array if different type provided
-`filter`| `null`   | Filter array items (valid values: "undefined", "null", "nulled", function).
+`filter`| `null`   | Filter array items (valid values: "undefined", "null", "nullish", function).
 
 ## `boolean`
 This is a `Boolean` validator.
