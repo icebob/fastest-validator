@@ -1,3 +1,10 @@
+<a name="1.20.1"></a>
+
+# 1.20.1 (2026-07-08)
+
+## Changes
+- Added filter option to array validator
+
 <a name="1.20.0"></a>
 
 # 1.20.0 (2026-04-01)

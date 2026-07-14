@@ -281,4 +281,84 @@ describe("Test rule: array", () => {
 			{ type: "string", field: "[3]", actual: true, message: "The '[3]' field must be a string." }
 		]);
 	});
+
+	it("should error for wrong filter name ", async () => {
+		const schema = {
+			arr: {
+				type: "array",
+				filter: "unddfd",
+			},
+		};
+		const check = v.compile(schema);
+		const arr = [1];
+		expect(check({arr})).toEqual([{"actual": "unddfd", "expected": "Valid filter value: 'undefined', 'null', 'nullable', link to function", "field": "arr", "message": "The 'arr' field must be an array.", "type": "array"}]);
+	});
+
+	it("should filter undefined values", async () => {	
+		const schema = {
+			arr: {
+				type: "array",
+				filter: "undefined",
+			},
+		};
+		const check = v.compile(schema);
+		const arr = [1, "string", null, undefined, "abc"];
+		const expected = [1, "string", null, "abc"];
+		expect(check({arr})).toEqual(true);
+		expect(arr).toEqual(expected);
+	});
+
+	it("should filter null values", async () => {	
+		const schema = {
+			arr: {
+				type: "array",
+				filter: "null",
+			},
+		};
+		const check = v.compile(schema);
+		const arr = [1, "string", null, undefined, "abc"];
+		const expected = [1, "string", undefined, "abc"];
+		expect(check({arr})).toEqual(true);
+		expect(arr).toEqual(expected);
+	});
+
+	it("should filter nullish values", async () => {	
+		const schema = {
+			arr: {
+				type: "array",
+				filter: "nullish",
+			},
+		};
+		const check = v.compile(schema);
+		const arr = [1, "string", null, undefined, "abc"];
+		const expected = [1, "string", "abc"];
+		expect(check({arr})).toEqual(true);
+		expect(arr).toEqual(expected);
+	});
+
+	it("should filter with function", async () => {	
+		const schema = {
+			arr: {
+				type: "array",
+				filter: (schema, field, parent, context) => {
+					const data = context.data[field];
+					let i = 0;
+					while (i < data.length) {
+						if (data[i] === null || data[i] === undefined || data[i] === 1) {
+							data.splice(i, 1);
+						} else {
+							++i;
+						}
+					}
+					return data;
+				},
+			},
+		};
+		const check = v.compile(schema);
+		const arr = [1, "string", null, undefined, "abc"];
+		const expected = ["string", "abc"];
+		expect(check({arr})).toEqual(true);
+		expect(arr).toEqual(expected);
+		
+	});
 });

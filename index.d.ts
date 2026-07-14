@@ -82,7 +82,11 @@ export interface RuleArray<T = any> extends RuleCustom {
 	/**
 	 * Wrap value into array if different type provided
 	 */
-	convert?: boolean
+	convert?: boolean;
+	/**
+	 * Filter array items
+	 */
+	filter?: "null" | "undefined" | "nullish" | (() => void);
 }
 
 /**
