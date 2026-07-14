@@ -1,7 +1,6 @@
 ![Photos from @ikukevk](https://user-images.githubusercontent.com/306521/30183963-9c722dca-941c-11e7-9e83-c78377ad7f9d.jpg)
 
 ![Node CI](https://github.com/icebob/fastest-validator/workflows/Node%20CI/badge.svg)
-[![Coverage Status](https://coveralls.io/repos/github/icebob/fastest-validator/badge.svg?branch=master)](https://coveralls.io/github/icebob/fastest-validator?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/75256e6ec26d42f5ab1dee109ae4d3ad)](https://www.codacy.com/app/mereg-norbert/fastest-validator?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=icebob/fastest-validator&amp;utm_campaign=Badge_Grade)
 [![Known Vulnerabilities](https://snyk.io/test/github/icebob/fastest-validator/badge.svg)](https://snyk.io/test/github/icebob/fastest-validator)
 [![Size](https://badgen.net/bundlephobia/minzip/fastest-validator)](https://bundlephobia.com/result?p=fastest-validator)
@@ -11,7 +10,7 @@
 
 ## Key features
 * blazing fast! Really!
-* 20+ built-in validators
+* 24 built-in validators
 * many sanitizations
 * custom validators & aliases
 * nested objects & array handling
@@ -906,6 +905,70 @@ check({ status: 0 }); // Valid
 check({ status: "yes" }); // Fail
 ```
 
+## `pipe`
+Runs the current value through a list of validators in order. Each step receives the result of the previous one (including any sanitization), required/nullable handling is preserved, and execution stops as soon as a step adds errors. Works in both sync and async modes.
+
+**Nested pipes (tree structure)**
+```js
+const schema = {
+    payload: { type: "pipe", steps: [
+        { type: "string", trim: true },
+        { type: "pipe", steps: [
+            {
+                type: "custom",
+                check(value, errors) {
+                    try {
+                        return JSON.parse(value); // turn the string into an object for the next step
+                    } catch (err) {
+                        errors.push({ type: "object" });
+                        return value;
+                    }
+                },
+            },
+            { type: "object", props: {
+                user: { type: "pipe", steps: [
+                    { type: "object", props: {
+                        id: { type: "number", integer: true, positive: true },
+                        coords: { type: "array", items: "number", length: 2 }
+                    } },
+                    { type: "custom", check(user) {
+                        return Object.assign({ role: "guest" }, user);
+                    } }
+                ] }
+            } }
+        ] }
+    ] }
+};
+
+const check = v.compile(schema);
+
+check({ payload: '{"user":{"id":3,"coords":[48.1,11.5]}}' }); // Valid
+check({ payload: '{"user":{"id":"nope","coords":[48.1,11.5]}}' }); // Fails in the inner pipe at the number check
+```
+
+**Validate → transform → validate again**
+```js
+const schema = {
+    amount: { type: "pipe", steps: [
+        { type: "string", trim: true },
+        { type: "custom", check(value, errors) {
+            const normalized = value.replace(",", ".");
+            const parsed = Number(normalized);
+            if (Number.isNaN(parsed)) {
+                errors.push({ type: "number" });
+            }
+            return parsed; // forward transformed number
+        } },
+        { type: "number", integer: true, min: 1 } // now validates the converted number
+    ] }
+};
+
+const check = v.compile(schema);
+
+check({ amount: " 42 " }); // Valid -> returns 42
+check({ amount: "abc" }); // Fail at the custom conversion step
+```
+
 ## `number`
 This is a `Number` validator.
 
@@ -1664,6 +1727,7 @@ Name                | Default text
 `numberEqual`	| The '{field}' field must be equal to {expected}.
 `numberNotEqual`	| The '{field}' field can't be equal to {expected}.
 `numberInteger`	| The '{field}' field must be an integer.
+`numberStep`	| The '{field}' field must be a multiple of {expected}.
 `numberPositive`	| The '{field}' field must be a positive number.
 `numberNegative`	| The '{field}' field must be a negative number.
 `array`	| The '{field}' field must be an array.

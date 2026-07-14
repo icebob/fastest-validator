@@ -15,6 +15,7 @@ export type ValidationRuleName =
 	| "luhn"
 	| "mac"
 	| "multi"
+	| "pipe"
 	| "number"
 	| "object"
 	| "objectID"
@@ -310,6 +311,21 @@ export interface RuleMulti extends RuleCustom {
 }
 
 /**
+ * Validation schema definition for "pipe" built-in validator
+ */
+export interface RulePipe extends RuleCustom {
+	/**
+	 * Name of built-in validator
+	 */
+	type: "pipe";
+
+	/**
+	 * Validation rules that should be applied sequentially to the current value
+	 */
+	steps?: ValidationRule[];
+}
+
+/**
  * Validation schema definition for "number" built-in validator
  * @see https://github.com/icebob/fastest-validator#number
  */
@@ -339,6 +355,10 @@ export interface RuleNumber extends RuleCustom {
 	 * @default false
 	 */
 	integer?: boolean;
+	/**
+	 * The stepping interval for the input value
+	 */
+	step?: number;
 	/**
 	 * The value must be greater than zero
 	 * @default false
@@ -720,6 +740,10 @@ export interface BuiltInMessages {
 	 */
 	numberInteger?: string;
 	/**
+	 * The '{field}' field must be a multiple of {expected}.
+	 */
+	numberStep?: string;
+	/**
 	 * The '{field}' field must be a positive number.
 	 */
 	numberPositive?: string;
@@ -861,6 +885,7 @@ export type ValidationRuleObject =
 	| RuleLuhn
 	| RuleMac
 	| RuleMulti
+	| RulePipe
 	| RuleNumber
 	| RuleObject
 	| RuleObjectID
@@ -912,7 +937,7 @@ export type ValidationSchema<T = any> = ValidationSchemaMetaKeys & {
 	/**
 	 * List of validation rules for each defined field
 	 */
-	[key in keyof T]: ValidationRule | undefined | any;
+	[key in keyof T]: ValidationRule | undefined;
 }
 
 

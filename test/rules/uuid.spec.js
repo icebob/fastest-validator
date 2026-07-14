@@ -49,6 +49,12 @@ describe("Test rule: uuid", () => {
 		expect(check4("9a7b330a-a736-21e5-af7f-feaf819cdc9f")).toEqual([{"actual": 2, "expected": 4, "type": "uuidVersion", message}]);
 		expect(check5("9a7b330a-a736-11e5-af7f-feaf819cdc9f")).toEqual([{"actual": 1, "expected": 5, "type": "uuidVersion", message}]);
 		expect(check7("019681ac-4f0f-86a2-866e-5408b2d861f8")).toEqual([{"actual": 8, "expected": 7, "type": "uuidVersion", message}]);
+		expect(check7("0189b3a0-382a-6d96-b045-81a795f8f09c")).toEqual([{"actual": 6, "expected": 7, "type": "uuidVersion", message}]);
+
+		// Invalid variant
+		message = "The '' field must be a valid UUID.";
+		expect(check7("0189b3a0-382a-7d96-c045-81a795f8f09c")).toEqual([{"type": "uuid", "actual": "0189b3a0-382a-7d96-c045-81a795f8f09c", message}]);
+		expect(check7("0189b3a0-382a-7d96-7045-81a795f8f09c")).toEqual([{"type": "uuid", "actual": "0189b3a0-382a-7d96-7045-81a795f8f09c", message}]);
 	});
 
 	it("check valid version", () => {
@@ -70,6 +76,8 @@ describe("Test rule: uuid", () => {
 		expect(check5("fdda765f-fc57-5604-a269-52a7df8164ec")).toEqual(true);
 		expect(check6("a9030619-8514-6970-e0f9-81b9ceb08a5f")).toEqual(true);
 		expect(check7("01965dfe-77ac-78e2-9f69-51e5ce8bd080")).toEqual(true);
+		expect(check7("0189b39a-85c1-7da6-8521-3d4452f1a3b3")).toEqual(true);
+		expect(check7("0189b3a0-382a-7d96-b045-81a795f8f09c")).toEqual(true);
 		expect(check8("019681ac-4f0f-86a2-866e-5408b2d861f8")).toEqual(true);
 	});
 

@@ -23,6 +23,19 @@ describe("Test rule: enum", () => {
 		expect(check(false)).toEqual(true);
 	});
 
+	it("should handle enum values containing double-quotes", () => {
+		const check = v.compile({ $$root: true, type: "enum", values: ["active", "in\"active", "pending"] });
+
+		expect(check("active")).toEqual(true);
+		expect(check("pending")).toEqual(true);
+		expect(check("bad")).toEqual([{
+			type: "enumValue",
+			expected: "active, in\"active, pending",
+			actual: "bad",
+			message: "The '' field value 'active, in\"active, pending' does not match any of the allowed values."
+		}]);
+	});
+
 	it("should allow custom metas", async () => {
 		const schema = {
 			$$foo: {

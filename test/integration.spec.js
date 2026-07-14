@@ -1329,13 +1329,13 @@ describe("Test async mode", () => {
 	const v = new Validator({ useNewCustomCheckerFunction: true });
 
 	// Async mode 1
-	const custom1 = jest.fn(async value => {
+	const custom1 = vi.fn(async value => {
 		await new Promise(resolve => setTimeout(resolve, 100));
 		return value.toUpperCase();
 	});
 
 	// Async mode 2
-	const custom2 = jest.fn(async (value) => {
+	const custom2 = vi.fn(async (value) => {
 		await new Promise(resolve => setTimeout(resolve, 100));
 		return value.trim();
 	});
@@ -1480,7 +1480,7 @@ describe("allow metas starting with $$", () => {
 		});
 
 		it("should works with $$async", async () => {
-			const custom1 = jest.fn().mockResolvedValue("NAME");
+			const custom1 = vi.fn().mockResolvedValue("NAME");
 			const schema = {
 				$$foo: {
 					foo: "bar"

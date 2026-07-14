@@ -7,7 +7,7 @@ describe("Test rule: multi", () => {
 		useNewCustomCheckerFunction: true,
 	});
 	it("should call item's custom checker function", () => {
-		const fn = jest.fn((v) => v);
+		const fn = vi.fn((v) => v);
 
 		const schema = {
 			$$root: true,
@@ -117,7 +117,7 @@ describe("Test rule: multi", () => {
 	});
 
 	describe("should work with custom validator", () => {
-		const checkerFn = jest.fn(() => {});
+		const checkerFn = vi.fn(() => {});
 
 		const v = new Validator({
 			useNewCustomCheckerFunction: true,
@@ -188,7 +188,7 @@ describe("Test rule: multi", () => {
 
 
 	it("should allow custom metas", async () => {
-		const fn = jest.fn((v) => v);
+		const fn = vi.fn((v) => v);
 		const schema = {
 			$$foo: {
 				foo: "bar"

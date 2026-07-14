@@ -12,7 +12,7 @@ describe('TypeScript Definitions', () => {
 			expect(v.validate).toBeInstanceOf(Function);
 			expect(v.add).toBeInstanceOf(Function);
 
-			expect(Object.keys(v.rules)).toHaveProperty('length', 23);
+			expect(Object.keys(v.rules)).toHaveProperty('length', 24);
 		});
 
 		it('should create instance with custom messages', () => {

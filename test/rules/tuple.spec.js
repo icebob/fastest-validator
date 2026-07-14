@@ -128,7 +128,7 @@ describe("Test rule: tuple", () => {
 	});
 
 	it("should call custom checker", () => {
-		const customFn = jest.fn(v => v);
+		const customFn = vi.fn(v => v);
 		const schema = { pair: { type: "tuple", custom: customFn } };
 		const check = v.compile(schema);
 
@@ -145,8 +145,8 @@ describe("Test rule: tuple", () => {
 	});
 
 	it("should call custom checker for items", () => {
-		const customFn = jest.fn(v => v);
-		const customFnItems = jest.fn(v => v);
+		const customFn = vi.fn(v => v);
+		const customFnItems = vi.fn(v => v);
 		const schema = {
 			pair: {
 				type: "tuple",
