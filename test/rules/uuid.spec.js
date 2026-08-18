@@ -2,6 +2,7 @@
 
 const Validator = require("../../lib/validator");
 const v = new Validator();
+const { generateSecurityTests } = require("../helpers/security-test-generator");
 
 describe("Test rule: uuid", () => {
 
@@ -138,5 +139,31 @@ describe("Test rule: uuid", () => {
 		expect(check("10000000-0000-0000-0000-000000000000")).toEqual([{ type: "uuid", actual: "10000000-0000-0000-0000-000000000000", message }]);
 		expect(check("1234567-1234-1234-1234-1234567890ab")).toEqual([{ type: "uuid", actual: "1234567-1234-1234-1234-1234567890ab", message }]);
 		expect(check("12345678-1234-1234-1234-1234567890ab")).toEqual(true);
+	});
+
+	describe("Security: uuid rule injection tests", () => {
+		const uuidSpec = {
+			ruleName: "uuid",
+			options: {
+				version: { type: "number" }
+			}
+		};
+
+		function makeValidator(optionName, value) {
+			const schema = { $$root: true, type: "uuid" };
+			schema[optionName] = value;
+			return v.compile(schema);
+		}
+
+		it("should reject a non-integer version at compile time (no SyntaxError, no execution)", () => {
+			expect(() => v.compile({ $$root: true, type: "uuid", version: "1); process.exit(1); //" }))
+				.toThrow(/uuid.version must be a number/);
+			expect(() => v.compile({ $$root: true, type: "uuid", version: "4" }))
+				.toThrow(/uuid.version must be a number/);
+			expect(() => v.compile({ $$root: true, type: "uuid", version: 4.5 }))
+				.toThrow(/uuid.version must be a non-negative integer/);
+		});
+
+		generateSecurityTests(uuidSpec, makeValidator);
 	});
 });

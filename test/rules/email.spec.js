@@ -1,6 +1,7 @@
 "use strict";
 
 const Validator = require("../../lib/validator");
+const { expectNoCodeExecution } = require("../helpers/security");
 const v = new Validator();
 
 describe("Test rule: email", () => {
@@ -106,6 +107,27 @@ describe("Test rule: email", () => {
 		expect(schema).toStrictEqual(clonedSchema);
 		expect(check("john.doe@company.net")).toEqual(true);
 		expect(check("")).toEqual(true);
+	});
+
+	describe("Security: email rule injection tests", () => {
+		it("should reject a non-numeric min at compile time (no injection)", () => {
+			expect(() => v.compile({ $$root: true, type: "email", min: "5); global.__FV_INJECTED__.fired = true; //" }))
+				.toThrow(/email.min must be a number/);
+		});
+
+		it("should reject a non-numeric max at compile time (no injection)", () => {
+			expect(() => v.compile({ $$root: true, type: "email", max: "10); global.__FV_INJECTED__.fired = true; //" }))
+				.toThrow(/email.max must be a number/);
+		});
+
+		it("should not execute code via min/max injection payloads", () => {
+			expectNoCodeExecution(() => {
+				v.compile({ $$root: true, type: "email", min: "5); global.__FV_INJECTED__.fired = true; //" });
+			}, "email.min injection");
+			expectNoCodeExecution(() => {
+				v.compile({ $$root: true, type: "email", max: "10); global.__FV_INJECTED__.fired = true; //" });
+			}, "email.max injection");
+		});
 	});
 
 });

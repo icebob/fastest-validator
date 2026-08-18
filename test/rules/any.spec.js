@@ -123,3 +123,80 @@ describe("Test rule: any", () => {
 		});
 	});
 });
+describe("Security tests for any rule", function () {
+	it("should compile without throwing when schema options are malicious strings", function () {
+		const v = new Validator();
+		const schema = {
+			$$root: true,
+			type: "any",
+			optional: true,
+			fakeStringOption: "\"); alert(1); //",
+			anotherFakeOption: "'; process.exit(1); //"
+		};
+		const checkFn = v.compile(schema);
+		expect(checkFn(null)).toEqual(true);
+		expect(checkFn(undefined)).toEqual(true);
+		expect(checkFn(0)).toEqual(true);
+		expect(checkFn("")).toEqual(true);
+		expect(checkFn({})).toEqual(true);
+		expect(checkFn([])).toEqual(true);
+	});
+
+	it("should safely handle schema options that are objects or arrays", function () {
+		const v = new Validator();
+		const schema = {
+			$$root: true,
+			type: "any",
+			fakeObjectOption: { toString: () => { throw new Error("should not be called"); } },
+			fakeArrayOption: [() => { throw new Error("should not be called"); }]
+		};
+		const checkFn = v.compile(schema);
+		expect(checkFn("test")).toEqual(true);
+	});
+
+	it("should not execute injected code via schema options", function () {
+		const v = new Validator();
+		let executed = false;
+		const schema = {
+			$$root: true,
+			type: "any",
+			fakeOption: {
+				toString: () => { executed = true; return ""; }
+			}
+		};
+		const checkFn = v.compile(schema);
+		checkFn("anything");
+		expect(executed).toEqual(false);
+	});
+
+	it("should work with considerNullAsAValue flag and malicious schema options", function () {
+		const v = new Validator({ considerNullAsAValue: true });
+		const schema = {
+			$$root: true,
+			type: "any",
+			optional: true,
+			someOption: "\"); alert(1); //"
+		};
+		const checkFn = v.compile(schema);
+		expect(checkFn(null)).toEqual(true);
+		expect(checkFn(undefined)).toEqual(true);
+	});
+
+	it("should allow valid schemas and produce correct validation", function () {
+		const v = new Validator();
+		const schema = {
+			$$root: true,
+			type: "any",
+			optional: true
+		};
+		const checkFn = v.compile(schema);
+		expect(checkFn(null)).toEqual(true);
+		expect(checkFn(undefined)).toEqual(true);
+		expect(checkFn(0)).toEqual(true);
+		expect(checkFn(1)).toEqual(true);
+		expect(checkFn("")).toEqual(true);
+		expect(checkFn("false")).toEqual(true);
+		expect(checkFn([])).toEqual(true);
+		expect(checkFn({})).toEqual(true);
+	});
+});

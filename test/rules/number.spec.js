@@ -83,12 +83,10 @@ describe("Test rule: number", () => {
 	});
 
 	it("check schema's 'step' field type", () => {
-		const message =	"Invalid 'number' schema. The 'step' field must be a positive number.";
-
-		expect(() => v.compile({ $$root: true, type: "number", step: 0 })).toThrow(message);
-		expect(() => v.compile({ $$root: true, type: "number", step: -1 })).toThrow(message);
-		expect(() => v.compile({ $$root: true, type: "number", step: NaN })).toThrow(message);
-		expect(() => v.compile({ $$root: true, type: "number", step: Infinity })).toThrow(message);
+		expect(() => v.compile({ $$root: true, type: "number", step: 0 })).toThrow(/number.step must be a positive number/);
+		expect(() => v.compile({ $$root: true, type: "number", step: -1 })).toThrow(/number.step must be a positive number/);
+		expect(() => v.compile({ $$root: true, type: "number", step: NaN })).toThrow(/number.step must be a number/);
+		expect(() => v.compile({ $$root: true, type: "number", step: Infinity })).toThrow(/number.step must be a number/);
 	});
 
 	it("check step", () => {
@@ -224,5 +222,149 @@ describe("Test rule: number", () => {
 		expect(check(5)).toEqual(true);
 		expect(check(-24)).toEqual(true);
 		expect(check(5.45)).toEqual(true);
+	});
+
+	describe("Security tests", () => {
+		it("should reject non-numeric min at compile time", () => {
+			expect(() => {
+				v.compile({ $$root: true, type: "number", min: "invalid" });
+			}).toThrow(/number.min must be a number/);
+		});
+
+		it("should reject non-numeric max at compile time", () => {
+			expect(() => {
+				v.compile({ $$root: true, type: "number", max: "invalid" });
+			}).toThrow(/number.max must be a number/);
+		});
+
+		it("should reject non-numeric equal at compile time", () => {
+			expect(() => {
+				v.compile({ $$root: true, type: "number", equal: "invalid" });
+			}).toThrow(/number.equal must be a number/);
+		});
+
+		it("should reject non-numeric notEqual at compile time", () => {
+			expect(() => {
+				v.compile({ $$root: true, type: "number", notEqual: "invalid" });
+			}).toThrow(/number.notEqual must be a number/);
+		});
+
+		it("should reject non-numeric step at compile time", () => {
+			expect(() => {
+				v.compile({ $$root: true, type: "number", step: "invalid" });
+			}).toThrow(/number.step must be a number/);
+		});
+
+		it("should reject non-positive step at compile time", () => {
+			expect(() => {
+				v.compile({ $$root: true, type: "number", step: -1 });
+			}).toThrow(/number.step must be a positive number/);
+		});
+
+		it("should reject zero step at compile time", () => {
+			expect(() => {
+				v.compile({ $$root: true, type: "number", step: 0 });
+			}).toThrow(/number.step must be a positive number/);
+		});
+
+		it("should reject infinite step at compile time", () => {
+			expect(() => {
+				v.compile({ $$root: true, type: "number", step: Infinity });
+			}).toThrow(/number.step must be a number/);
+		});
+
+		it("should reject non-boolean convert at compile time", () => {
+			expect(() => {
+				v.compile({ $$root: true, type: "number", convert: "invalid" });
+			}).toThrow(/number.convert must be a boolean/);
+		});
+
+		it("should reject non-boolean integer at compile time", () => {
+			expect(() => {
+				v.compile({ $$root: true, type: "number", integer: "invalid" });
+			}).toThrow(/number.integer must be a boolean/);
+		});
+
+		it("should reject non-boolean positive at compile time", () => {
+			expect(() => {
+				v.compile({ $$root: true, type: "number", positive: "invalid" });
+			}).toThrow(/number.positive must be a boolean/);
+		});
+
+		it("should reject non-boolean negative at compile time", () => {
+			expect(() => {
+				v.compile({ $$root: true, type: "number", negative: "invalid" });
+			}).toThrow(/number.negative must be a boolean/);
+		});
+
+		it("should handle extreme but valid numeric values", () => {
+			const check = v.compile({
+				$$root: true,
+				type: "number",
+				min: Number.MIN_SAFE_INTEGER,
+				max: Number.MAX_SAFE_INTEGER
+			});
+
+			expect(check(Number.MIN_SAFE_INTEGER)).toEqual(true);
+			expect(check(0)).toEqual(true);
+			expect(check(Number.MAX_SAFE_INTEGER)).toEqual(true);
+			expect(check(Number.MIN_SAFE_INTEGER - 1)).toEqual([
+				{ type: "numberMin", expected: Number.MIN_SAFE_INTEGER, actual: Number.MIN_SAFE_INTEGER - 1, message: "The '' field must be greater than or equal to -9007199254740991." }
+			]);
+			expect(check(Number.MAX_SAFE_INTEGER + 1)).toEqual([
+				{ type: "numberMax", expected: Number.MAX_SAFE_INTEGER, actual: Number.MAX_SAFE_INTEGER + 1, message: "The '' field must be less than or equal to 9007199254740991." }
+			]);
+		});
+
+		it("should not execute injected code via min", () => {
+			// Injection attempt: min is a string containing code that would run process.exit
+			expect(() => {
+				v.compile({ $$root: true, type: "number", min: "5) ; process.exit(1); //" });
+			}).toThrow(/number.min must be a number/);
+		});
+
+		it("should not execute injected code via max", () => {
+			expect(() => {
+				v.compile({ $$root: true, type: "number", max: "5) ; process.exit(1); //" });
+			}).toThrow(/number.max must be a number/);
+		});
+
+		it("should not execute injected code via equal", () => {
+			expect(() => {
+				v.compile({ $$root: true, type: "number", equal: "5) ; process.exit(1); //" });
+			}).toThrow(/number.equal must be a number/);
+		});
+
+		it("should not execute injected code via notEqual", () => {
+			expect(() => {
+				v.compile({ $$root: true, type: "number", notEqual: "5) ; process.exit(1); //" });
+			}).toThrow(/number.notEqual must be a number/);
+		});
+
+		it("should not execute injected code via step", () => {
+			expect(() => {
+				v.compile({ $$root: true, type: "number", step: "5) ; process.exit(1); //" });
+			}).toThrow(/number.step must be a number/);
+		});
+
+		it("should work with an integer step", () => {
+			const check = v.compile({ $$root: true, type: "number", step: 10 });
+
+			expect(check(10)).toEqual(true);
+			expect(check(20)).toEqual(true);
+			expect(check(15)).toEqual([
+				{ type: "numberStep", expected: 10, actual: 15, message: "The '' field must be a multiple of 10." }
+			]);
+		});
+
+		it("should work with a decimal step", () => {
+			const check = v.compile({ $$root: true, type: "number", step: 0.2 });
+
+			expect(check(0.2)).toEqual(true);
+			expect(check(1.4)).toEqual(true);
+			expect(check(1.1)).toEqual([
+				{ type: "numberStep", expected: 0.2, actual: 1.1, message: "The '' field must be a multiple of 0.2." }
+			]);
+		});
 	});
 });

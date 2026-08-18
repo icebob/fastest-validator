@@ -1,6 +1,7 @@
 "use strict";
 
 const Validator = require("../../lib/validator");
+const { expectNoCodeExecution } = require("../helpers/security");
 
 const v = new Validator({
 	useNewCustomCheckerFunction: true,
@@ -271,5 +272,27 @@ describe("Test rule: tuple", () => {
 		]);
 
 		expect(check([])).toEqual(true);
+	});
+
+	describe("Security: tuple rule injection tests", () => {
+		it("should reject a non-boolean empty at compile time (no SyntaxError, no execution)", () => {
+			expect(() => v.compile({
+				$$root: true,
+				type: "tuple",
+				empty: "true); global.__FV_INJECTED__.fired = true; //",
+				items: [{ type: "string" }]
+			})).toThrow(/tuple.empty must be a boolean/);
+		});
+
+		it("should not execute code when empty is a valid boolean with items", () => {
+			expectNoCodeExecution(() => {
+				const check = v.compile({
+					$$root: true,
+					type: "tuple",
+					empty: "true); global.__FV_INJECTED__.fired = true; //",
+					items: [{ type: "string" }]
+				});
+			}, "tuple.empty injection with items");
+		});
 	});
 });

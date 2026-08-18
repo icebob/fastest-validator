@@ -1,6 +1,7 @@
 "use strict";
 
 const Validator = require("../../lib/validator");
+const { expectNoCodeExecution } = require("../helpers/security");
 const v = new Validator();
 
 describe("Test rule: equal", () => {
@@ -69,5 +70,34 @@ describe("Test rule: equal", () => {
 		expect(check({ pass: "1234", confirm: "abcd"})).toEqual([{ type: "equalField", field: "confirm", actual: "abcd", expected: "pass", message }]);
 		expect(check({ pass: "1234", confirm: 1234 })).toEqual(true);
 		expect(check({ pass: "1234", confirm: "1234" })).toEqual(true);
+	});
+
+	describe("Security: equal rule injection tests", () => {
+		it("should escape a malicious field value (no SyntaxError, no execution)", () => {
+			expectNoCodeExecution(() => {
+				const check = v.compile({
+					$$root: true,
+					type: "object",
+					properties: {
+						confirm: { type: "equal", field: "\"]; global.__FV_INJECTED__.fired = true; //[" }
+					}
+				});
+			}, "equal.field injection via close-bracket");
+		});
+
+		it("should not execute code via field injection payload", () => {
+			expectNoCodeExecution(() => {
+				const check = v.compile({
+					$$root: true,
+					type: "equal",
+					field: "\"); global.__FV_INJECTED__.fired = true; //"
+				});
+			}, "equal.field injection");
+		});
+
+		it("should reject a non-string field at compile time", () => {
+			expect(() => v.compile({ $$root: true, type: "equal", field: 123 }))
+				.toThrow(/equal.field must be a string/);
+		});
 	});
 });
