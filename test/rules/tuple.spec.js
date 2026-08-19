@@ -294,5 +294,29 @@ describe("Test rule: tuple", () => {
 				});
 			}, "tuple.empty injection with items");
 		});
+
+		describe("async tuple", () => {
+			it("should compile async tuple with await in generated code", async () => {
+				const asyncChecker = vi.fn().mockResolvedValue(true);
+				const schema = {
+					$$async: true,
+					$$root: true,
+					type: "tuple",
+					items: [
+						{ type: "custom", check: asyncChecker },
+						{ type: "string" }
+					],
+				};
+				const check = v.compile(schema);
+
+				expect(check.async).toBe(true);
+
+				const data = ["hello", "world"];
+				await expect(check(data)).resolves.toBe(true);
+				expect(asyncChecker).toHaveBeenCalledTimes(1);
+				expect(asyncChecker.mock.calls[0][0]).toBe("hello");
+				expect(asyncChecker.mock.calls[0][2]).toBe(schema.items[0]);
+			});
+		});
 	});
 });

@@ -384,6 +384,28 @@ describe("Test rule: array", () => {
 
 			// Array with both values should pass
 			expect(check(["\"); alert(1); //", "safe"])).toEqual(true);
+
+		});
+
+		describe("async array", () => {
+			it("should compile async array with await in generated code", async () => {
+				const asyncChecker = vi.fn().mockResolvedValue(true);
+				const schema = {
+					$$async: true,
+					$$root: true,
+					type: "array",
+					items: { type: "custom", check: asyncChecker },
+				};
+				const check = v.compile(schema);
+
+				expect(check.async).toBe(true);
+
+				const data = [1, 2, 3];
+				await expect(check(data)).resolves.toBe(true);
+				expect(asyncChecker).toHaveBeenCalledTimes(3);
+				expect(asyncChecker.mock.calls.map(c => c[0])).toEqual([1, 2, 3]);
+				expect(asyncChecker.mock.calls[0][2]).toBe(schema.items);
+			});
 		});
 	});
 });

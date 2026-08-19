@@ -215,4 +215,37 @@ describe("Test rule: multi", () => {
 		expect(fn).toBeCalledTimes(1);
 		expect(fn).toBeCalledWith("s", [], schema.rules[0], "$$root", null, expect.any(Object));
 	});
+
+	it("should reject non-array multi rules at compile time", () => {
+		expect(() => v.compile({ $$root: true, type: "multi", rules: "not-an-array" }))
+			.toThrow(/multi.rules must be an array/);
+		expect(() => v.compile({ $$root: true, type: "multi", rules: 42 }))
+			.toThrow(/multi.rules must be an array/);
+	});
+
+	it("should compile multi without an explicit rules array", () => {
+		expect(() => v.compile({ $$root: true, type: "multi" })).not.toThrow();
+	});
+
+	it("should compile multi with an empty rules array", () => {
+		const check = v.compile({ $$root: true, type: "multi", rules: [] });
+		// With no rules, should accept any provided value (acts as pass-through)
+		expect(check(123)).toBe(true);
+		expect(check("foo")).toBe(true);
+	});
+
+	it("should support async custom rules in multi", async () => {
+		const schema = {
+			$$async: true,
+			$$root: true,
+			type: "multi",
+			rules: [
+				{ type: "custom", check: async (v) => v },
+				{ type: "number" },
+			],
+		};
+		const check = v.compile(schema);
+		expect(check.async).toBe(true);
+		await expect(check(5)).resolves.toBe(true);
+	});
 });

@@ -90,6 +90,15 @@ describe("Test constructor", () => {
 		expect(plugin).toBeCalledWith(v);
 	});
 
+	it("should reject a non-array plugins option", () => {
+		expect(() => new Validator({ plugins: "not-an-array" })).toThrow();
+	});
+
+	it("should reject a non-function plugin", () => {
+		const v = new Validator();
+		expect(() => v.plugin(123)).toThrow();
+	});
+
 });
 
 describe("Test validate", () => {
@@ -358,6 +367,13 @@ describe("Test compile (integration test)", () => {
 
 			expect(res[0].label).toBe(schema.email.label);
 			expect(res[0].message).toBe("The 'Email Address' field is required.");
+		});
+
+		it("Should use the root schema label as a fallback label", () => {
+			const rootCheck = v.compile({ label: "Root Label", type: "string", $$root: true });
+			const res = rootCheck(undefined);
+			expect(res[0].label).toBe("Root Label");
+			expect(res[0].message).toBe("The 'Root Label' field is required.");
 		});
 	});
 

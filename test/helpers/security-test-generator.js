@@ -159,16 +159,8 @@ function generateSecurityTests(ruleSpec, makeValidator, opts = {}) {
 						const goodValues = fuzzers[declaredType]();
 						goodValue = goodValues[0]; // take first sane one
 					} else {
-						// fallback: use a literal based on type
-						switch (declaredType) {
-						case "string": goodValue = "test"; break;
-						case "number": goodValue = 42; break;
-						case "boolean": goodValue = true; break;
-						case "object": goodValue = {}; break;
-						case "array": goodValue = []; break;
-						case "regexp": goodValue = /.*/; break;
-						default: goodValue = null;
-						}
+						// fallback: no fuzzer exists for this declared type
+						goodValue = null;
 					}
 
 					// Now try each injection payload as the option value
@@ -188,15 +180,8 @@ function generateSecurityTests(ruleSpec, makeValidator, opts = {}) {
 						const goodValues = fuzzers[declaredType]();
 						goodValue = goodValues[0];
 					} else {
-						switch (declaredType) {
-						case "string": goodValue = "valid"; break;
-						case "number": goodValue = 123; break;
-						case "boolean": goodValue = false; break;
-						case "object": goodValue = { ok: true }; break;
-						case "array": goodValue = [1, 2, 3]; break;
-						case "regexp": goodValue = /^valid$/; break;
-						default: goodValue = null;
-						}
+						// fallback: no fuzzer exists for this declared type
+						goodValue = null;
 					}
 
 					expect(() => {

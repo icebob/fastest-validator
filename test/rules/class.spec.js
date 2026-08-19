@@ -65,5 +65,15 @@ describe("Test rule: class", () => {
 				delete global.__FV_CLASS_INJECTED__;
 			}
 		});
+
+		it("should fall back to <UnknowClass> when the class has no name", () => {
+			const Anonymous = (function () { return function () {}; })();
+			expect(Anonymous.name).toBe("");
+			const check = v.compile({ rawData: { type: "class", instanceOf: Anonymous } });
+			const res = check({ rawData: 1234 });
+			expect(Array.isArray(res)).toBe(true);
+			// The error message must preserve the safe literal, not code
+			expect(res[0].expected).toBe("<UnknowClass>");
+		});
 	});
 });
