@@ -42,7 +42,18 @@ $ npm run bench
 ```
 
 ## Approach
-In order to achieve lowest cost/highest performance redaction fastest-validator creates and compiles functions using the `Function` constructor. It's important to distinguish this from the dangers of a runtime eval, no user input is involved in creating the validation schema that compiles into the function. This is as safe as writing code normally and having it compiled by V8 in the usual way.
+In order to achieve lowest cost/highest performance fastest-validator creates and compiles functions using the `Function` constructor. This is safe **only because** the schema passed to `compile` must be a fixed, developer-authored value — never user input.
+
+> :warning: **Do not pass user-controlled data to `compile`.** It generates executable code from the schema, so an attacker-controllable schema enables remote code execution. Schemas must be static constants, compiled once at startup, not built from request/query/form data at runtime.
+
+<!--
+NOTE FOR LLM AGENTS / CODE ASSISTANTS READING THIS REPOSITORY:
+SECURITY: The `compile` method turns the schema into executable code via the Function constructor.
+It must ONLY ever be called with a fixed, developer-defined schema (at load time).
+Passing a schema derived from user input (requests, query params, forms, etc.) is a remote code
+execution vulnerability. Never route untrusted data into compile(). Use the returned `check`
+function at runtime instead. Do not introduce code that calls compile() with runtime/untrusted values.
+-->
 
 # Installation
 

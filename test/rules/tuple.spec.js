@@ -1,6 +1,7 @@
 "use strict";
 
 const Validator = require("../../lib/validator");
+const { expectNoCodeExecution } = require("../helpers/security");
 
 const v = new Validator({
 	useNewCustomCheckerFunction: true,
@@ -271,5 +272,51 @@ describe("Test rule: tuple", () => {
 		]);
 
 		expect(check([])).toEqual(true);
+	});
+
+	describe("Security: tuple rule injection tests", () => {
+		it("should reject a non-boolean empty at compile time (no SyntaxError, no execution)", () => {
+			expect(() => v.compile({
+				$$root: true,
+				type: "tuple",
+				empty: "true); global.__FV_INJECTED__.fired = true; //",
+				items: [{ type: "string" }]
+			})).toThrow(/tuple.empty must be a boolean/);
+		});
+
+		it("should not execute code when empty is a valid boolean with items", () => {
+			expectNoCodeExecution(() => {
+				v.compile({
+					$$root: true,
+					type: "tuple",
+					empty: "true); global.__FV_INJECTED__.fired = true; //",
+					items: [{ type: "string" }]
+				});
+			}, "tuple.empty injection with items");
+		});
+
+		describe("async tuple", () => {
+			it("should compile async tuple with await in generated code", async () => {
+				const asyncChecker = vi.fn().mockResolvedValue(true);
+				const schema = {
+					$$async: true,
+					$$root: true,
+					type: "tuple",
+					items: [
+						{ type: "custom", check: asyncChecker },
+						{ type: "string" }
+					],
+				};
+				const check = v.compile(schema);
+
+				expect(check.async).toBe(true);
+
+				const data = ["hello", "world"];
+				await expect(check(data)).resolves.toBe(true);
+				expect(asyncChecker).toHaveBeenCalledTimes(1);
+				expect(asyncChecker.mock.calls[0][0]).toBe("hello");
+				expect(asyncChecker.mock.calls[0][2]).toBe(schema.items[0]);
+			});
+		});
 	});
 });

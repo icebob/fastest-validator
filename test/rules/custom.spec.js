@@ -1,6 +1,7 @@
 "use strict";
 
 const Validator = require("../../lib/validator");
+const { expectNoCodeExecution } = require("../helpers/security");
 
 describe("Test rule: custom v1", () => {
 	const v = new Validator();
@@ -27,7 +28,7 @@ describe("Test rule: custom v1", () => {
 	});
 
 	it("should handle returned errors", () => {
-		const checker = vi.fn(function (value, schema, field) {
+		const checker = vi.fn(function () {
 			return [{ type: "myError", expected: 3, actual: 4 }];
 		});
 		const schema = { weight: { type: "custom", a: 5, check: checker, messages: { myError: "My error message. Expected: {expected}, actual: {actual}, field: {field}" } } };
@@ -95,7 +96,7 @@ describe("Test rule: custom v2", () => {
 	});
 
 	it("should handle returned errors", () => {
-		const checker = vi.fn(function (value, errors, schema, field) {
+		const checker = vi.fn(function (value, errors) {
 			errors.push({ type: "myError", expected: 3, actual: 4 });
 			return value;
 		});
@@ -152,6 +153,82 @@ describe("Test rule: custom v2", () => {
 		expect(checker).toHaveBeenCalledTimes(1);
 		//checkFunction should receive the unmodified schema
 		expect(checker).toHaveBeenCalledWith({ name: "John" }, [], schema, "$$root", null, expect.any(Object));
+	});
+
+	describe("Security: custom validator path injection", () => {
+		const payloadProp = "x\",});global.__FV_INJECTED__.fired = true;//";
+
+		function objectWithCustom(custom) {
+			return {
+				$$root: true,
+				type: "object",
+				properties: {
+					[payloadProp]: { type: "string", custom }
+				}
+			};
+		}
+
+		it("should safely quote path in legacy custom checker", () => {
+			const vLegacy = new Validator();
+			const check = vLegacy.compile(objectWithCustom((value) => value));
+			const res = expectNoCodeExecution(
+				() => check({ [payloadProp]: "hello" }),
+				"legacy custom path"
+			);
+			expect(res.threw).toBe(false);
+			expect(res.executed).toBe(false);
+			expect(res.consoleCalls).toBe(0);
+		});
+
+		it("should safely quote path in new custom checker (single function)", () => {
+			const vNew = new Validator({ useNewCustomCheckerFunction: true });
+			const check = vNew.compile(objectWithCustom((value) => value));
+			const res = expectNoCodeExecution(
+				() => check({ [payloadProp]: "hello" }),
+				"new custom path (single function)"
+			);
+			expect(res.threw).toBe(false);
+			expect(res.executed).toBe(false);
+			expect(res.consoleCalls).toBe(0);
+		});
+
+		it("should safely quote path in new custom checker (function in array)", () => {
+			const vNew = new Validator({ useNewCustomCheckerFunction: true });
+			const check = vNew.compile(objectWithCustom([(value) => value]));
+			const res = expectNoCodeExecution(
+				() => check({ [payloadProp]: "hello" }),
+				"new custom path (function in array)"
+			);
+			expect(res.threw).toBe(false);
+			expect(res.executed).toBe(false);
+			expect(res.consoleCalls).toBe(0);
+		});
+
+		it("should safely quote path in new custom checker (type-based)", () => {
+			const vNew = new Validator({
+				useNewCustomCheckerFunction: true,
+				customFunctions: { identity: (value) => value }
+			});
+			const check = vNew.compile(objectWithCustom([{ type: "identity" }]));
+			const res = expectNoCodeExecution(
+				() => check({ [payloadProp]: "hello" }),
+				"new custom path (type-based)"
+			);
+			expect(res.threw).toBe(false);
+			expect(res.executed).toBe(false);
+			expect(res.consoleCalls).toBe(0);
+		});
+
+		it("should pass the real, un-truncated path to custom function", () => {
+			const seen = [];
+			const vLegacy = new Validator();
+			const check = vLegacy.compile(objectWithCustom(function (value, schema, path) {
+				seen.push(path);
+				return value;
+			}));
+			expect(check({ [payloadProp]: "hello" })).toBe(true);
+			expect(seen).toEqual([payloadProp]);
+		});
 	});
 
 });

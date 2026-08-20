@@ -281,4 +281,131 @@ describe("Test rule: array", () => {
 			{ type: "string", field: "[3]", actual: true, message: "The '[3]' field must be a string." }
 		]);
 	});
+
+	describe("Security tests", () => {
+		it("should reject non-numeric min at compile time", () => {
+			expect(() => {
+				v.compile({ $$root: true, type: "array", min: "invalid" });
+			}).toThrow(/array.min must be a number/);
+		});
+
+		it("should reject non-numeric max at compile time", () => {
+			expect(() => {
+				v.compile({ $$root: true, type: "array", max: "invalid" });
+			}).toThrow(/array.max must be a number/);
+		});
+
+		it("should reject non-numeric length at compile time", () => {
+			expect(() => {
+				v.compile({ $$root: true, type: "array", length: "invalid" });
+			}).toThrow(/array.length must be a number/);
+		});
+
+		it("should reject non-integer length at compile time", () => {
+			expect(() => {
+				v.compile({ $$root: true, type: "array", length: 1.5 });
+			}).toThrow(/array.length must be a non-negative integer/);
+		});
+
+		it("should reject negative length at compile time", () => {
+			expect(() => {
+				v.compile({ $$root: true, type: "array", length: -1 });
+			}).toThrow(/array.length must be a non-negative integer/);
+		});
+
+		it("should reject non-boolean convert at compile time", () => {
+			expect(() => {
+				v.compile({ $$root: true, type: "array", convert: "invalid" });
+			}).toThrow(/array.convert must be a boolean/);
+		});
+
+		it("should reject non-boolean empty at compile time", () => {
+			expect(() => {
+				v.compile({ $$root: true, type: "array", empty: "invalid" });
+			}).toThrow(/array.empty must be a boolean/);
+		});
+
+		it("should reject non-boolean unique at compile time", () => {
+			expect(() => {
+				v.compile({ $$root: true, type: "array", unique: "invalid" });
+			}).toThrow(/array.unique must be a boolean/);
+		});
+
+		it("should handle extreme but valid numeric values", () => {
+			const check = v.compile({ $$root: true, type: "array", min: 0, max: 1000000 });
+
+			// Valid values
+			expect(check([])).toEqual(true);
+			expect(check([1, 2, 3])).toEqual(true);
+			expect(check([1])).toEqual(true);
+		});
+
+		it("should treat schema.contains value as literal string, not executable code", () => {
+			// This should not execute alert(1) but treat it as a literal string
+			const check = v.compile({ $$root: true, type: "array", contains: "\"); alert(1); //" });
+
+			// Array without the literal string should fail
+			expect(check([])).toEqual([
+				expect.objectContaining({
+					type: "arrayContains",
+					expected: "\"); alert(1); //"
+				})
+			]);
+
+			// Array with the literal string should pass
+			expect(check(["\"); alert(1); //"])).toEqual(true);
+
+			// Array with different content should fail
+			expect(check(["hello"])).toEqual([
+				expect.objectContaining({
+					type: "arrayContains",
+					expected: "\"); alert(1); //"
+				})
+			]);
+		});
+
+		it("should treat schema.enum values as literal strings, not executable code", () => {
+			// This should not execute alert(1) but treat it as a literal string
+			const check = v.compile({ $$root: true, type: "array", enum: ["\"); alert(1); //", "safe"] });
+
+			// Array with unsafe value should fail
+			expect(check(["unsafe"])).toEqual([
+				expect.objectContaining({
+					type: "arrayEnum",
+					actual: "unsafe"
+				})
+			]);
+
+			// Array with the literal string should pass
+			expect(check(["\"); alert(1); //"])).toEqual(true);
+
+			// Array with safe value should pass
+			expect(check(["safe"])).toEqual(true);
+
+			// Array with both values should pass
+			expect(check(["\"); alert(1); //", "safe"])).toEqual(true);
+
+		});
+
+		describe("async array", () => {
+			it("should compile async array with await in generated code", async () => {
+				const asyncChecker = vi.fn().mockResolvedValue(true);
+				const schema = {
+					$$async: true,
+					$$root: true,
+					type: "array",
+					items: { type: "custom", check: asyncChecker },
+				};
+				const check = v.compile(schema);
+
+				expect(check.async).toBe(true);
+
+				const data = [1, 2, 3];
+				await expect(check(data)).resolves.toBe(true);
+				expect(asyncChecker).toHaveBeenCalledTimes(3);
+				expect(asyncChecker.mock.calls.map(c => c[0])).toEqual([1, 2, 3]);
+				expect(asyncChecker.mock.calls[0][2]).toBe(schema.items);
+			});
+		});
+	});
 });

@@ -1,7 +1,6 @@
 "use strict";
 
 const Validator = require("../lib/validator");
-const {RuleEmail} = require("../index");
 
 describe("Test flat schema", () => {
 	const v = new Validator();

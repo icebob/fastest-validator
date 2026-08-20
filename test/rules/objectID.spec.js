@@ -71,4 +71,13 @@ describe("Test rule: objectID", () => {
 		expect(check(o)).toEqual(true);
 		expect(o.id).toBe("5f082780b00cc7401fb8e8fc");
 	});
+
+	it("should reject invalid convert values at compile time", () => {
+		expect(() => v.compile({ id: { type: "objectID", ObjectID: ObjectId, convert: "bad" } }))
+			.toThrow(/objectID.convert must be a boolean or "hexString"/);
+		expect(() => v.compile({ id: { type: "objectID", ObjectID: ObjectId, convert: 1 } }))
+			.toThrow(/objectID.convert must be a boolean or "hexString"/);
+		expect(() => v.compile({ id: { type: "objectID", ObjectID: ObjectId, convert: null } }))
+			.not.toThrow();
+	});
 });

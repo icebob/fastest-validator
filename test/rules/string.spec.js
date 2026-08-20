@@ -1,6 +1,7 @@
 "use strict";
 
 const Validator = require("../../lib/validator");
+const { generateSecurityTests } = require("../helpers/security-test-generator");
 const v = new Validator();
 
 describe("Test rule: string", () => {
@@ -91,7 +92,7 @@ describe("Test rule: string", () => {
 	it("check pattern with a quote", () => {
 		const check = v.compile({ $$root: true, type: "string", pattern: /^[a-z0-9 .\-'?!":;\\/,_]+$/i });
 
-		expect(check("John^")).toEqual([{ field: undefined, type: "stringPattern", expected: "/^[a-z0-9 .\-'?!\":;\\/,_]+$/i", actual: "John^", message: "The '' field fails to match the required pattern." }]);
+		expect(check("John^")).toEqual([{ field: undefined, type: "stringPattern", expected: "/^[a-z0-9 .\\-'?!\":;\\\\/,_]+$/i", actual: "John^", message: "The '' field fails to match the required pattern." }]);
 		expect(check("JOHN")).toEqual(true);
 	});
 
@@ -106,7 +107,7 @@ describe("Test rule: string", () => {
 		const pattern = /^(([^<>()[]\.,;:\s@"]+(.[^<>()[]\.,;:\s@"]+)*)|(".+"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z-0-9]+.)+[a-zA-Z]{2,}))$/;
 		const check = v.compile({ $$root: true, type: "string", pattern });
 
-		expect(check("test@test.com")).toEqual([{ field: undefined, type: "stringPattern", expected: "/^(([^<>()[]\.,;:\s@\"]+(.[^<>()[]\.,;:\s@\"]+)*)|(\".+\"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z-0-9]+.)+[a-zA-Z]{2,}))$/", actual: "test@test.com", message: "The '' field fails to match the required pattern." }]);
+		expect(check("test@test.com")).toEqual([{ field: undefined, type: "stringPattern", expected: "/^(([^<>()[]\\.,;:\\s@\"]+(.[^<>()[]\\.,;:\\s@\"]+)*)|(\".+\"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z-0-9]+.)+[a-zA-Z]{2,}))$/", actual: "test@test.com", message: "The '' field fails to match the required pattern." }]);
 	});
 
 	it("check contains", () => {
@@ -305,6 +306,18 @@ describe("Test rule: string", () => {
 			expect(obj).toEqual({ username: "  bob" });
 		});
 
+		it("should left padding with custom padChar", () => {
+			const check = v.compile({ username: { type: "string", padStart: 5, padChar: "." } });
+
+			let obj = { username: "icebob" };
+			expect(check(obj)).toEqual(true);
+			expect(obj).toEqual({ username: "icebob" });
+
+			obj = { username: "bob" };
+			expect(check(obj)).toEqual(true);
+			expect(obj).toEqual({ username: "..bob" });
+		});
+
 		it("should right padding", () => {
 			const check = v.compile({ username: { type: "string", padEnd: 5, padChar: "." } });
 
@@ -374,5 +387,39 @@ describe("Test rule: string", () => {
 
 		expect(check("")).toEqual(true);
 		expect(check("test")).toEqual(true);
+	});
+
+	describe("Security: string rule injection tests", () => {
+		const stringSpec = {
+			ruleName: "string",
+			options: {
+				convert: { type: "boolean" },
+				empty: { type: "boolean" },
+				min: { type: "number" },
+				max: { type: "number" },
+				length: { type: "number" },
+				pattern: { type: "string" },
+				contains: { type: "string" },
+				padStart: { type: "number" },
+				padEnd: { type: "number" },
+				padChar: { type: "string" },
+				enum: { type: "array" },
+				numeric: { type: "boolean" },
+				alpha: { type: "boolean" },
+				alphanum: { type: "boolean" },
+				alphadash: { type: "boolean" },
+				hex: { type: "boolean" },
+				singleLine: { type: "boolean" },
+				base64: { type: "boolean" }
+			}
+		};
+
+		function makeValidator(optionName, value) {
+			const schema = { $$root: true, type: "string" };
+			schema[optionName] = value;
+			return v.compile(schema);
+		}
+
+		generateSecurityTests(stringSpec, makeValidator);
 	});
 });

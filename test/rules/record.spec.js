@@ -132,4 +132,22 @@ describe("Test rule: record", () => {
 		expect(check({})).toEqual(true);
 		expect(check({ a: "John" })).toEqual(true);
 	});
+
+	it("should compile async record with await in generated code", async () => {
+		const schema = {
+			$$async: true,
+			$$root: true,
+			type: "record",
+			key: { type: "string" },
+			value: { type: "string" }
+		};
+		const check = v.compile(schema);
+
+		expect(check.async).toBe(true);
+
+		await expect(check({ a: "hello" })).resolves.toBe(true);
+		const bad = await check({ a: 123 });
+		expect(bad).toBeInstanceOf(Array);
+		expect(bad.length).toBeGreaterThan(0);
+	});
 });

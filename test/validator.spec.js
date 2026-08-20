@@ -90,6 +90,15 @@ describe("Test constructor", () => {
 		expect(plugin).toBeCalledWith(v);
 	});
 
+	it("should reject a non-array plugins option", () => {
+		expect(() => new Validator({ plugins: "not-an-array" })).toThrow();
+	});
+
+	it("should reject a non-function plugin", () => {
+		const v = new Validator();
+		expect(() => v.plugin(123)).toThrow();
+	});
+
 });
 
 describe("Test validate", () => {
@@ -128,7 +137,7 @@ describe("Test add", () => {
 		}
 	});
 
-	const validFn = vi.fn(function ({ schema, messages }, path, context) {
+	const validFn = vi.fn(function ({ messages }) {
 		return {
 			source: `
 				if (value % 2 != 0)
@@ -358,6 +367,13 @@ describe("Test compile (integration test)", () => {
 
 			expect(res[0].label).toBe(schema.email.label);
 			expect(res[0].message).toBe("The 'Email Address' field is required.");
+		});
+
+		it("Should use the root schema label as a fallback label", () => {
+			const rootCheck = v.compile({ label: "Root Label", type: "string", $$root: true });
+			const res = rootCheck(undefined);
+			expect(res[0].label).toBe("Root Label");
+			expect(res[0].message).toBe("The 'Root Label' field is required.");
 		});
 	});
 
@@ -1086,6 +1102,23 @@ describe("Test normalize", () => {
 			}
 		});
 	});
+
+	it("should preserve schema-defined options when normalizing an alias", () => {
+		const vAlias = new Validator({
+			aliases: {
+				age: "number|optional|integer|positive|min:0|max:99"
+			}
+		});
+		const res = vAlias.normalize({ type: "age", min: 50 });
+		expect(res).toEqual({
+			type: "number",
+			positive: true,
+			integer: true,
+			min: 50,
+			max: 99,
+			optional: true
+		});
+	});
 	it("should normalize complex schema", () => {
 		const schema = {
 			a: {
@@ -1191,6 +1224,98 @@ describe("Test normalize", () => {
 					}
 				}
 			}
+		});
+	});
+
+	describe("Schema nesting depth limit", () => {
+		const v = new Validator();
+
+		function buildNestedObjectSchema(depth) {
+			let inner = { type: "string" };
+			for (let i = 0; i < depth; i++) {
+				inner = { type: "object", props: { x: inner } };
+			}
+			return inner;
+		}
+
+		it("should compile and run a schema nested exactly at the 100-level limit", () => {
+			const schema = Object.assign({ $$root: true }, buildNestedObjectSchema(100));
+			expect(() => {
+				const check = v.compile(schema);
+				const res = check({ x: { x: { x: { x: "ok" } } } });
+				expect(res === true || Array.isArray(res)).toBe(true);
+			}).not.toThrow();
+		});
+
+		it("should reject a schema nested 101 levels deep with a clean error at compile time", () => {
+			expect(() => v.compile(Object.assign({ $$root: true }, buildNestedObjectSchema(101))))
+				.toThrow("Invalid schema: maximum nesting depth of 100 exceeded");
+		});
+
+		it("should reject a very deep schema (5000 levels) with a clean error, never a RangeError", () => {
+			try {
+				v.compile(Object.assign({ $$root: true }, buildNestedObjectSchema(5000)));
+				throw new Error("expected compile to throw");
+			} catch (e) {
+				expect(e).toBeInstanceOf(Error);
+				expect(e).not.toBeInstanceOf(RangeError);
+				expect(e.message).toMatch(/maximum nesting depth of 100 exceeded/);
+			}
+		});
+
+		it("should reject deep array items nesting with a clean error at compile time", () => {
+			let inner = { type: "string" };
+			for (let i = 0; i < 101; i++) {
+				inner = { type: "array", items: inner };
+			}
+			expect(() => v.compile(Object.assign({ $$root: true }, inner)))
+				.toThrow("Invalid schema: maximum nesting depth of 100 exceeded");
+		});
+
+		it("should normalize a schema nested exactly at the 100-level limit", () => {
+			expect(() => v.normalize(buildNestedObjectSchema(100))).not.toThrow();
+		});
+
+		it("should reject a schema nested 101 levels deep with a clean error during normalize", () => {
+			try {
+				v.normalize(buildNestedObjectSchema(101));
+				throw new Error("expected normalize to throw");
+			} catch (e) {
+				expect(e).toBeInstanceOf(Error);
+				expect(e).not.toBeInstanceOf(RangeError);
+				expect(e.message).toMatch(/maximum nesting depth of 100 exceeded/);
+			}
+		});
+	});
+
+	describe("Prototype chain protection", () => {
+		const v = new Validator();
+
+		it.each(["toString", "valueOf", "constructor", "__proto__", "hasOwnProperty"])(
+			"should reject a schema type named '%s' with a clean error at compile time",
+			(type) => {
+				expect(() => v.compile({ $$root: true, type }))
+					.toThrow(`Invalid '${type}' type in validator schema.`);
+			}
+		);
+
+		it("should reject a custom checker whose type resolves on the prototype chain", () => {
+			const vNew = new Validator({ useNewCustomCheckerFunction: true });
+			expect(() => vNew.compile({ $$root: true, type: "string", custom: [{ type: "__proto__" }] }))
+				.toThrow("Invalid '__proto__' type in custom validator.");
+		});
+
+		it("should support aliases that are registered explicitly (own keys only)", () => {
+			const vAlias = new Validator();
+			vAlias.alias("myString", { type: "string" });
+			const check = vAlias.compile({ $$root: true, type: "myString" });
+			expect(check("hello")).toBe(true);
+		});
+
+		it("should keep working for all regular rule types", () => {
+			expect(v.compile({ $$root: true, type: "string" })("x")).toBe(true);
+			expect(v.compile({ $$root: true, type: "number" })(12)).toBe(true);
+			expect(v.compile({ $$root: true, type: "object", properties: { a: { type: "boolean" } } })({ a: true })).toBe(true);
 		});
 	});
 });

@@ -55,4 +55,17 @@ describe("Test rule: enum", () => {
 		expect(check("male")).toEqual(true);
 		expect(check("female")).toEqual(true);
 	});
+
+	it("should reject non-array enum values at compile time", () => {
+		expect(() => v.compile({ $$root: true, type: "enum", values: "not-an-array" }))
+			.toThrow(/enum.values must be an array/);
+		expect(() => v.compile({ $$root: true, type: "enum", values: 42 }))
+			.toThrow(/enum.values must be an array/);
+		expect(() => v.compile({ $$root: true, type: "enum", values: {} }))
+			.toThrow(/enum.values must be an array/);
+	});
+
+	it("should compile enum without an explicit values array", () => {
+		expect(() => v.compile({ $$root: true, type: "enum" })).not.toThrow();
+	});
 });

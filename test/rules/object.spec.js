@@ -1,6 +1,7 @@
 "use strict";
 
 const Validator = require("../../lib/validator");
+const { expectNoCodeExecution } = require("../helpers/security");
 const v = new Validator({ debug: false });
 
 describe("Test rule: object", () => {
@@ -197,5 +198,59 @@ describe("Test rule: object", () => {
 		expect(check([])).toEqual([{ type: "object", actual: [], message }]);
 		expect(check({})).toEqual(true);
 		expect(check({ a: "John" })).toEqual(true);
+	});
+
+	describe("Security: object rule injection tests", () => {
+		it("should reject a non-numeric minProps at compile time (no injection)", () => {
+			expect(() => v.compile({ $$root: true, type: "object", minProps: "5); global.__FV_INJECTED__.fired = true; //" }))
+				.toThrow(/object.minProps must be a number/);
+		});
+
+		it("should reject a non-numeric maxProps at compile time (no injection)", () => {
+			expect(() => v.compile({ $$root: true, type: "object", maxProps: "10); global.__FV_INJECTED__.fired = true; //" }))
+				.toThrow(/object.maxProps must be a number/);
+		});
+
+		it("should reject fractional minProps/maxProps at compile time", () => {
+			expect(() => v.compile({ $$root: true, type: "object", minProps: 1.5 }))
+				.toThrow(/object.minProps must be a non-negative integer/);
+			expect(() => v.compile({ $$root: true, type: "object", maxProps: 2.5 }))
+				.toThrow(/object.maxProps must be a non-negative integer/);
+		});
+
+		it("should not execute code via minProps/maxProps injection payloads", () => {
+			expectNoCodeExecution(() => {
+				v.compile({ $$root: true, type: "object", minProps: "5); global.__FV_INJECTED__.fired = true; //" });
+			}, "object.minProps injection");
+			expectNoCodeExecution(() => {
+				v.compile({ $$root: true, type: "object", maxProps: "10); global.__FV_INJECTED__.fired = true; //" });
+			}, "object.maxProps injection");
+		});
+
+		it("should safely quote objectStrict allowed-properties list", () => {
+			const payloadProp = "x\",});global.__FV_INJECTED__.fired = true;//";
+			const schema = {
+				$$root: true,
+				type: "object",
+				strict: true,
+				properties: {
+					ok: { type: "string" },
+					[payloadProp]: { type: "string" }
+				}
+			};
+
+			const check = v.compile(schema);
+			const res = expectNoCodeExecution(() => check({ ok: "a", extraKey: 1 }), "objectStrict expected list");
+			expect(res.threw).toBe(false);
+			expect(res.executed).toBe(false);
+			expect(res.consoleCalls).toBe(0);
+
+			const err = check({ ok: "a", extraKey: 1 });
+			expect(Array.isArray(err)).toBe(true);
+			const strictErr = err.find((e) => e.type === "objectStrict");
+			expect(strictErr).toBeDefined();
+			expect(strictErr.expected).toBe(`ok, ${payloadProp}`);
+			expect(strictErr.actual).toBe("extraKey");
+		});
 	});
 });
