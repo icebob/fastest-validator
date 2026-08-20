@@ -4,13 +4,6 @@ const Benchmarkify = require("benchmarkify");
 const fs = require("fs");
 const benchmark = new Benchmarkify("Fastest validator benchmark (matrix)").printHeader();
 
-// Supplement the Benchmarkify platform header with the current live CPU
-// frequency (MHz) so clock speed is recorded for reproducibility.
-try {
-	const m = fs.readFileSync("/proc/cpuinfo", "utf8").match(/cpu MHz\s*:\s*([\d.]+)/);
-	if (m) console.log("  ", "CPU current:", parseFloat(m[1]).toFixed(0), "MHz");
-} catch (e) { /* non-linux: skip */ }
-console.log("");
 
 const Validator = require("../../index");
 const { ObjectId } = require("mongodb");
