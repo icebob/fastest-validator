@@ -27,7 +27,7 @@ describe("Test rule: custom v1", () => {
 	});
 
 	it("should handle returned errors", () => {
-		const checker = vi.fn(function (value, schema, field) {
+		const checker = vi.fn(function () {
 			return [{ type: "myError", expected: 3, actual: 4 }];
 		});
 		const schema = { weight: { type: "custom", a: 5, check: checker, messages: { myError: "My error message. Expected: {expected}, actual: {actual}, field: {field}" } } };
@@ -95,7 +95,7 @@ describe("Test rule: custom v2", () => {
 	});
 
 	it("should handle returned errors", () => {
-		const checker = vi.fn(function (value, errors, schema, field) {
+		const checker = vi.fn(function (value, errors) {
 			errors.push({ type: "myError", expected: 3, actual: 4 });
 			return value;
 		});

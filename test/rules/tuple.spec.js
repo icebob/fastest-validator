@@ -286,7 +286,7 @@ describe("Test rule: tuple", () => {
 
 		it("should not execute code when empty is a valid boolean with items", () => {
 			expectNoCodeExecution(() => {
-				const check = v.compile({
+				v.compile({
 					$$root: true,
 					type: "tuple",
 					empty: "true); global.__FV_INJECTED__.fired = true; //",

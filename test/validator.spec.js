@@ -137,7 +137,7 @@ describe("Test add", () => {
 		}
 	});
 
-	const validFn = vi.fn(function ({ schema, messages }, path, context) {
+	const validFn = vi.fn(function ({ messages }) {
 		return {
 			source: `
 				if (value % 2 != 0)

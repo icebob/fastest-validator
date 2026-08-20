@@ -167,6 +167,37 @@ describe("GitHub issues: security & robustness regressions", () => {
 				});
 			});
 		});
+
+		describe("root schema label option", () => {
+			it("safely quotes a hostile label without executing code", () => {
+				INJECTION_PAYLOADS.forEach(([label, payload]) => {
+					const schema = rootSchema({ type: "any", label: payload });
+					expect(() => compileRoot(schema)).not.toThrow();
+					const res = expectNoCodeExecution(() => compileRoot(schema), `root label via ${label}`);
+					expect(res.threw).toBe(false);
+					expect(res.executed).toBe(false);
+					expect(res.consoleCalls).toBe(0);
+				});
+			});
+
+			it("compiles the reviewed double-quote breakout payload and validates values", () => {
+				const payload = "\"); global.__FV_INJECTED__.fired = true; //";
+				const check = v.compile(rootSchema({ type: "any", label: payload }));
+				expect(check("anything")).toBe(true);
+			});
+
+			it("preserves a legitimate label containing quotes and backslashes", () => {
+				const label = "He said \"hello\" \\ path";
+				const check = v.compile(rootSchema({ type: "any", label }));
+				expect(check("anything")).toBe(true);
+
+				// The label must round-trip exactly into validation errors.
+				const failing = v.compile(rootSchema({ type: "string", label }));
+				const err = failing(123);
+				expect(Array.isArray(err)).toBe(true);
+				expect(err[0].label).toBe(label);
+			});
+		});
 	});
 
 	// =====================================================================

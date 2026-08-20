@@ -75,7 +75,7 @@ describe("Test rule: equal", () => {
 	describe("Security: equal rule injection tests", () => {
 		it("should escape a malicious field value (no SyntaxError, no execution)", () => {
 			expectNoCodeExecution(() => {
-				const check = v.compile({
+				v.compile({
 					$$root: true,
 					type: "object",
 					properties: {
@@ -87,7 +87,7 @@ describe("Test rule: equal", () => {
 
 		it("should not execute code via field injection payload", () => {
 			expectNoCodeExecution(() => {
-				const check = v.compile({
+				v.compile({
 					$$root: true,
 					type: "equal",
 					field: "\"); global.__FV_INJECTED__.fired = true; //"

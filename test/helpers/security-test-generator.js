@@ -137,7 +137,6 @@ function generateSecurityTests(ruleSpec, makeValidator, opts = {}) {
 						badTypes.forEach((badType) => {
 							const badValues = fuzzers[badType] ? fuzzers[badType]() : [{}];
 							badValues.forEach((badValue) => {
-								const label = `${optionName}: ${JSON.stringify(badValue)} (${badType})`;
 								try {
 									makeValidator(optionName, badValue);
 								} catch (e) {
@@ -153,17 +152,7 @@ function generateSecurityTests(ruleSpec, makeValidator, opts = {}) {
 
 				// ---------- 2. Injection tests (even when type is correct) ----------
 				it("should not allow code injection via payloads", () => {
-					// Generate a good baseline value for the declared type
-					let goodValue;
-					if (fuzzers[declaredType]) {
-						const goodValues = fuzzers[declaredType]();
-						goodValue = goodValues[0]; // take first sane one
-					} else {
-						// fallback: no fuzzer exists for this declared type
-						goodValue = null;
-					}
-
-					// Now try each injection payload as the option value
+					// Try each injection payload as the option value
 					INJECTION_PAYLOADS.forEach(([label, payload]) => {
 						const testLabel = `${optionName} injection via ${label}`;
 						expectNoCodeExecution(

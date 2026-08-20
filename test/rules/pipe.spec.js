@@ -13,7 +13,7 @@ describe("Test rule: pipe", () => {
 					{ type: "custom", check(value, errors) {
 						try {
 							return JSON.parse(value);
-						} catch (err) {
+						} catch (err) { // eslint-disable-line no-unused-vars
 							errors.push({ type: "object" });
 							return value;
 						}
@@ -48,7 +48,7 @@ describe("Test rule: pipe", () => {
 					{ type: "custom", check(value, errors) {
 						try {
 							return JSON.parse(value);
-						} catch (err) {
+						} catch (err) { // eslint-disable-line no-unused-vars
 							errors.push({ type: "object" });
 							return value;
 						}

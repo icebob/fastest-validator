@@ -13,18 +13,15 @@
  * payloads never execute during a normal compile. To observe injection through
  * a black-box `v.compile(...)` call we therefore rely on two signals:
  *   - a SyntaxError (or any error) thrown by the compiler, and
- *   - an observable side effect of the injected payload (see `injectionSinks`).
+ *   - an observable side effect of the injected payload (see `globalSink`).
  */
 
 /**
  * Mutable sentinel object placed on `global`. Injected payloads may attempt to
- * write to it (e.g. `global.__FV_INJECTED__ = 1`). The tests runner snapshots
- * and restores it so one payload cannot poison the next.
+ * write to it (e.g. `global.__FV_INJECTED__.fired = true`). `attempt()` resets
+ * it before every run so one payload cannot poison the next.
  */
 const globalSink = { fired: false };
-
-/** Value used to signal that a payload executed. */
-const SINK_MARKER = "FV_INJECTION_EXECUTED";
 
 function resetGlobalSink() {
 	globalSink.fired = false;
@@ -57,9 +54,6 @@ const INJECTION_PAYLOADS = [
 	["regex newline",      "\\n.*\"), (global.__FV_INJECTED__.fired = true); //("],
 	["regex lookahead",    "(?=.*)); global.__FV_INJECTED__.fired = true; //"],
 ];
-
-/** Names of the global properties the payloads may try to touch. */
-const SINK_KEYS = ["__FV_INJECTED__"];
 
 // Install the sink on global so payload strings can reference it directly.
 global.__FV_INJECTED__ = globalSink;
@@ -98,7 +92,10 @@ function attempt(fn) {
 	return {
 		threw,
 		error,
-		executed: globalSink.fired === SINK_MARKER,
+		// Every injection payload signals execution by writing
+		// `global.__FV_INJECTED__.fired = true`, so a strict boolean check is the
+		// detection contract shared between the payloads and this harness.
+		executed: globalSink.fired === true,
 		consoleCalls,
 	};
 }
@@ -138,7 +135,6 @@ function expectNoCodeExecution(fn, contextLabel) {
 
 module.exports = {
 	INJECTION_PAYLOADS,
-	SINK_MARKER,
 	attempt,
 	expectNoCodeExecution,
 	resetGlobalSink,

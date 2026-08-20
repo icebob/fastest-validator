@@ -2,7 +2,6 @@
 
 const {
 	INJECTION_PAYLOADS,
-	SINK_MARKER,
 	attempt,
 	expectNoCodeExecution,
 	resetGlobalSink,
@@ -45,6 +44,20 @@ describe("Test helpers: security", () => {
 			// eslint-disable-next-line no-console
 			expect(console.log).toBe(original);
 		});
+
+		it("sanity: detects a real sink write as executed and ignores innocuous code", () => {
+			// Meta-validation of the harness itself: if the payloads ever wrote to
+			// the global sink (i.e. generated code executed foreign code), `attempt`
+			// MUST report it. A dead `executed` field would silently neuter every
+			// "should not execute" assertion across the security suites.
+			const executedRes = attempt(() => {
+				global.__FV_INJECTED__.fired = true;
+			});
+			expect(executedRes.executed).toBe(true);
+
+			const cleanRes = attempt(() => 42);
+			expect(cleanRes.executed).toBe(false);
+		});
 	});
 
 	describe("expectNoCodeExecution", () => {
@@ -57,7 +70,7 @@ describe("Test helpers: security", () => {
 		it("should throw when injected code executed (global sink written)", () => {
 			expect(() =>
 				expectNoCodeExecution(() => {
-					global.__FV_INJECTED__.fired = SINK_MARKER;
+					global.__FV_INJECTED__.fired = true;
 				}, "payload")
 			).toThrow(/INJECTED CODE EXECUTED \(payload\)/);
 		});
@@ -93,12 +106,17 @@ describe("Test helpers: security", () => {
 		});
 	});
 
-	describe("INJECTION_PAYLOADS / SINK_MARKER exports", () => {
-		it("should expose a non-empty battery plus the marker", () => {
+	describe("INJECTION_PAYLOADS export", () => {
+		it("should expose a non-empty battery of [label, value] pairs", () => {
 			expect(Array.isArray(INJECTION_PAYLOADS)).toBe(true);
 			expect(INJECTION_PAYLOADS.length).toBeGreaterThan(0);
 			expect(INJECTION_PAYLOADS[0]).toHaveLength(2);
-			expect(SINK_MARKER).toBe("FV_INJECTION_EXECUTED");
+			// Every payload must signal execution the same way the harness detects
+			// it (`global.__FV_INJECTED__.fired = true`); a mismatch would silently
+			// disable the `executed` detection (see the sanity test above).
+			INJECTION_PAYLOADS.forEach(([, payload]) => {
+				expect(payload).toContain("__FV_INJECTED__.fired = true");
+			});
 		});
 	});
 });
