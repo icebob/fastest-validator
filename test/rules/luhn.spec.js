@@ -55,4 +55,12 @@ describe("Test rule: luhn", () => {
 		expect(check("452373989901198")).toEqual(true);
 		expect(check("4523-739-8990-1198")).toEqual(true);
 	});
+
+	it("should not leak the internal 'val' variable onto the global object", () => {
+		const check = v.compile({ $$root: true, type: "luhn" });
+		delete global.val;
+		check("79927398713");
+		expect(global.val).toBeUndefined();
+		delete global.val;
+	});
 });

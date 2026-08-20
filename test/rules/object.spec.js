@@ -226,5 +226,31 @@ describe("Test rule: object", () => {
 				v.compile({ $$root: true, type: "object", maxProps: "10); global.__FV_INJECTED__.fired = true; //" });
 			}, "object.maxProps injection");
 		});
+
+		it("should safely quote objectStrict allowed-properties list", () => {
+			const payloadProp = "x\",});global.__FV_INJECTED__.fired = true;//";
+			const schema = {
+				$$root: true,
+				type: "object",
+				strict: true,
+				properties: {
+					ok: { type: "string" },
+					[payloadProp]: { type: "string" }
+				}
+			};
+
+			const check = v.compile(schema);
+			const res = expectNoCodeExecution(() => check({ ok: "a", extraKey: 1 }), "objectStrict expected list");
+			expect(res.threw).toBe(false);
+			expect(res.executed).toBe(false);
+			expect(res.consoleCalls).toBe(0);
+
+			const err = check({ ok: "a", extraKey: 1 });
+			expect(Array.isArray(err)).toBe(true);
+			const strictErr = err.find((e) => e.type === "objectStrict");
+			expect(strictErr).toBeDefined();
+			expect(strictErr.expected).toBe(`ok, ${payloadProp}`);
+			expect(strictErr.actual).toBe("extraKey");
+		});
 	});
 });
