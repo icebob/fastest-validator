@@ -168,8 +168,6 @@ describe("Test helpers: schema-options", () => {
 	describe("safeStringLiteral", () => {
 		it("should JSON-serialize any value", () => {
 			expect(safeStringLiteral(null)).toBe("null");
-			// JSON.stringify(undefined) returns undefined
-			expect(safeStringLiteral(undefined)).toBeUndefined();
 			expect(safeStringLiteral(0)).toBe("0");
 			expect(safeStringLiteral(42)).toBe("42");
 			expect(safeStringLiteral(-3.14)).toBe("-3.14");
@@ -180,6 +178,14 @@ describe("Test helpers: schema-options", () => {
 			expect(safeStringLiteral(false)).toBe("false");
 			expect(safeStringLiteral([1, 2, 3])).toBe("[1,2,3]");
 			expect(safeStringLiteral({ a: 1 })).toBe("{\"a\":1}");
+		});
+
+		it("should return empty string literal for undefined (defense-in-depth)", () => {
+			expect(safeStringLiteral(undefined)).toBe("\"\"");
+		});
+
+		it("should return empty string literal for null", () => {
+			expect(safeStringLiteral(null)).toBe("null");
 		});
 	});
 
@@ -251,6 +257,46 @@ describe("Test helpers: schema-options", () => {
 				.toThrow(/testType.testField must be a string or RegExp object, got object/);
 			expect(() => toRegExp(TYPE, FIELD, []))
 				.toThrow(/testType.testField must be a string or RegExp object, got object/);
+		});
+
+		describe("string patterns with invalid flags", () => {
+			it("should throw error for invalid flag characters", () => {
+				expect(() => toRegExp(TYPE, FIELD, "abc", { flags: "z" }))
+					.toThrow(/Invalid testType\.testField regex/);
+			});
+
+			it("should throw error for duplicate flags", () => {
+				expect(() => toRegExp(TYPE, FIELD, "abc", { flags: "ii" }))
+					.toThrow(/Invalid testType\.testField regex/);
+			});
+		});
+
+		describe("allowedFlags validation for string patterns", () => {
+			it("should reject disallowed flags for string patterns", () => {
+				expect(() => toRegExp(TYPE, FIELD, "abc", {
+					flags: "g",
+					allowedFlags: ["i"]
+				})).toThrow(/testType\.testField uses disallowed flag 'g'/);
+			});
+
+			it("should accept allowed flags for string patterns", () => {
+				const result = toRegExp(TYPE, FIELD, "abc", {
+					flags: "i",
+					allowedFlags: ["i", "m"]
+				});
+				expect(result).toEqual({
+					expression: "\"abc\"",
+					flags: "\"i\""
+				});
+			});
+
+			it("should validate all flags against allowedFlags", () => {
+				// Multiple flags, one disallowed
+				expect(() => toRegExp(TYPE, FIELD, "abc", {
+					flags: "im",
+					allowedFlags: ["i"]
+				})).toThrow(/testType\.testField uses disallowed flag 'm'/);
+			});
 		});
 	});
 
